@@ -1,0 +1,15 @@
+# keep only selected baseline files in root; ignore local extras
+.idea/
+.venv/
+output/
+
+export_mail.py
+export_chains.py
+
+# python cache
+__pycache__/
+*.py[cod]
+
+# misc
+.DS_Store
+Thumbs.db
