@@ -4,6 +4,7 @@ import argparse
 import uuid
 
 from src.orchestrator.pipeline_runner import PipelineRunner
+from src.runners._runner_utils import load_context_input
 from src.shared.models.pipeline_context import PipelineContext
 
 
@@ -20,9 +21,12 @@ def main() -> None:
     parser.add_argument("--from-step", default=None)
     parser.add_argument("--to-step", default=None)
     parser.add_argument("--steps", default=None, help="Comma-separated explicit steps")
+    parser.add_argument("--input", default=None, help="Path to a prepared PipelineContext JSON")
     args = parser.parse_args()
 
-    context = PipelineContext(run_id=args.run_id)
+    context_payload = load_context_input(args.input) if args.input else {}
+    context_payload["run_id"] = args.run_id
+    context = PipelineContext(**context_payload)
     runner = PipelineRunner(artifact_dir=args.artifacts_dir)
     runner.run(
         context,
