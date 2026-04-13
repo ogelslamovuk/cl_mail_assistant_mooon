@@ -1,0 +1,14 @@
+{
+  "status": "ok",
+  "notes": [
+    "Imported 1 message(s) via imap.",
+    "Context.message set to Message-ID=<CAP5WF-WxGVm_kdxzvcRgm3DT0cDcu+HxdYi4Y1o6mwS2QuGAkw@mail.gmail.com>."
+  ],
+  "artifact_refs": [
+    "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\modules\\mail_import\\run-8f31f85c\\raw_email_26433.eml",
+    "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\modules\\mail_import\\run-8f31f85c\\parsed_headers_26433.json",
+    "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\modules\\mail_import\\run-8f31f85c\\parsed_message_26433.json",
+    "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\modules\\mail_import\\run-8f31f85c\\output.json"
+  ],
+  "message_id": "<CAP5WF-WxGVm_kdxzvcRgm3DT0cDcu+HxdYi4Y1o6mwS2QuGAkw@mail.gmail.com>"
+}

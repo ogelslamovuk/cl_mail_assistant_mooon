@@ -1,0 +1,29 @@
+{
+  "message_id": "<sample-message-01@example.com>",
+  "direction": "inbound",
+  "headers": {
+    "message_id": "<sample-message-01@example.com>",
+    "in_reply_to": "<sample-parent-00@example.com>",
+    "references": [
+      "<sample-root-00@example.com>",
+      "<sample-parent-00@example.com>"
+    ],
+    "subject": "Test fixture mail import",
+    "sender": "client@example.com",
+    "sent_at": "2026-04-13 10:00:00+00:00",
+    "to": [
+      "info@example.com"
+    ],
+    "cc": [
+      "support-copy@example.com"
+    ]
+  },
+  "body_text": "Hello support team,\r\n\r\nThis is a prepared fixture email for mail_import module.\r\n\r\nBest regards,\r\nTest Client",
+  "raw_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\modules\\mail_import\\run-043817a2\\raw_email_sample_email_01.eml",
+  "metadata": {
+    "uid": "sample_email_01",
+    "mailbox": "INBOX",
+    "source_mode": "fixture"
+  },
+  "body_text_preview": "Hello support team,\r\n\r\nThis is a prepared fixture email for mail_import module.\r\n\r\nBest regards,\r\nTest Client"
+}

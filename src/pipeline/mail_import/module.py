@@ -104,7 +104,11 @@ class MailImportModule:
         if not fixture_path_raw:
             raise ValueError("fixture mode requires 'fixture_path'")
 
+        project_root = Path(__file__).resolve().parents[3]
         fixture_path = Path(fixture_path_raw)
+        if not fixture_path.is_absolute():
+            fixture_path = project_root / fixture_path
+
         if not fixture_path.exists():
             raise FileNotFoundError(f"Fixture file not found: {fixture_path}")
 

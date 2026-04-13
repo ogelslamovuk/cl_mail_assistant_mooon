@@ -4,6 +4,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+try:
+    import yaml  # type: ignore
+except Exception:  # pragma: no cover
+    yaml = None
+
 
 @dataclass
 class LocalYamlConfigStore:
@@ -12,17 +17,22 @@ class LocalYamlConfigStore:
 
     def load(self) -> dict[str, Any]:
         project_root = self._discover_project_root()
-        local_path = project_root / "config.local.yaml"
-        example_path = project_root / "config.example.yaml"
+
+        local_path = project_root / self.path
+        fallback_path = project_root / self.fallback_path if self.fallback_path else None
 
         if local_path.exists():
             return self._read_yaml(local_path)
-        if example_path.exists():
-            return self._read_yaml(example_path)
+
+        if fallback_path and fallback_path.exists():
+            return self._read_yaml(fallback_path)
+
+        checked = [str(local_path)]
+        if fallback_path:
+            checked.append(str(fallback_path))
 
         raise FileNotFoundError(
-            "Config file not found in project root. Checked: "
-            f"{local_path}, {example_path}"
+            "Config file not found in project root. Checked: " + ", ".join(checked)
         )
 
     def get_section(self, section_name: str) -> dict[str, Any]:
@@ -34,6 +44,17 @@ class LocalYamlConfigStore:
 
     @staticmethod
     def _read_yaml(path: Path) -> dict[str, Any]:
+        if yaml is not None:
+            with path.open("r", encoding="utf-8") as f:
+                payload = yaml.safe_load(f) or {}
+            if not isinstance(payload, dict):
+                raise ValueError(f"Root YAML object in {path} must be a mapping/object")
+            return payload
+
+        return LocalYamlConfigStore._read_simple_yaml(path)
+
+    @staticmethod
+    def _read_simple_yaml(path: Path) -> dict[str, Any]:
         payload: dict[str, Any] = {}
         current_root: str | None = None
 
