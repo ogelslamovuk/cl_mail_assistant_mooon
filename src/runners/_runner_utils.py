@@ -7,13 +7,14 @@ from pathlib import Path
 from typing import Any
 
 from src.layers.artifacts.artifact_store import ArtifactStore
+from src.shared.common.paths import artifacts_dir, resolve_project_path
 from src.shared.models.pipeline_context import PipelineContext
 
 
 def base_parser(description: str) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--run-id", default=f"run-{uuid.uuid4().hex[:8]}")
-    parser.add_argument("--artifacts-dir", default="artifacts")
+    parser.add_argument("--artifacts-dir", default=str(artifacts_dir()))
     return parser
 
 
@@ -22,7 +23,7 @@ def init_context(run_id: str) -> PipelineContext:
 
 
 def load_context_input(path: str) -> dict[str, Any]:
-    with Path(path).open("r", encoding="utf-8") as f:
+    with resolve_project_path(path).open("r", encoding="utf-8") as f:
         payload = json.load(f)
     if not isinstance(payload, dict):
         raise ValueError("Input JSON must be an object")
