@@ -39,7 +39,19 @@ class MailImportModule:
 
             if not cfg.get("enabled", True):
                 notes = ["mail_import disabled by config."]
-                return ModuleResult(context=context, status="skipped", notes=notes, artifact_refs=[])
+                return ModuleResult(
+                    context=context,
+                    status="skipped",
+                    notes=notes,
+                    artifact_refs=[],
+                    metrics={
+                        "processed_count": 0,
+                        "new_count": 0,
+                        "imports": [],
+                        "registry_path": str(self.registry_store.registry_path),
+                        "source_mode": str(cfg.get("mode", "fixture")).lower(),
+                    },
+                )
 
             source_mode = str(cfg.get("mode", "fixture")).lower()
             if source_mode not in {"fixture", "imap"}:
@@ -68,7 +80,19 @@ class MailImportModule:
                 )
                 artifact_refs.append(module_ref)
                 context.artifacts.setdefault(self.name, []).extend(artifact_refs)
-                return ModuleResult(context=context, status="ok", notes=notes, artifact_refs=artifact_refs)
+                return ModuleResult(
+                    context=context,
+                    status="ok",
+                    notes=notes,
+                    artifact_refs=artifact_refs,
+                    metrics={
+                        "processed_count": 0,
+                        "new_count": 0,
+                        "imports": [],
+                        "registry_path": str(self.registry_store.registry_path),
+                        "source_mode": source_mode,
+                    },
+                )
 
             created_count = 0
             for item in imported:
@@ -105,10 +129,33 @@ class MailImportModule:
             )
             artifact_refs.append(module_ref)
             context.artifacts[self.name].append(module_ref)
-            return ModuleResult(context=context, status="ok", notes=notes, artifact_refs=artifact_refs)
+            return ModuleResult(
+                context=context,
+                status="ok",
+                notes=notes,
+                artifact_refs=artifact_refs,
+                metrics={
+                    "processed_count": len(imported),
+                    "new_count": created_count,
+                    "imports": processed_records,
+                    "registry_path": str(self.registry_store.registry_path),
+                    "source_mode": source_mode,
+                },
+            )
         except Exception as exc:
             notes = [f"mail_import failed: {exc}"]
-            return ModuleResult(context=context, status="error", notes=notes, artifact_refs=[])
+            return ModuleResult(
+                context=context,
+                status="error",
+                notes=notes,
+                artifact_refs=[],
+                metrics={
+                    "processed_count": 0,
+                    "new_count": 0,
+                    "imports": [],
+                    "registry_path": str(self.registry_store.registry_path),
+                },
+            )
 
     def _resolved_config(self) -> dict[str, Any]:
         cfg = dict(self.config)
