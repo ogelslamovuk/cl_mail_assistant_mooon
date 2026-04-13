@@ -1,0 +1,17 @@
+From: "Test Client" <client@example.com>
+To: info@example.com
+Cc: support-copy@example.com
+Subject: Test fixture mail import
+Message-ID: <sample-message-01@example.com>
+Date: Mon, 13 Apr 2026 10:00:00 +0000
+In-Reply-To: <sample-parent-00@example.com>
+References: <sample-root-00@example.com> <sample-parent-00@example.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Hello support team,
+
+This is a prepared fixture email for mail_import module.
+
+Best regards,
+Test Client

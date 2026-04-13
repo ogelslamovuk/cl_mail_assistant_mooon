@@ -1,0 +1,18 @@
+{
+  "message_id": "<sample-message-01@example.com>",
+  "in_reply_to": "<sample-parent-00@example.com>",
+  "references": [
+    "<sample-root-00@example.com>",
+    "<sample-parent-00@example.com>"
+  ],
+  "subject": "Test fixture mail import",
+  "sender": "client@example.com",
+  "sent_at": "2026-04-13 10:00:00+00:00",
+  "to": [
+    "info@example.com"
+  ],
+  "cc": [
+    "support-copy@example.com"
+  ],
+  "raw_headers": "From: \"Test Client\" <client@example.com>\nTo: info@example.com\nCc: support-copy@example.com\nSubject: Test fixture mail import\nMessage-ID: <sample-message-01@example.com>\nDate: Mon, 13 Apr 2026 10:00:00 +0000\nIn-Reply-To: <sample-parent-00@example.com>\nReferences: <sample-root-00@example.com> <sample-parent-00@example.com>\nMIME-Version: 1.0\nContent-Type: text/plain; charset=\"utf-8\"\n"
+}
