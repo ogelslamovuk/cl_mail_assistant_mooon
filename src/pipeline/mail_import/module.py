@@ -9,8 +9,10 @@ from email.message import Message as PyEmailMessage
 from email.utils import getaddresses, parseaddr, parsedate_to_datetime
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from src.layers.artifacts.artifact_store import ArtifactStore
+from src.layers.state.import_registry_store import ImportRegistryStore
 from src.shared.common.io import write_json
 from src.shared.contracts.module_contract import ModuleResult
 from src.shared.models.entities import EmailHeaders, Message
@@ -28,6 +30,7 @@ class MailImportModule:
     ) -> None:
         self.config = config or {}
         self.artifact_store = ArtifactStore(base_dir=artifacts_dir)
+        self.registry_store = ImportRegistryStore(base_dir=artifacts_dir)
         self.run_options = run_options or {}
 
     def run(self, context: PipelineContext) -> ModuleResult:
@@ -48,6 +51,7 @@ class MailImportModule:
             else:
                 imported = self._import_from_imap(cfg, run_id=context.run_id)
 
+            processed_records: list[dict[str, Any]] = []
             if not imported:
                 notes = ["No messages imported."]
                 module_ref = self.artifact_store.write_module_output(
@@ -58,19 +62,30 @@ class MailImportModule:
                         "notes": notes,
                         "artifact_refs": artifact_refs,
                         "imported_count": 0,
+                        "registry_path": str(self.registry_store.registry_path),
+                        "imports": [],
                     },
                 )
                 artifact_refs.append(module_ref)
                 context.artifacts.setdefault(self.name, []).extend(artifact_refs)
                 return ModuleResult(context=context, status="ok", notes=notes, artifact_refs=artifact_refs)
 
+            created_count = 0
+            for item in imported:
+                registry_payload = self._register_import(item)
+                processed_records.append(registry_payload)
+                if registry_payload["status"] == "new":
+                    created_count += 1
+
             first = imported[0]
             context.message = first["message"]
-            artifact_refs.extend(first["artifact_refs"])
+            for item in imported:
+                artifact_refs.extend(item["artifact_refs"])
             context.artifacts.setdefault(self.name, []).extend(artifact_refs)
 
             notes = [
-                f"Imported {len(imported)} message(s) via {source_mode}.",
+                f"Processed {len(imported)} message(s) via {source_mode}.",
+                f"New registry rows: {created_count}.",
                 f"Context.message set to Message-ID={context.message.message_id}.",
             ]
             module_ref = self.artifact_store.write_module_output(
@@ -81,8 +96,11 @@ class MailImportModule:
                     "notes": notes,
                     "artifact_refs": artifact_refs,
                     "imported_count": len(imported),
+                    "new_count": created_count,
                     "source_mode": source_mode,
                     "selected_message_id": context.message.message_id,
+                    "registry_path": str(self.registry_store.registry_path),
+                    "imports": processed_records,
                 },
             )
             artifact_refs.append(module_ref)
@@ -104,19 +122,16 @@ class MailImportModule:
         if not fixture_path_raw:
             raise ValueError("fixture mode requires 'fixture_path'")
 
-        project_root = Path(__file__).resolve().parents[3]
         fixture_path = Path(fixture_path_raw)
-        if not fixture_path.is_absolute():
-            fixture_path = project_root / fixture_path
-
         if not fixture_path.exists():
             raise FileNotFoundError(f"Fixture file not found: {fixture_path}")
 
         raw_bytes = fixture_path.read_bytes()
-        uid = cfg.get("fixture_uid", fixture_path.stem)
+        fixture_ref = str(cfg.get("fixture_ref", fixture_path.stem))
         message, refs = self._build_message_with_artifacts(
             raw_bytes=raw_bytes,
-            uid=str(uid),
+            uid="",
+            fixture_ref=fixture_ref,
             mailbox=str(cfg.get("mailbox", "fixture")),
             run_id=run_id,
             source_mode="fixture",
@@ -184,6 +199,7 @@ class MailImportModule:
                 message, refs = self._build_message_with_artifacts(
                     raw_bytes=raw_bytes,
                     uid=str(uid),
+                    fixture_ref="",
                     mailbox=str(mailbox),
                     run_id=run_id,
                     source_mode="imap",
@@ -210,6 +226,7 @@ class MailImportModule:
         self,
         raw_bytes: bytes,
         uid: str,
+        fixture_ref: str,
         mailbox: str,
         run_id: str,
         source_mode: str,
@@ -229,6 +246,7 @@ class MailImportModule:
             body_text=body_text,
             metadata={
                 "uid": uid,
+                "fixture_ref": fixture_ref,
                 "mailbox": mailbox,
                 "source_mode": source_mode,
             },
@@ -282,6 +300,48 @@ class MailImportModule:
             },
         )
         return [str(raw_path), str(headers_path), str(parsed_message_path)]
+
+    def _register_import(self, imported_item: dict[str, Any]) -> dict[str, Any]:
+        message: Message = imported_item["message"]
+        artifact_refs: list[str] = imported_item["artifact_refs"]
+        uid = str(message.metadata.get("uid", ""))
+        fixture_ref = str(message.metadata.get("fixture_ref", ""))
+        mailbox = str(message.metadata.get("mailbox", ""))
+        source_mode = str(message.metadata.get("source_mode", ""))
+        import_id = f"imp_{uuid4().hex[:12]}"
+
+        sent_at = message.headers.sent_at.isoformat() if message.headers.sent_at else ""
+        record = self.registry_store.build_record(
+            import_id=import_id,
+            source_mode=source_mode,
+            uid=uid,
+            fixture_ref=fixture_ref,
+            message_id=message.message_id,
+            sender=message.headers.sender,
+            subject=message.headers.subject,
+            sent_at=sent_at,
+            mailbox=mailbox,
+            raw_path=artifact_refs[0] if len(artifact_refs) > 0 else "",
+            parsed_headers_path=artifact_refs[1] if len(artifact_refs) > 1 else "",
+            parsed_message_path=artifact_refs[2] if len(artifact_refs) > 2 else "",
+            status="new",
+        )
+        row, created, row_number = self.registry_store.append_or_get_existing(record)
+
+        return {
+            "import_id": row["import_id"],
+            "message_id": row["message_id"],
+            "status": row["status"] if created else "duplicate",
+            "row_number": row_number,
+            "source_mode": row["source_mode"],
+            "uid": row["uid"],
+            "fixture_ref": row["fixture_ref"],
+            "mailbox": row["mailbox"],
+            "raw_path": row["raw_path"],
+            "parsed_headers_path": row["parsed_headers_path"],
+            "parsed_message_path": row["parsed_message_path"],
+            "registry_path": str(self.registry_store.registry_path),
+        }
 
     @staticmethod
     def _build_headers(parsed: PyEmailMessage) -> EmailHeaders:
