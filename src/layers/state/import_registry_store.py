@@ -7,6 +7,8 @@ from typing import Any
 from xml.etree import ElementTree as ET
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from src.shared.common.paths import import_registry_path, resolve_project_path
+
 
 REGISTRY_HEADERS = [
     "import_id",
@@ -37,7 +39,9 @@ class ImportRegistryStore:
 
     @property
     def registry_path(self) -> Path:
-        return Path(self.base_dir) / self.relative_path
+        if self.base_dir == "artifacts" and self.relative_path == "state/import_registry.xlsx":
+            return import_registry_path()
+        return resolve_project_path(self.base_dir) / self.relative_path
 
     def append_or_get_existing(self, record: dict[str, Any]) -> tuple[dict[str, Any], bool, int]:
         rows = self.read_all()

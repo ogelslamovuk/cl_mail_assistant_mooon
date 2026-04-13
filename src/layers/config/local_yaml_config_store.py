@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from src.shared.common.paths import config_example_path, config_local_path
+
 
 @dataclass
 class LocalYamlConfigStore:
@@ -11,9 +13,8 @@ class LocalYamlConfigStore:
     fallback_path: str | None = "config.example.yaml"
 
     def load(self) -> dict[str, Any]:
-        project_root = self._discover_project_root()
-        local_path = project_root / "config.local.yaml"
-        example_path = project_root / "config.example.yaml"
+        local_path = config_local_path()
+        example_path = config_example_path()
 
         if local_path.exists():
             return self._read_yaml(local_path)
@@ -91,13 +92,3 @@ class LocalYamlConfigStore:
             return int(raw)
 
         return raw
-
-    @staticmethod
-    def _discover_project_root() -> Path:
-        search_starts = [Path.cwd(), Path(__file__).resolve()]
-        for start in search_starts:
-            current = start if start.is_dir() else start.parent
-            for candidate in [current, *current.parents]:
-                if (candidate / ".git").exists():
-                    return candidate
-        raise FileNotFoundError("Unable to determine project root (.git directory not found)")

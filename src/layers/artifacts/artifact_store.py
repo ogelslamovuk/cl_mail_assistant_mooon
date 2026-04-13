@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
 from src.shared.common.io import write_json
+from src.shared.common.paths import resolve_project_path
 
 
 class ArtifactStore:
     def __init__(self, base_dir: str = "artifacts") -> None:
-        self.base_dir = Path(base_dir)
+        self.base_dir = resolve_project_path(base_dir)
 
     def write_module_output(self, run_id: str, module_name: str, payload: Any) -> str:
         target = self.base_dir / "modules" / module_name / run_id / "output.json"

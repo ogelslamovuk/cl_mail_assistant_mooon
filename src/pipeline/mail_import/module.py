@@ -14,6 +14,7 @@ from uuid import uuid4
 from src.layers.artifacts.artifact_store import ArtifactStore
 from src.layers.state.import_registry_store import ImportRegistryStore
 from src.shared.common.io import write_json
+from src.shared.common.paths import resolve_project_path
 from src.shared.contracts.module_contract import ModuleResult
 from src.shared.models.entities import EmailHeaders, Message
 from src.shared.models.pipeline_context import PipelineContext
@@ -169,7 +170,7 @@ class MailImportModule:
         if not fixture_path_raw:
             raise ValueError("fixture mode requires 'fixture_path'")
 
-        fixture_path = Path(fixture_path_raw)
+        fixture_path = resolve_project_path(fixture_path_raw)
         if not fixture_path.exists():
             raise FileNotFoundError(f"Fixture file not found: {fixture_path}")
 

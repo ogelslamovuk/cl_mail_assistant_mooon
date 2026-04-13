@@ -3,6 +3,7 @@ from __future__ import annotations
 from src.layers.artifacts.artifact_store import ArtifactStore
 from src.layers.artifacts.logger import get_logger
 from src.orchestrator.pipeline_registry import MODULE_REGISTRY, PIPELINE_ORDER
+from src.shared.common.paths import resolve_project_path
 from src.shared.contracts.module_contract import ModuleResult
 from src.shared.models.pipeline_context import PipelineContext
 
@@ -10,7 +11,7 @@ from src.shared.models.pipeline_context import PipelineContext
 class PipelineRunner:
     def __init__(self, artifact_dir: str = "artifacts") -> None:
         self.artifact_store = ArtifactStore(base_dir=artifact_dir)
-        self.logger = get_logger("pipeline_runner", log_dir=f"{artifact_dir}/logs")
+        self.logger = get_logger("pipeline_runner", log_dir=str(resolve_project_path(artifact_dir) / "logs"))
 
     def _resolve_steps(
         self,

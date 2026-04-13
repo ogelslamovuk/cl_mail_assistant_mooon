@@ -3,23 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from src.layers.artifacts.artifact_store import ArtifactStore
 from src.layers.config.local_yaml_config_store import LocalYamlConfigStore
 from src.pipeline.mail_import.module import MailImportModule
 from src.runners._runner_utils import base_parser, init_context
-
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-
-def _resolve_from_project_root(raw_path: str | None) -> str | None:
-    if not raw_path:
-        return None
-
-    path = Path(raw_path)
-    if path.is_absolute():
-        return str(path)
-
-    return str((PROJECT_ROOT / path).resolve())
+from src.shared.common.paths import resolve_project_path
 
 
 def main() -> None:
@@ -44,7 +32,7 @@ def main() -> None:
 
     cli_overrides = {
         "mode": args.mode,
-        "fixture_path": args.fixture_path,
+        "fixture_path": str(resolve_project_path(args.fixture_path)) if args.fixture_path else None,
         "max_messages_per_run": args.max_messages_per_run,
         "search_criteria": args.search_criteria,
         "mailbox": args.mailbox,
@@ -54,7 +42,7 @@ def main() -> None:
     context = init_context(run_id=args.run_id)
     result = MailImportModule(
         config=mail_import_config,
-        artifacts_dir=args.artifacts_dir,
+        artifacts_dir=str(resolve_project_path(args.artifacts_dir)),
         run_options=cli_overrides,
     ).run(context)
 
@@ -92,7 +80,7 @@ def main() -> None:
     if registry_path:
         print(f"[mail_import] registry={registry_path}")
 
-    store = ArtifactStore(base_dir=artifacts_dir)
+    store = ArtifactStore(base_dir=str(resolve_project_path(args.artifacts_dir)))
     module_result_ref = store.write_module_output(
         run_id=args.run_id,
         module_name="mail_import",

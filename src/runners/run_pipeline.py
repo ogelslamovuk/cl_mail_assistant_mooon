@@ -5,6 +5,7 @@ import uuid
 
 from src.orchestrator.pipeline_runner import PipelineRunner
 from src.runners._runner_utils import load_context_input
+from src.shared.common.paths import artifacts_dir
 from src.shared.models.pipeline_context import PipelineContext
 
 
@@ -17,7 +18,7 @@ def parse_steps(raw: str | None) -> list[str] | None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run full or partial support-mail pipeline")
     parser.add_argument("--run-id", default=f"run-{uuid.uuid4().hex[:8]}")
-    parser.add_argument("--artifacts-dir", default="artifacts")
+    parser.add_argument("--artifacts-dir", default=str(artifacts_dir()))
     parser.add_argument("--from-step", default=None)
     parser.add_argument("--to-step", default=None)
     parser.add_argument("--steps", default=None, help="Comma-separated explicit steps")
