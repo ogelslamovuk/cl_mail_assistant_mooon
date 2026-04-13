@@ -1,0 +1,18 @@
+mail_import:
+  enabled: true
+  mode: fixture # fixture | imap
+
+  # IMAP settings
+  imap_host: imap.yandex.com
+  imap_port: 993
+  imap_username: your_login@example.com
+  email_address: your_login@example.com
+  app_password: your_app_password_here
+  mailbox: INBOX
+  readonly: true
+  poll_interval_sec: 3
+  search_criteria: UNSEEN
+  max_messages_per_run: 1
+
+  # Fixture mode settings
+  fixture_path: fixtures/emails/sample_email_01.eml
