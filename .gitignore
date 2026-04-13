@@ -13,3 +13,6 @@ __pycache__/
 # misc
 .DS_Store
 Thumbs.db
+
+# local runtime config with secrets
+config.local.yaml
