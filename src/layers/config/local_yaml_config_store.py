@@ -11,20 +11,18 @@ class LocalYamlConfigStore:
     fallback_path: str | None = "config.example.yaml"
 
     def load(self) -> dict[str, Any]:
-        path = Path(self.path)
-        if path.exists():
-            return self._read_yaml(path)
+        project_root = self._discover_project_root()
+        local_path = project_root / "config.local.yaml"
+        example_path = project_root / "config.example.yaml"
 
-        if self.fallback_path:
-            fallback = Path(self.fallback_path)
-            if fallback.exists():
-                return self._read_yaml(fallback)
+        if local_path.exists():
+            return self._read_yaml(local_path)
+        if example_path.exists():
+            return self._read_yaml(example_path)
 
-        checked = [self.path]
-        if self.fallback_path:
-            checked.append(self.fallback_path)
         raise FileNotFoundError(
-            "Config file not found. Checked: " + ", ".join(checked)
+            "Config file not found in project root. Checked: "
+            f"{local_path}, {example_path}"
         )
 
     def get_section(self, section_name: str) -> dict[str, Any]:
@@ -93,3 +91,13 @@ class LocalYamlConfigStore:
             return int(raw)
 
         return raw
+
+    @staticmethod
+    def _discover_project_root() -> Path:
+        search_starts = [Path.cwd(), Path(__file__).resolve()]
+        for start in search_starts:
+            current = start if start.is_dir() else start.parent
+            for candidate in [current, *current.parents]:
+                if (candidate / ".git").exists():
+                    return candidate
+        raise FileNotFoundError("Unable to determine project root (.git directory not found)")

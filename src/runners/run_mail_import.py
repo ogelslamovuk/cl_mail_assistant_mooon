@@ -7,7 +7,6 @@ from src.runners._runner_utils import base_parser, init_context, persist_single_
 
 def main() -> None:
     parser = base_parser("Run mail_import module in isolation")
-    parser.add_argument("--config", default="config.local.yaml")
     parser.add_argument("--mode", choices=["fixture", "imap"])
     parser.add_argument("--fixture-path")
     parser.add_argument("--max-messages-per-run", type=int)
@@ -17,7 +16,7 @@ def main() -> None:
     parser.add_argument("--readwrite", action="store_true")
     args = parser.parse_args()
 
-    config_store = LocalYamlConfigStore(path=args.config)
+    config_store = LocalYamlConfigStore()
     mail_import_config = config_store.get_section("mail_import")
 
     readonly_override = None
