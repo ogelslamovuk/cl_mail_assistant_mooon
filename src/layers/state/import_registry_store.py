@@ -21,8 +21,7 @@ REGISTRY_HEADERS = [
     "sent_at",
     "mailbox",
     "raw_path",
-    "parsed_headers_path",
-    "parsed_message_path",
+    "parsed_email_path",
     "status",
     "created_at",
 ]
@@ -140,7 +139,11 @@ class ImportRegistryStore:
         result: list[dict[str, str]] = []
         for row_values in all_rows[1:]:
             padded = row_values + [""] * (len(headers) - len(row_values))
-            result.append({headers[i]: padded[i] for i in range(len(headers))})
+            row = {headers[i]: padded[i] for i in range(len(headers))}
+            normalized = {header: str(row.get(header, "")) for header in REGISTRY_HEADERS}
+            if not normalized.get("parsed_email_path"):
+                normalized["parsed_email_path"] = str(row.get("parsed_message_path", ""))
+            result.append(normalized)
         return result
 
     @staticmethod
@@ -231,8 +234,7 @@ class ImportRegistryStore:
         sent_at: str,
         mailbox: str,
         raw_path: str,
-        parsed_headers_path: str,
-        parsed_message_path: str,
+        parsed_email_path: str,
         status: str = "new",
     ) -> dict[str, str]:
         return {
@@ -246,8 +248,7 @@ class ImportRegistryStore:
             "sent_at": sent_at,
             "mailbox": mailbox,
             "raw_path": raw_path,
-            "parsed_headers_path": parsed_headers_path,
-            "parsed_message_path": parsed_message_path,
+            "parsed_email_path": parsed_email_path,
             "status": status,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
