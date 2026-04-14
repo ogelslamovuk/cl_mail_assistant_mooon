@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import imaplib
+import re
 from dataclasses import asdict
 from datetime import datetime
 from email import message_from_bytes
 from email.header import decode_header
 from email.message import Message as PyEmailMessage
 from email.utils import getaddresses, parseaddr, parsedate_to_datetime
+from html import unescape
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -257,8 +259,7 @@ class MailImportModule:
             sent_at="",
             mailbox=mailbox,
             raw_path="",
-            parsed_headers_path="",
-            parsed_message_path="",
+            parsed_email_path="",
             status="bootstrap_cursor",
         )
         self.registry_store.append_or_get_existing(record)
@@ -283,7 +284,8 @@ class MailImportModule:
     ) -> tuple[Message, list[str]]:
         parsed = message_from_bytes(raw_bytes)
         raw_headers = self._serialize_raw_headers(parsed)
-        body_text = self._extract_body_text(parsed)
+        analysis = self._analyze_mime(parsed)
+        body_text = str(analysis["body_text"])
         headers = self._build_headers(parsed)
         direction = self._detect_direction(headers.sender, email_address)
 
@@ -306,6 +308,7 @@ class MailImportModule:
             raw_bytes=raw_bytes,
             raw_headers=raw_headers,
             body_text=body_text,
+            mime_analysis=analysis,
             file_suffix=file_suffix,
         )
         if refs:
@@ -320,6 +323,7 @@ class MailImportModule:
         raw_bytes: bytes,
         raw_headers: str,
         body_text: str,
+        mime_analysis: dict[str, Any],
         file_suffix: str,
     ) -> list[str]:
         base_dir = Path(self.artifact_store.base_dir) / "modules" / self.name / run_id
@@ -342,6 +346,22 @@ class MailImportModule:
                 "raw_headers": raw_headers,
                 "metadata": dict(message.metadata),
                 "body_text_preview": body_text[:2000],
+                "has_text_plain": bool(mime_analysis["has_text_plain"]),
+                "has_text_html": bool(mime_analysis["has_text_html"]),
+                "preferred_body_source": str(mime_analysis["preferred_body_source"]),
+                "body_sources": list(mime_analysis["body_sources"]),
+                "mime_parts": list(mime_analysis["mime_parts"]),
+                "has_attachments": bool(mime_analysis["has_attachments"]),
+                "has_inline_parts": bool(mime_analysis["has_inline_parts"]),
+                "attachments_inventory": list(mime_analysis["attachments_inventory"]),
+                "is_bounce": bool(mime_analysis["is_bounce"]),
+                "is_auto_reply": bool(mime_analysis["is_auto_reply"]),
+                "is_mailing_like": bool(mime_analysis["is_mailing_like"]),
+                "is_system_generated_likely": bool(mime_analysis["is_system_generated_likely"]),
+                "bounce_reasons": list(mime_analysis["bounce_reasons"]),
+                "auto_reply_reasons": list(mime_analysis["auto_reply_reasons"]),
+                "mailing_like_reasons": list(mime_analysis["mailing_like_reasons"]),
+                "system_generated_reasons": list(mime_analysis["system_generated_reasons"]),
             },
         )
         return [str(raw_path), str(parsed_email_path)]
@@ -368,8 +388,7 @@ class MailImportModule:
             sent_at=sent_at,
             mailbox=mailbox,
             raw_path=artifact_refs[0] if len(artifact_refs) > 0 else "",
-            parsed_headers_path="",
-            parsed_message_path=parsed_email_path,
+            parsed_email_path=parsed_email_path,
             status="new",
         )
         row, created, row_number = self.registry_store.append_or_get_existing(record)
@@ -387,9 +406,7 @@ class MailImportModule:
             "fixture_ref": row["fixture_ref"],
             "mailbox": row["mailbox"],
             "raw_path": row["raw_path"],
-            "parsed_email_path": parsed_email_path,
-            "parsed_headers_path": row["parsed_headers_path"],
-            "parsed_message_path": row["parsed_message_path"],
+            "parsed_email_path": row["parsed_email_path"],
             "registry_path": str(self.registry_store.registry_path),
         }
 
@@ -420,24 +437,188 @@ class MailImportModule:
             cc=cc_list,
         )
 
-    @staticmethod
-    def _extract_body_text(parsed: PyEmailMessage) -> str:
-        if parsed.is_multipart():
-            for part in parsed.walk():
-                content_type = part.get_content_type()
-                if content_type == "text/plain" and part.get_content_disposition() != "attachment":
-                    payload = part.get_payload(decode=True) or b""
-                    charset = part.get_content_charset() or "utf-8"
-                    return payload.decode(charset, errors="replace").strip()
-            return ""
+    def _analyze_mime(self, parsed: PyEmailMessage) -> dict[str, Any]:
+        mime_parts: list[dict[str, Any]] = []
+        attachments_inventory: list[dict[str, Any]] = []
+        plain_candidates: list[str] = []
+        html_candidates: list[str] = []
+        body_sources: list[str] = []
 
-        payload = parsed.get_payload(decode=True)
-        if isinstance(payload, bytes):
-            charset = parsed.get_content_charset() or "utf-8"
-            return payload.decode(charset, errors="replace").strip()
+        for part_index, part in enumerate(parsed.walk()):
+            content_type = part.get_content_type().lower()
+            disposition_raw = part.get_content_disposition() or ""
+            content_disposition = disposition_raw.lower()
+            raw_filename = part.get_filename()
+            decoded_filename = self._decode_mime(raw_filename) if raw_filename else ""
+            filename = decoded_filename or (raw_filename or "")
+            content_id = (part.get("Content-ID") or "").strip().strip("<>")
+            charset = part.get_content_charset() or ""
+            is_multipart = part.is_multipart()
+            payload = part.get_payload(decode=True)
+            payload_bytes = payload if isinstance(payload, bytes) else b""
+            size_bytes = len(payload_bytes)
+
+            is_attachment = content_disposition == "attachment" or (
+                bool(filename) and content_disposition != "inline" and not content_type.startswith("text/")
+            )
+            is_inline = content_disposition == "inline" or (
+                bool(content_id) and content_disposition != "attachment" and not is_attachment
+            )
+
+            mime_parts.append(
+                {
+                    "part_index": part_index,
+                    "content_type": content_type,
+                    "content_disposition": content_disposition,
+                    "filename": filename or "",
+                    "content_id": content_id,
+                    "charset": charset,
+                    "is_multipart": is_multipart,
+                    "size_bytes": size_bytes,
+                    "is_inline": is_inline,
+                    "is_attachment": is_attachment,
+                }
+            )
+
+            if is_attachment or is_inline:
+                attachments_inventory.append(
+                    {
+                        "part_index": part_index,
+                        "filename": filename or "",
+                        "content_type": content_type,
+                        "content_disposition": content_disposition,
+                        "content_id": content_id,
+                        "is_inline": is_inline,
+                        "is_attachment": is_attachment,
+                        "size_bytes": size_bytes,
+                    }
+                )
+
+            if is_multipart:
+                continue
+
+            if content_type == "text/plain" and not is_attachment:
+                text = self._decode_text_part(part, payload_bytes)
+                if text:
+                    plain_candidates.append(text)
+            elif content_type == "text/html" and not is_attachment:
+                html_text = self._html_to_text(self._decode_text_part(part, payload_bytes))
+                if html_text:
+                    html_candidates.append(html_text)
+
+        has_text_plain = bool(plain_candidates)
+        has_text_html = bool(html_candidates)
+        preferred_body_source = "none"
+        body_text = ""
+        if has_text_plain:
+            preferred_body_source = "text/plain"
+            body_sources.append("text/plain")
+            body_text = plain_candidates[0]
+            if has_text_html:
+                body_sources.append("text/html")
+        elif has_text_html:
+            preferred_body_source = "text/html"
+            body_sources.append("text/html")
+            body_text = html_candidates[0]
+
+        flags = self._build_technical_flags(parsed, mime_parts)
+
+        return {
+            "body_text": body_text.strip(),
+            "has_text_plain": has_text_plain,
+            "has_text_html": has_text_html,
+            "preferred_body_source": preferred_body_source,
+            "body_sources": body_sources,
+            "mime_parts": mime_parts,
+            "has_attachments": any(item["is_attachment"] for item in attachments_inventory),
+            "has_inline_parts": any(item["is_inline"] for item in attachments_inventory),
+            "attachments_inventory": attachments_inventory,
+            **flags,
+        }
+
+    @staticmethod
+    def _decode_text_part(part: PyEmailMessage, payload_bytes: bytes) -> str:
+        if payload_bytes:
+            charset = part.get_content_charset() or "utf-8"
+            return payload_bytes.decode(charset, errors="replace").strip()
+        payload = part.get_payload()
         if isinstance(payload, str):
             return payload.strip()
         return ""
+
+    @staticmethod
+    def _html_to_text(html: str) -> str:
+        if not html:
+            return ""
+        text = re.sub(r"(?is)<(script|style).*?>.*?</\1>", " ", html)
+        text = re.sub(r"(?i)<br\s*/?>", "\n", text)
+        text = re.sub(r"(?i)</p\s*>", "\n", text)
+        text = re.sub(r"(?s)<[^>]+>", " ", text)
+        text = unescape(text)
+        text = re.sub(r"[ \\t\\r\\f\\v]+", " ", text)
+        text = re.sub(r"\n\s*\n+", "\n\n", text)
+        return text.strip()
+
+    def _build_technical_flags(self, parsed: PyEmailMessage, mime_parts: list[dict[str, Any]]) -> dict[str, Any]:
+        subject = self._decode_mime(parsed.get("Subject", "")).lower()
+        from_raw = self._decode_mime(parsed.get("From", "")).lower()
+        sender_addr = parseaddr(parsed.get("From", ""))[1].lower()
+        auto_submitted = str(parsed.get("Auto-Submitted", "")).lower()
+        precedence = str(parsed.get("Precedence", "")).lower()
+
+        bounce_reasons: list[str] = []
+        auto_reply_reasons: list[str] = []
+        mailing_like_reasons: list[str] = []
+        system_generated_reasons: list[str] = []
+
+        if any(part["content_type"] == "multipart/report" for part in mime_parts):
+            bounce_reasons.append("mime contains multipart/report")
+        if "report-type=delivery-status" in str(parsed.get("Content-Type", "")).lower():
+            bounce_reasons.append("content-type report-type=delivery-status")
+        if any(part["content_type"] == "message/delivery-status" for part in mime_parts):
+            bounce_reasons.append("mime contains message/delivery-status")
+        if "mailer-daemon" in from_raw:
+            bounce_reasons.append("from contains mailer-daemon")
+        if "undelivered mail returned to sender" in subject:
+            bounce_reasons.append("subject indicates undelivered mail")
+
+        if "auto-replied" in auto_submitted:
+            auto_reply_reasons.append("Auto-Submitted=auto-replied")
+        if parsed.get("X-Auto-Response-Suppress"):
+            auto_reply_reasons.append("X-Auto-Response-Suppress header is present")
+        if any(token in subject for token in ["auto-reply", "out of office", "vacation reply", "autoreply"]):
+            auto_reply_reasons.append("subject matches autoresponder pattern")
+        if parsed.get("X-Autoreply") or parsed.get("X-Autorespond"):
+            auto_reply_reasons.append("autoresponder header is present")
+
+        if parsed.get("List-Unsubscribe"):
+            mailing_like_reasons.append("List-Unsubscribe header is present")
+        if parsed.get("List-Id"):
+            mailing_like_reasons.append("List-Id header is present")
+        if precedence in {"bulk", "list", "junk"}:
+            mailing_like_reasons.append(f"Precedence={precedence}")
+        if parsed.get("List-Post") or parsed.get("List-Help"):
+            mailing_like_reasons.append("list management header is present")
+
+        if any(token in sender_addr for token in ["no-reply", "noreply", "do-not-reply"]):
+            system_generated_reasons.append("sender address looks like no-reply")
+        if auto_submitted:
+            system_generated_reasons.append("Auto-Submitted header is present")
+        if bounce_reasons:
+            system_generated_reasons.append("bounce-like signals detected")
+        if "daemon" in from_raw:
+            system_generated_reasons.append("from contains daemon marker")
+
+        return {
+            "is_bounce": bool(bounce_reasons),
+            "is_auto_reply": bool(auto_reply_reasons),
+            "is_mailing_like": bool(mailing_like_reasons),
+            "is_system_generated_likely": bool(system_generated_reasons),
+            "bounce_reasons": bounce_reasons,
+            "auto_reply_reasons": auto_reply_reasons,
+            "mailing_like_reasons": mailing_like_reasons,
+            "system_generated_reasons": system_generated_reasons,
+        }
 
     @staticmethod
     def _serialize_raw_headers(parsed: PyEmailMessage) -> str:
