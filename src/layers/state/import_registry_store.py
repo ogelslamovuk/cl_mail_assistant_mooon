@@ -60,6 +60,22 @@ class ImportRegistryStore:
             return []
         return self._read_rows(path)
 
+    def get_max_imap_uid_for_mailbox(self, mailbox: str) -> int | None:
+        rows = self.read_all()
+        max_uid: int | None = None
+        for row in rows:
+            if row.get("source_mode", "") != "imap":
+                continue
+            if row.get("mailbox", "") != mailbox:
+                continue
+            raw_uid = str(row.get("uid", "")).strip()
+            if not raw_uid.isdigit():
+                continue
+            uid = int(raw_uid)
+            if max_uid is None or uid > max_uid:
+                max_uid = uid
+        return max_uid
+
     def _find_duplicate_row_index(self, rows: list[dict[str, str]], candidate: dict[str, Any]) -> int | None:
         mode = str(candidate.get("source_mode", ""))
         candidate_message_id = str(candidate.get("message_id", ""))
