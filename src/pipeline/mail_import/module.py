@@ -448,7 +448,9 @@ class MailImportModule:
             content_type = part.get_content_type().lower()
             disposition_raw = part.get_content_disposition() or ""
             content_disposition = disposition_raw.lower()
-            filename = part.get_filename()
+            raw_filename = part.get_filename()
+            decoded_filename = self._decode_mime(raw_filename) if raw_filename else ""
+            filename = decoded_filename or (raw_filename or "")
             content_id = (part.get("Content-ID") or "").strip().strip("<>")
             charset = part.get_content_charset() or ""
             is_multipart = part.is_multipart()
@@ -459,7 +461,9 @@ class MailImportModule:
             is_attachment = content_disposition == "attachment" or (
                 bool(filename) and content_disposition != "inline" and not content_type.startswith("text/")
             )
-            is_inline = content_disposition == "inline" or bool(content_id)
+            is_inline = content_disposition == "inline" or (
+                bool(content_id) and content_disposition != "attachment" and not is_attachment
+            )
 
             mime_parts.append(
                 {
