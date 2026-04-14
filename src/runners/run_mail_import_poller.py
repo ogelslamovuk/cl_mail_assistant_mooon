@@ -84,6 +84,7 @@ def main() -> None:
     run_options = {
         "mode": "imap",
         "fixture_path": None,
+        "readonly": True,
     }
 
     normalized_artifacts_dir = str(resolve_project_path(args.artifacts_dir))

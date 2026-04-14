@@ -165,7 +165,6 @@ class MailImportModule:
         password = cfg.get("app_password")
         mailbox = cfg.get("mailbox", "INBOX")
         readonly = bool(cfg.get("readonly", True))
-        search_criteria = cfg.get("search_criteria", "ALL")
         max_messages = int(cfg.get("max_messages_per_run", 1))
 
         missing = [
@@ -183,12 +182,6 @@ class MailImportModule:
         if max_messages <= 0:
             return []
 
-        criteria_tokens = (
-            search_criteria if isinstance(search_criteria, list) else str(search_criteria).split()
-        )
-        if not criteria_tokens:
-            criteria_tokens = ["ALL"]
-
         imported: list[dict[str, Any]] = []
         mail = imaplib.IMAP4_SSL(host, int(port))
         try:
@@ -197,17 +190,24 @@ class MailImportModule:
             if status != "OK":
                 raise RuntimeError(f"Failed to select mailbox '{mailbox}'")
 
-            status, data = mail.uid("search", None, *criteria_tokens)
-            if status != "OK":
-                raise RuntimeError("IMAP UID SEARCH failed")
-
-            raw_uids = data[0].decode("utf-8").strip() if data and data[0] else ""
-            if not raw_uids:
+            last_processed_uid = self.registry_store.get_max_imap_uid_for_mailbox(str(mailbox))
+            if last_processed_uid is None:
+                all_uids = self._imap_search_all_uids(mail)
+                bootstrap_uid = all_uids[-1] if all_uids else 0
+                self._bootstrap_imap_cursor(mailbox=str(mailbox), cursor_uid=bootstrap_uid)
                 return []
-            uids = raw_uids.split()[-max_messages:]
+
+            all_uids = self._imap_search_all_uids(mail)
+            if not all_uids:
+                return []
+
+            uids = [uid for uid in all_uids if uid > last_processed_uid]
+            if not uids:
+                return []
+            uids = uids[:max_messages]
 
             for uid in uids:
-                status, fetch_data = mail.uid("fetch", uid, "(RFC822)")
+                status, fetch_data = mail.uid("fetch", str(uid), "(RFC822)")
                 if status != "OK":
                     continue
                 raw_bytes = self._extract_rfc822_bytes(fetch_data)
@@ -232,6 +232,36 @@ class MailImportModule:
                 pass
 
         return imported
+
+    @staticmethod
+    def _imap_search_all_uids(mail: imaplib.IMAP4_SSL) -> list[int]:
+        status, data = mail.uid("search", None, "ALL")
+        if status != "OK":
+            raise RuntimeError("IMAP UID SEARCH failed")
+        raw_uids = data[0].decode("utf-8").strip() if data and data[0] else ""
+        if not raw_uids:
+            return []
+        uids = [int(uid) for uid in raw_uids.split() if uid.isdigit()]
+        uids.sort()
+        return uids
+
+    def _bootstrap_imap_cursor(self, mailbox: str, cursor_uid: int) -> None:
+        record = self.registry_store.build_record(
+            import_id=f"bootstrap_{uuid4().hex[:12]}",
+            source_mode="imap",
+            uid=str(cursor_uid),
+            fixture_ref="",
+            message_id=f"__bootstrap_cursor__:{mailbox}",
+            sender="",
+            subject="",
+            sent_at="",
+            mailbox=mailbox,
+            raw_path="",
+            parsed_headers_path="",
+            parsed_message_path="",
+            status="bootstrap_cursor",
+        )
+        self.registry_store.append_or_get_existing(record)
 
     @staticmethod
     def _extract_rfc822_bytes(fetch_data: list[Any]) -> bytes | None:
