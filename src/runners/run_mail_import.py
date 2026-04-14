@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 from src.layers.artifacts.artifact_store import ArtifactStore
 from src.layers.config.local_yaml_config_store import LocalYamlConfigStore
 from src.pipeline.mail_import.module import MailImportModule
@@ -46,19 +43,11 @@ def main() -> None:
         run_options=cli_overrides,
     ).run(context)
 
-    module_output_payload = {}
-    if result.artifact_refs:
-        module_output_path = Path(result.artifact_refs[-1])
-        if module_output_path.exists() and module_output_path.name == "output.json":
-            with module_output_path.open("r", encoding="utf-8") as f:
-                payload = json.load(f)
-                if isinstance(payload, dict):
-                    module_output_payload = payload
-
-    imports = module_output_payload.get("imports", [])
-    imported_count = int(module_output_payload.get("imported_count", len(imports)))
-    registry_path = module_output_payload.get("registry_path", "")
-    print(f"[mail_import] imported_count={imported_count}")
+    imports = result.metrics.get("imports", [])
+    processed_count = int(result.metrics.get("processed_count", 0))
+    new_count = int(result.metrics.get("new_count", 0))
+    registry_path = str(result.metrics.get("registry_path", ""))
+    print(f"[mail_import] processed_count={processed_count} new_count={new_count}")
     for item in imports:
         if item.get("status") == "duplicate":
             print(
@@ -74,8 +63,8 @@ def main() -> None:
             )
         print(
             "[mail_import] artifacts "
-            f"raw={item.get('raw_path')} headers={item.get('parsed_headers_path')} "
-            f"parsed={item.get('parsed_message_path')}"
+            f"raw={item.get('raw_path')} "
+            f"parsed_email={item.get('parsed_email_path')}"
         )
     if registry_path:
         print(f"[mail_import] registry={registry_path}")
@@ -89,7 +78,8 @@ def main() -> None:
             "notes": result.notes,
             "artifact_refs": result.artifact_refs,
             "message_id": result.context.message.message_id if result.context.message else None,
-            "imported_count": imported_count,
+            "imported_count": processed_count,
+            "new_count": new_count,
             "imports": imports,
             "registry_path": registry_path,
         },
