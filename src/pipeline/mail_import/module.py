@@ -67,6 +67,7 @@ class MailImportModule:
             processed_records: list[dict[str, Any]] = []
             if not imported:
                 notes = ["No messages imported."]
+                context.artifacts.setdefault(self.name, [])
                 return ModuleResult(
                     context=context,
                     status="ok",
@@ -99,23 +100,6 @@ class MailImportModule:
                 f"New registry rows: {created_count}.",
                 f"Context.message set to Message-ID={context.message.message_id}.",
             ]
-            module_ref = self.artifact_store.write_module_output(
-                run_id=context.run_id,
-                module_name=self.name,
-                payload={
-                    "status": "ok",
-                    "notes": notes,
-                    "artifact_refs": artifact_refs,
-                    "imported_count": len(imported),
-                    "new_count": created_count,
-                    "source_mode": source_mode,
-                    "selected_message_id": context.message.message_id,
-                    "registry_path": str(self.registry_store.registry_path),
-                    "imports": processed_records,
-                },
-            )
-            artifact_refs.append(module_ref)
-            context.artifacts[self.name].append(module_ref)
             return ModuleResult(
                 context=context,
                 status="ok",
@@ -316,24 +300,21 @@ class MailImportModule:
         raw_path.write_bytes(raw_bytes)
         message.raw_path = str(raw_path)
 
-        headers_path = base_dir / f"parsed_headers_{safe_suffix}.json"
+        parsed_email_path = base_dir / f"parsed_email_{safe_suffix}.json"
         write_json(
-            headers_path,
+            parsed_email_path,
             {
-                **asdict(message.headers),
+                "message_id": message.message_id,
+                "direction": message.direction,
+                "headers": asdict(message.headers),
+                "body_text": body_text,
+                "raw_path": str(raw_path),
                 "raw_headers": raw_headers,
-            },
-        )
-
-        parsed_message_path = base_dir / f"parsed_message_{safe_suffix}.json"
-        write_json(
-            parsed_message_path,
-            {
-                **asdict(message),
+                "metadata": dict(message.metadata),
                 "body_text_preview": body_text[:2000],
             },
         )
-        return [str(raw_path), str(headers_path), str(parsed_message_path)]
+        return [str(raw_path), str(parsed_email_path)]
 
     def _register_import(self, imported_item: dict[str, Any]) -> dict[str, Any]:
         message: Message = imported_item["message"]
@@ -345,6 +326,7 @@ class MailImportModule:
         import_id = f"imp_{uuid4().hex[:12]}"
 
         sent_at = message.headers.sent_at.isoformat() if message.headers.sent_at else ""
+        parsed_email_path = artifact_refs[1] if len(artifact_refs) > 1 else ""
         record = self.registry_store.build_record(
             import_id=import_id,
             source_mode=source_mode,
@@ -356,8 +338,8 @@ class MailImportModule:
             sent_at=sent_at,
             mailbox=mailbox,
             raw_path=artifact_refs[0] if len(artifact_refs) > 0 else "",
-            parsed_headers_path=artifact_refs[1] if len(artifact_refs) > 1 else "",
-            parsed_message_path=artifact_refs[2] if len(artifact_refs) > 2 else "",
+            parsed_headers_path="",
+            parsed_message_path=parsed_email_path,
             status="new",
         )
         row, created, row_number = self.registry_store.append_or_get_existing(record)
@@ -365,6 +347,9 @@ class MailImportModule:
         return {
             "import_id": row["import_id"],
             "message_id": row["message_id"],
+            "sender": row["sender"],
+            "subject": row["subject"],
+            "sent_at": row["sent_at"],
             "status": row["status"] if created else "duplicate",
             "row_number": row_number,
             "source_mode": row["source_mode"],
@@ -372,6 +357,7 @@ class MailImportModule:
             "fixture_ref": row["fixture_ref"],
             "mailbox": row["mailbox"],
             "raw_path": row["raw_path"],
+            "parsed_email_path": parsed_email_path,
             "parsed_headers_path": row["parsed_headers_path"],
             "parsed_message_path": row["parsed_message_path"],
             "registry_path": str(self.registry_store.registry_path),

@@ -17,17 +17,22 @@ def _ts() -> str:
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _read_sender_subject_from_headers_path(parsed_headers_path: str) -> tuple[str, str]:
-    if not parsed_headers_path:
+def _read_sender_subject_from_parsed_email_path(parsed_email_path: str) -> tuple[str, str]:
+    if not parsed_email_path:
         return "", ""
     try:
-        path = Path(parsed_headers_path)
+        path = Path(parsed_email_path)
         if not path.exists():
             return "", ""
         with path.open("r", encoding="utf-8") as f:
             payload = json.load(f)
-        sender = str(payload.get("sender", "") or "").strip()
-        subject = str(payload.get("subject", "") or "").strip()
+
+        headers = payload.get("headers", {}) if isinstance(payload, dict) else {}
+        if not isinstance(headers, dict):
+            headers = {}
+
+        sender = str(headers.get("sender", "") or payload.get("sender", "") or "").strip()
+        subject = str(headers.get("subject", "") or payload.get("subject", "") or "").strip()
         return sender, subject
     except Exception:
         return "", ""
@@ -40,8 +45,12 @@ def _resolve_sender_subject(import_item: dict) -> tuple[str, str]:
     if sender and subject:
         return sender, subject
 
-    parsed_headers_path = str(import_item.get("parsed_headers_path", "") or "").strip()
-    fallback_sender, fallback_subject = _read_sender_subject_from_headers_path(parsed_headers_path)
+    parsed_email_path = str(
+        import_item.get("parsed_email_path", "")
+        or import_item.get("parsed_message_path", "")
+        or ""
+    ).strip()
+    fallback_sender, fallback_subject = _read_sender_subject_from_parsed_email_path(parsed_email_path)
 
     if not sender:
         sender = fallback_sender

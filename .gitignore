@@ -17,6 +17,8 @@ Thumbs.db
 # local runtime config with secrets
 config.local.yaml
 
+LATER.txt
+
 # mail_import runtime artifacts
 artifacts/modules/mail_import/**
 
