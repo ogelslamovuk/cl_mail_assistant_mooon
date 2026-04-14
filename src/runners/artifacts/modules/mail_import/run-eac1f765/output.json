@@ -1,8 +1,0 @@
-{
-  "status": "error",
-  "notes": [
-    "mail_import failed: Fixture file not found: fixtures\\emails\\sample_email_01.eml"
-  ],
-  "artifact_refs": [],
-  "message_id": null
-}

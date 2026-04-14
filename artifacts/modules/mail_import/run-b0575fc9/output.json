@@ -1,8 +1,0 @@
-{
-  "status": "error",
-  "notes": [
-    "mail_import failed: b'[AUTHENTICATIONFAILED] LOGIN invalid credentials or IMAP is disabled sc=EaJlCp0Ut8c0_2026-04-13-12-36_imap-production-main-668'"
-  ],
-  "artifact_refs": [],
-  "message_id": null
-}

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import json
 import time
+from datetime import datetime
+from pathlib import Path
 from uuid import uuid4
 
 from src.layers.config.local_yaml_config_store import LocalYamlConfigStore
@@ -8,6 +11,44 @@ from src.layers.state.import_registry_store import ImportRegistryStore
 from src.pipeline.mail_import.module import MailImportModule
 from src.runners._runner_utils import base_parser, init_context
 from src.shared.common.paths import resolve_project_path
+
+
+def _ts() -> str:
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _read_sender_subject_from_headers_path(parsed_headers_path: str) -> tuple[str, str]:
+    if not parsed_headers_path:
+        return "", ""
+    try:
+        path = Path(parsed_headers_path)
+        if not path.exists():
+            return "", ""
+        with path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+        sender = str(payload.get("sender", "") or "").strip()
+        subject = str(payload.get("subject", "") or "").strip()
+        return sender, subject
+    except Exception:
+        return "", ""
+
+
+def _resolve_sender_subject(import_item: dict) -> tuple[str, str]:
+    sender = str(import_item.get("sender", "") or "").strip()
+    subject = str(import_item.get("subject", "") or "").strip()
+
+    if sender and subject:
+        return sender, subject
+
+    parsed_headers_path = str(import_item.get("parsed_headers_path", "") or "").strip()
+    fallback_sender, fallback_subject = _read_sender_subject_from_headers_path(parsed_headers_path)
+
+    if not sender:
+        sender = fallback_sender
+    if not subject:
+        subject = fallback_subject
+
+    return sender, subject
 
 
 def main() -> None:
@@ -22,7 +63,7 @@ def main() -> None:
         raise SystemExit("mail_import poller supports only mode=imap")
 
     if not bool(mail_import_config.get("enabled", True)):
-        print("[mail_import_poller] error mail_import is disabled by config")
+        print(f"[mail_import_poller] {_ts()} error mail_import is disabled by config")
         return
 
     poll_interval_sec = args.poll_interval_sec
@@ -38,7 +79,7 @@ def main() -> None:
 
     normalized_artifacts_dir = str(resolve_project_path(args.artifacts_dir))
     registry_store = ImportRegistryStore(base_dir=normalized_artifacts_dir)
-    print("[mail_import_poller] started")
+    print(f"[mail_import_poller] {_ts()} started")
 
     try:
         while True:
@@ -53,7 +94,7 @@ def main() -> None:
                     run_options=run_options,
                 ).run(context)
             except Exception as exc:
-                print(f"[mail_import_poller] error {exc}")
+                print(f"[mail_import_poller] {_ts()} error {exc}")
                 time.sleep(poll_interval_sec)
                 continue
 
@@ -68,15 +109,23 @@ def main() -> None:
 
             if result.status == "error":
                 notes = "; ".join(result.notes) if result.notes else "unknown error"
-                print(f"[mail_import_poller] error {notes}")
+                print(f"[mail_import_poller] {_ts()} error {notes}")
             elif not empty_result and (new_count > 0 or duplicate_count > 0):
-                print("[mail_import_poller] new message caught")
+                first_import = imports[0] if imports else {}
+                sender, subject = _resolve_sender_subject(first_import)
+                sender_display = sender if sender else "<unknown>"
+                subject_display = subject if subject else "<empty>"
+                print(
+                    f"[mail_import_poller] {_ts()} new message caught "
+                    f"from={sender_display} subject={subject_display} "
+                    f"processed={processed_count} new={new_count} duplicate={duplicate_count}"
+                )
 
             time.sleep(poll_interval_sec)
     except KeyboardInterrupt:
-        print("[mail_import_poller] stop requested")
+        print(f"[mail_import_poller] {_ts()} stop requested")
     finally:
-        print("[mail_import_poller] stopped")
+        print(f"[mail_import_poller] {_ts()} stopped")
 
 
 if __name__ == "__main__":

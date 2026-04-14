@@ -16,3 +16,16 @@ Thumbs.db
 
 # local runtime config with secrets
 config.local.yaml
+
+# mail_import runtime artifacts
+artifacts/modules/mail_import/**
+
+# runtime state
+artifacts/state/**
+
+# bad accidental artifacts path
+src/runners/artifacts/**
+
+# keep folder skeletons if needed
+!artifacts/modules/.gitkeep
+!artifacts/state/.gitkeep

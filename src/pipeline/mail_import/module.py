@@ -67,25 +67,11 @@ class MailImportModule:
             processed_records: list[dict[str, Any]] = []
             if not imported:
                 notes = ["No messages imported."]
-                module_ref = self.artifact_store.write_module_output(
-                    run_id=context.run_id,
-                    module_name=self.name,
-                    payload={
-                        "status": "ok",
-                        "notes": notes,
-                        "artifact_refs": artifact_refs,
-                        "imported_count": 0,
-                        "registry_path": str(self.registry_store.registry_path),
-                        "imports": [],
-                    },
-                )
-                artifact_refs.append(module_ref)
-                context.artifacts.setdefault(self.name, []).extend(artifact_refs)
                 return ModuleResult(
                     context=context,
                     status="ok",
                     notes=notes,
-                    artifact_refs=artifact_refs,
+                    artifact_refs=[],
                     metrics={
                         "processed_count": 0,
                         "new_count": 0,
