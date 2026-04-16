@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from src.layers.config.local_yaml_config_store import LocalYamlConfigStore
 from src.layers.state.import_registry_store import ImportRegistryStore
+from src.pipeline.attachment_extraction.module import AttachmentExtractionModule
 from src.pipeline.mail_import.module import MailImportModule
 from src.runners._runner_utils import base_parser, init_context
 from src.shared.common.paths import resolve_project_path
@@ -36,6 +37,29 @@ def _read_sender_subject_from_parsed_email_path(parsed_email_path: str) -> tuple
         return sender, subject
     except Exception:
         return "", ""
+
+
+def _print_attachment_extraction_summary(extraction_metrics: dict) -> None:
+    uid = str(extraction_metrics.get("uid", "") or "")
+    subject = str(extraction_metrics.get("subject", "") or "")
+    items = extraction_metrics.get("items", [])
+    print(
+        f"[attachment_extraction] {_ts()} uid={uid or '<empty>'} "
+        f"subject={subject or '<empty>'} items_count={len(items)}"
+    )
+
+    for item in items:
+        role = "inline" if bool(item.get("is_inline")) else "attachment"
+        text_found = "yes" if bool(item.get("text_found")) else "no"
+        preview = str(item.get("text_preview", "") or "")[:120]
+        print(
+            "[attachment_extraction] item "
+            f"filename={item.get('filename_saved') or item.get('filename_original') or '<empty>'} "
+            f"content_type={item.get('content_type', '')} "
+            f"role={role} text_found={text_found} "
+            f"method={item.get('extraction_method', '')} "
+            f"preview={preview or '<empty>'}"
+        )
 
 
 def _resolve_sender_subject(import_item: dict) -> tuple[str, str]:
@@ -130,6 +154,26 @@ def main() -> None:
                     f"from={sender_display} subject={subject_display} "
                     f"processed={processed_count} new={new_count} duplicate={duplicate_count}"
                 )
+
+                new_items = [item for item in imports if str(item.get("status", "")).lower() == "new"]
+                for new_item in new_items:
+                    parsed_email_path = str(new_item.get("parsed_email_path", "") or "").strip()
+                    raw_email_path = str(new_item.get("raw_path", "") or "").strip()
+                    if not parsed_email_path:
+                        print(f"[attachment_extraction] {_ts()} skip missing parsed_email_path")
+                        continue
+                    try:
+                        extraction_result = AttachmentExtractionModule(
+                            parsed_email_path=parsed_email_path,
+                            raw_email_path=raw_email_path or None,
+                        ).run(context)
+                        if extraction_result.status == "error":
+                            notes = "; ".join(extraction_result.notes) if extraction_result.notes else "unknown error"
+                            print(f"[attachment_extraction] {_ts()} error {notes}")
+                            continue
+                        _print_attachment_extraction_summary(extraction_result.metrics)
+                    except Exception as extraction_exc:
+                        print(f"[attachment_extraction] {_ts()} error {extraction_exc}")
 
             time.sleep(poll_interval_sec)
     except KeyboardInterrupt:
