@@ -1,0 +1,12 @@
+entity_id,type,canonical_value,aliases,notes
+brand_mooon,brand,mooon,"mooon;moon;мун;муун;mooon cinema",Cinema brand.
+brand_silverscreen,brand,Silver Screen,"silverscreen;silver screen;сильвер скрин;сильверскрин",Related cinema brand.
+brand_go2,service,go2.by,"go2;go2.by;го2;го ту;go to",Ticketing service / widget.
+venue_dana,venue,mooon в Dana Mall,"dana mall;дана молл;дана;mooon dana",Cinema location.
+venue_palazzo,venue,mooon в Palazzo,"palazzo;палаццо;mooon palazzo",Cinema location.
+venue_arenacity,venue,mooon в ArenaCity,"arenacity;arena city;арена сити;аренасити;mooon arenacity",Cinema location.
+venue_trinity,venue,mooon в Trinity Гродно,"trinity;тринити;гродно;mooon trinity;trinity grodno",Cinema location.
+intent_refund,intent,refund,"возврат;вернуть деньги;деньги не пришли;возврат средств;отмена билета;refund",Customer asks about refund.
+intent_ticket_missing,intent,ticket_not_received,"не пришел билет;не пришли билеты;нет билета;где билет;письмо с билетом;ticket not received",Customer did not receive ticket.
+intent_schedule,intent,schedule_question,"расписание;сеанс;сеансы;когда идет;когда будет;репертуар;показы;афиша;schedule",Customer asks about schedule or repertoire.
+intent_bounce,intent,bounce,"mailer-daemon;undelivered mail;delivery status notification;message not delivered;failure notice;returned mail",Bounce / undelivered email.
