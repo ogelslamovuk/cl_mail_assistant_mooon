@@ -1,0 +1,7 @@
+type,enabled,description
+rule,yes,Processing rule that explains how to handle a class of incoming messages.
+faq,yes,Stable factual answer fragment for common questions.
+operator_instruction,yes,Instruction intended for internal operator handling, not for direct customer reply.
+response_template,yes,Reusable wording or template hint for future Draft Builder.
+regulation,yes,Internal or external rule that constrains the answer or handling.
+historical_case,no,Past case example; reserved for later versions and disabled in MVP.
