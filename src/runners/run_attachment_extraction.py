@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from src.pipeline.attachment_extraction.module import AttachmentExtractionModule
 from src.runners._runner_utils import base_parser, init_context
+from src.shared.common.message_dossier import load_message_record
 from src.shared.common.paths import resolve_project_path
 
 
@@ -18,13 +18,14 @@ def _find_latest_candidate(artifacts_dir: str) -> tuple[str, str] | None:
     for root in roots:
         if not root.exists():
             continue
+        candidates.extend(root.rglob("message_*.md"))
         candidates.extend(root.rglob("parsed_email_*.json"))
 
     candidates.sort(key=lambda path: path.stat().st_mtime, reverse=True)
 
     for parsed_path in candidates:
         try:
-            payload = json.loads(parsed_path.read_text(encoding="utf-8"))
+            payload = load_message_record(parsed_path)
         except Exception:
             continue
         inventory = payload.get("attachments_inventory") or []
@@ -33,7 +34,7 @@ def _find_latest_candidate(artifacts_dir: str) -> tuple[str, str] | None:
         raw_path = str(payload.get("raw_path", "") or "").strip()
         if raw_path and Path(raw_path).exists():
             return str(parsed_path), raw_path
-        stem_uid = parsed_path.stem.replace("parsed_email_", "")
+        stem_uid = parsed_path.stem.replace("parsed_email_", "").replace("message_", "")
         raw_candidate = parsed_path.with_name(f"raw_email_{stem_uid}.eml")
         if raw_candidate.exists():
             return str(parsed_path), str(raw_candidate)

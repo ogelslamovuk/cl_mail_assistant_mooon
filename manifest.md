@@ -32,7 +32,7 @@ Telegram не является клиентским каналом и испол
 Главная единица обработки:
 
 не отдельное письмо,
-а case / thread со state, историей и маршрутом обработки.
+а case / thread со state, историей и логикой обработки.
 
 Даже если на первом этапе мы работаем как будто с автономными письмами, архитектура сразу должна быть thread-aware и case-aware.
 
@@ -43,9 +43,9 @@ Mail Import сразу строит нормализованный parsed_email-
 После этого Attachment Extraction обрабатывает вложения: сохраняет допустимые файлы, определяет типы, извлекает текст/структуру/OCR там, где это возможно.
 Параллельно или следующим ранним слоем Identity / Context Enrichment тянет весь доступный factual context: клиент, заказы, билеты, возвраты, баллы, карта, история кейсов и другие внешние данные.
 После этого письмо привязывается к case/thread.
-Затем LLM Understanding делает summary, topic, entities, confidence уже на базе полного контекста: письмо + extracted attachments + external enrichment + история кейса.
-Потом Router решает, что делать дальше с уже собранными фактами: process / rag / handoff.
-Если нужны регламенты и правила, подключается Knowledge RAG.
+Затем Structured LLM Understanding делает summary, topic, customer_need, entities, confidence и preliminary response_mode уже на базе полного контекста: письмо + extracted attachments + external enrichment + история кейса.
+После этого всегда запускается Knowledge Retrieval / RAG как отдельный технический слой поиска релевантных знаний по уже понятому кейсу.
+Затем LLM Decision Layer на полном контексте принимает прикладное решение: можно ли отвечать сразу, нужно ли уточнение, нужен ли handoff оператору, и какой response_mode должен быть финальным.
 На этой базе Draft Builder собирает черновик.
 Telegram показывает оператору карточку кейса.
 Оператор подтверждает или меняет решение.
@@ -60,9 +60,10 @@ Data lookup не является отдельным route.
 
 То есть:
 
-факты собираются до LLM и router;
-router работает уже поверх factual context;
-система не должна принимать важные решения “вслепую”.
+факты собираются до LLM decision layer;
+система не должна принимать важные решения “вслепую”;
+retrieval не является скрытой магией внутри большого промпта, а живёт отдельным техническим слоем;
+главное прикладное решение по кейсу принимает LLM Decision Layer уже поверх factual context и retrieved evidence.
 
 6. Ранняя обработка письма
 
@@ -159,9 +160,9 @@ mail import
 attachment extraction
 identity / context enrichment
 case binding
-llm understanding
-router
-knowledge RAG
+structured llm understanding
+knowledge retrieval / RAG
+llm decision layer
 draft builder
 Telegram operator delivery
 operator actions
@@ -215,15 +216,18 @@ Excel → Google Sheets
 видеть карточку кейса;
 понимать, что распознано;
 видеть собранные факты;
-видеть предложенный маршрут;
+видеть финальный response_mode;
+видеть reasoning summary;
 видеть draft;
 иметь право изменить решение системы.
 
 14. Главная формула проекта
 
-Support Mail — это не генератор писем, а модульная case-driven система принятия решений по e-mail обращениям, где до LLM собираются:
+Support Mail — это не генератор писем, а модульная case-driven система принятия решений по e-mail обращениям, где до главного decision-layer собираются:
 нормализованное письмо,
 распознанные вложения,
 внешний factual enrichment,
 история кейса,
+structured understanding,
+retrieved knowledge,
 а оператор управляет финальным решением через inspectable pipeline.

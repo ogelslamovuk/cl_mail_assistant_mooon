@@ -15,7 +15,7 @@ from uuid import uuid4
 
 from src.layers.artifacts.artifact_store import ArtifactStore
 from src.layers.state.import_registry_store import ImportRegistryStore
-from src.shared.common.io import write_json
+from src.shared.common.message_dossier import resolve_dossier_path, write_message_dossier
 from src.shared.common.paths import resolve_project_path
 from src.shared.contracts.module_contract import ModuleResult
 from src.shared.models.entities import EmailHeaders, Message
@@ -334,9 +334,9 @@ class MailImportModule:
         raw_path.write_bytes(raw_bytes)
         message.raw_path = str(raw_path)
 
-        parsed_email_path = base_dir / f"parsed_email_{safe_suffix}.json"
-        write_json(
-            parsed_email_path,
+        dossier_path = resolve_dossier_path(base_dir / f"parsed_email_{safe_suffix}.json", uid=safe_suffix)
+        write_message_dossier(
+            dossier_path,
             {
                 "message_id": message.message_id,
                 "direction": message.direction,
@@ -362,9 +362,15 @@ class MailImportModule:
                 "auto_reply_reasons": list(mime_analysis["auto_reply_reasons"]),
                 "mailing_like_reasons": list(mime_analysis["mailing_like_reasons"]),
                 "system_generated_reasons": list(mime_analysis["system_generated_reasons"]),
+                "modules": {
+                    "mail_import": {
+                        "status": "ok",
+                        "note": "mail_import completed",
+                    }
+                },
             },
         )
-        return [str(raw_path), str(parsed_email_path)]
+        return [str(raw_path), str(dossier_path)]
 
     def _register_import(self, imported_item: dict[str, Any]) -> dict[str, Any]:
         message: Message = imported_item["message"]

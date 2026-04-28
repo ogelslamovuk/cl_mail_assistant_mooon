@@ -8,6 +8,7 @@ from email import message_from_binary_file, policy
 from pathlib import Path
 from typing import Any
 
+from src.shared.common.message_dossier import load_message_record, resolve_dossier_path, write_message_dossier
 from src.shared.contracts.module_contract import ModuleResult
 from src.shared.models.pipeline_context import PipelineContext
 
@@ -88,9 +89,9 @@ class AttachmentExtractionModule:
             return ModuleResult(context=context, status="error", notes=[f"parsed_email missing: {parsed_path}"])
 
         try:
-            payload = json.loads(parsed_path.read_text(encoding="utf-8"))
+            payload = load_message_record(parsed_path)
         except Exception as exc:
-            return ModuleResult(context=context, status="error", notes=[f"parsed_email JSON unreadable: {exc}"])
+            return ModuleResult(context=context, status="error", notes=[f"message record unreadable: {exc}"])
 
         raw_path = self._resolve_raw_path(payload, parsed_path)
         if not raw_path:
@@ -104,6 +105,7 @@ class AttachmentExtractionModule:
 
         parts = list(msg.walk())
         uid = self._resolve_uid(payload, parsed_path)
+        dossier_path = resolve_dossier_path(parsed_path, uid)
         subject = str((payload.get("headers") or {}).get("subject", "") or "")
         message_id = str(payload.get("message_id", "") or "")
         attachments_inventory = payload.get("attachments_inventory") or []
@@ -125,14 +127,15 @@ class AttachmentExtractionModule:
             "message_id": message_id,
             "subject": subject,
             "raw_path": str(raw_path),
-            "parsed_email_path": str(parsed_path),
+            "message_file_path": str(dossier_path),
             "items": item_results,
         }
-        report_path = output_root / f"attachment_extraction_report_{uid}.json"
-        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-        artifact_refs.append(str(report_path))
 
-        context.artifacts.setdefault(self.name, []).append(str(report_path))
+        payload.setdefault("modules", {})[self.name] = report
+        write_message_dossier(dossier_path, payload)
+        artifact_refs.append(str(dossier_path))
+
+        context.artifacts.setdefault(self.name, []).append(str(dossier_path))
         context.enrichment.setdefault("attachment_extraction", report)
 
         metrics = {
@@ -140,8 +143,9 @@ class AttachmentExtractionModule:
             "message_id": message_id,
             "subject": subject,
             "raw_path": str(raw_path),
-            "parsed_email_path": str(parsed_path),
-            "report_path": str(report_path),
+            "parsed_email_path": str(dossier_path),
+            "report_path": str(dossier_path),
+            "dossier_path": str(dossier_path),
             "items_count": len(item_results),
             "items": item_results,
         }
@@ -334,7 +338,7 @@ class AttachmentExtractionModule:
         uid = str(metadata.get("uid", "") or "").strip()
         if uid:
             return uid
-        match = re.search(r"parsed_email_(.+)\.json$", parsed_path.name)
+        match = re.search(r"(?:parsed_email|message)_(.+)\.(?:json|md)$", parsed_path.name)
         return match.group(1) if match else parsed_path.stem
 
     def _resolve_raw_path(self, payload: dict[str, Any], parsed_path: Path) -> Path | None:
