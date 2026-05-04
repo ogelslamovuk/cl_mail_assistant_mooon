@@ -1,6 +1,0 @@
-key,value,description
-min_score,3,Minimum matching score required to return a knowledge item.
-max_results,5,Maximum number of knowledge items returned for one message.
-enabled_types,"rule;faq;operator_instruction;response_template;regulation",Enabled knowledge item types for MVP retrieval.
-no_result_behavior,return_empty,If nothing is matched the retrieval layer returns an empty result and does not invent context.
-source_format,csv,Current MVP storage format.
