@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import re
 from datetime import datetime, timezone
@@ -251,9 +252,9 @@ def render_operator_card(
         ]
     )
 
-    lines.extend(["", "<b>Обогащение</b>", _e(_compact_enrichment(payload))])
-    lines.extend(["", "<b>История</b>"])
+    lines.extend(["", "<b>История переписки</b>"])
     lines.extend(_render_thread_history(payload))
+    lines.extend(["", "<b>Enrichment</b>", _e(_compact_enrichment(payload))])
     lines.extend(["", "<b>Понимание</b>"])
     lines.extend(_render_understanding(payload))
     lines.extend(["", "<b>Решение системы</b>"])
@@ -285,11 +286,18 @@ def persist_operator_card(
     card_text: str,
     card_status: str,
     action: str = "",
+    telegram_message_id: int | str | None = None,
+    telegram_chat_id: int | str | None = None,
+    telegram_delivery_mode: str = "artifact_only",
+    telegram_operations: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     base_dir = resolve_project_path(artifacts_dir)
     state_dir = base_dir / "state"
     state_dir.mkdir(parents=True, exist_ok=True)
-    message_id = _next_mock_message_id(state_dir / "operator_bot_state.json")
+    message_id = telegram_message_id
+    if message_id is None:
+        message_id = _next_mock_message_id(state_dir / "operator_bot_state.json")
+    chat_id = telegram_chat_id if telegram_chat_id is not None else TELEGRAM_CHAT_ID_MOCK
     created_at = now_utc().isoformat()
     callbacks = build_callbacks(payload)
     card_payload = {
@@ -302,8 +310,9 @@ def persist_operator_card(
         "case_id": case_id(payload),
         "thread_id": thread_id(payload),
         "telegram_message_id": message_id,
-        "telegram_chat_id": TELEGRAM_CHAT_ID_MOCK,
-        "telegram_delivery_mode": "mock_artifact_only",
+        "telegram_chat_id": chat_id,
+        "telegram_delivery_mode": telegram_delivery_mode,
+        "telegram_operations": telegram_operations or [],
         "callback_data": [item["callback_data"] for item in callbacks],
         "keyboard": callbacks,
         "card_text": card_text,
@@ -319,27 +328,48 @@ def persist_operator_card(
 
 
 def build_callbacks(payload: dict[str, Any]) -> list[dict[str, str]]:
-    uid = resolve_uid(payload)
-    cid = case_id(payload)
-    tid = thread_id(payload)
+    token = _callback_token(payload)
     labels = {
         "approve": "✅ Утвердить",
         "needs_edit": "✏️ На доработку (LLM)",
         "handoff": "👤 Оператору",
-        "ignore": "🗑️ Игнорировать",
+        "ignore": "🚫 Игнорировать",
     }
     return [
         {
             "action": action,
             "label": label,
-            "callback_data": f"{CALLBACK_PREFIX}|{action}|{uid}|{cid}|{tid}",
+            "callback_data": f"{CALLBACK_PREFIX}|{action}|{token}",
         }
         for action, label in labels.items()
     ]
 
 
+def build_reply_markup(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "inline_keyboard": [
+            [
+                {"text": item["label"], "callback_data": item["callback_data"]}
+                for item in build_callbacks(payload)[:2]
+            ],
+            [
+                {"text": item["label"], "callback_data": item["callback_data"]}
+                for item in build_callbacks(payload)[2:]
+            ],
+        ]
+    }
+
+
 def parse_callback_data(callback_data: str) -> dict[str, str]:
     parts = str(callback_data or "").split("|")
+    if len(parts) == 3 and parts[0] == CALLBACK_PREFIX:
+        return {
+            "action": parts[1],
+            "uid": "",
+            "case_id": "",
+            "thread_id": "",
+            "token": parts[2],
+        }
     if len(parts) != 5 or parts[0] != CALLBACK_PREFIX:
         raise ValueError("Invalid callback_data")
     return {
@@ -347,6 +377,7 @@ def parse_callback_data(callback_data: str) -> dict[str, str]:
         "uid": parts[2],
         "case_id": parts[3],
         "thread_id": parts[4],
+        "token": "",
     }
 
 
@@ -360,6 +391,13 @@ def find_dossier_from_card_index(artifacts_dir: str, callback_data: str) -> str:
     for card in reversed(cards):
         if not isinstance(card, dict):
             continue
+        callback_items = card.get("callback_data") or []
+        if isinstance(callback_items, list) and callback_data in callback_items:
+            dossier = str(card.get("source_dossier_path") or card.get("dossier_path") or "").strip()
+            if dossier:
+                return dossier
+        if not parsed.get("uid"):
+            continue
         if str(card.get("uid", "")) != parsed["uid"]:
             continue
         if str(card.get("case_id", "")) != parsed["case_id"]:
@@ -370,16 +408,28 @@ def find_dossier_from_card_index(artifacts_dir: str, callback_data: str) -> str:
     raise FileNotFoundError("No card index entry found for callback_data")
 
 
+def _callback_token(payload: dict[str, Any]) -> str:
+    raw = f"{resolve_uid(payload)}|{case_id(payload)}|{thread_id(payload)}"
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
 def action_status_notice(action: str, *, mock_refs: list[str] | None = None) -> str:
     if action == "approve":
-        return "✅ Утверждено оператором. Черновик сохранен в mock_outbox. Реальная отправка отключена."
+        return "✅ Статус: утверждено\nMock-ответ создан.\nРеальный email не отправлен."
     if action == "needs_edit":
-        return "✏️ Черновик доработан по комментарию оператора. Создана новая ревизия."
+        return "✏️ Черновик доработан LLM по комментарию оператора."
     if action == "handoff":
-        return "👤 Кейс передан оператору для ручной обработки. Реальная отправка отключена."
+        return "👤 Статус: передано оператору\nАвтоматический ответ не сформирован.\nРеальный email не отправлен."
     if action == "ignore":
-        return "🗑️ Кейс помечен как не требующий ответа. Реальная отправка отключена."
-    return "Действие оператора обработано. Реальная отправка отключена."
+        return "🚫 Статус: игнорируется\nКейс закрыт без ответа.\nРеальный email не отправлен."
+    return "Действие оператора обработано.\nРеальный email не отправлен."
+
+
+def needs_edit_waiting_notice() -> str:
+    return (
+        "✏️ Статус: ожидается комментарий для доработки LLM\n"
+        "Напиши следующим сообщением, что нужно исправить в черновике."
+    )
 
 
 def _build_draft_text(payload: dict[str, Any], *, mode: str, operator_comment: str, prior_text: str) -> str:
@@ -420,6 +470,14 @@ def _build_draft_text(payload: dict[str, Any], *, mode: str, operator_comment: s
 def _revise_draft(prior_text: str, operator_comment: str) -> str:
     text = prior_text.strip()
     comment = " ".join(operator_comment.split())
+    lowered = comment.lower()
+    if "короче" in lowered or "мягче" in lowered or "понятнее" in lowered:
+        return (
+            "Здравствуйте.\n"
+            "Поможем проверить билет. Пожалуйста, пришлите номер заказа или email/телефон, указанный при покупке.\n"
+            "Также проверьте папки «Спам» и «Рассылки»: письмо с билетами обычно приходит с адреса ticket@silverscreen.by.\n"
+            "С уважением, команда mooon."
+        )
     addition = f"Дополнительно: {comment}"
     if addition in text:
         return text

@@ -30,9 +30,9 @@ class OperatorFlowTest(unittest.TestCase):
             card = self._read_json(Path(card_result.metrics["card_artifact_path"]))
             text = card["card_text"]
             self.assertIn("<b>📩 Новое письмо</b>", text)
-            self.assertLess(text.index("<b>Обогащение</b>"), text.index("<b>Понимание</b>"))
+            self.assertLess(text.index("<b>Enrichment</b>"), text.index("<b>Понимание</b>"))
             self.assertIn("Билет: не найден · кандидатов: 2", text)
-            self.assertIn("<b>История</b>", text)
+            self.assertIn("<b>История переписки</b>", text)
             self.assertIn("входящее", text)
             self.assertIn("✏️ На доработку (LLM)", json.dumps(card["keyboard"], ensure_ascii=False))
 
@@ -59,7 +59,7 @@ class OperatorFlowTest(unittest.TestCase):
             self.assertFalse(payload["modules"]["operator_actions"]["real_email_sent"])
 
             card = self._read_json(Path(result.metrics["updated_card_ref"]))
-            self.assertIn("✏️ Черновик доработан", card["card_text"])
+            self.assertIn("✏️ Черновик доработан LLM", card["card_text"])
             self.assertIn("<b>Черновик v2</b>", card["card_text"])
 
     def test_approve_uses_latest_draft_and_never_sends_real_email(self) -> None:
@@ -92,8 +92,8 @@ class OperatorFlowTest(unittest.TestCase):
             self.assertIn("Добавь просьбу указать номер заказа.", reply_json["final_draft_text"])
 
             card = self._read_json(Path(result.metrics["updated_card_ref"]))
-            self.assertIn("✅ Утверждено оператором", card["card_text"])
-            self.assertIn("Реальная отправка отключена", card["card_text"])
+            self.assertIn("✅ Статус: утверждено", card["card_text"])
+            self.assertIn("Реальный email не отправлен", card["card_text"])
 
     def test_handoff_and_ignore_update_cards_in_russian(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -102,8 +102,8 @@ class OperatorFlowTest(unittest.TestCase):
             DraftBuilderModule(dossier_path=str(dossier_path)).run(PipelineContext(run_id="test-draft"))
 
             for action, expected in [
-                ("handoff", "👤 Кейс передан оператору"),
-                ("ignore", "🗑️ Кейс помечен"),
+                ("handoff", "👤 Статус: передано оператору"),
+                ("ignore", "🚫 Статус: игнорируется"),
             ]:
                 result = OperatorActionsModule(
                     dossier_path=str(dossier_path),
@@ -113,7 +113,7 @@ class OperatorFlowTest(unittest.TestCase):
                 self.assertEqual(result.status, "ok")
                 card = self._read_json(Path(result.metrics["updated_card_ref"]))
                 self.assertIn(expected, card["card_text"])
-                self.assertIn("Реальная отправка отключена", card["card_text"])
+                self.assertIn("Реальный email не отправлен", card["card_text"])
 
     def _write_dossier(self, path: Path) -> Path:
         payload = {

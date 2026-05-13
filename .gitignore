@@ -27,7 +27,9 @@ artifacts/modules/reply_sender/**
 artifacts/modules/telegram_operator_delivery/**
 artifacts/telegram_operator_delivery/**
 artifacts/operator_actions/**
+artifacts/revision_requests/**
 artifacts/mock_outbox/**
+artifacts/real_telegram_flow/**
 artifacts/mock_mailbox_errors/**
 artifacts/agent_backups/**
 fixtures/mock_mailbox/**

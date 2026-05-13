@@ -9,6 +9,7 @@ def main() -> None:
     parser.add_argument("--dossier-path", default=None)
     parser.add_argument("--card-status", default="mock_sent")
     parser.add_argument("--status-notice", default="")
+    parser.add_argument("--delivery-mode", choices=["auto", "real", "artifact"], default="auto")
     args = parser.parse_args()
 
     context = init_context(run_id=args.run_id)
@@ -17,6 +18,7 @@ def main() -> None:
         artifacts_dir=args.artifacts_dir,
         card_status=args.card_status,
         status_notice=args.status_notice,
+        delivery_mode=args.delivery_mode,
     ).run(context)
 
     persist_single_module_result(
