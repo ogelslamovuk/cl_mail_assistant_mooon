@@ -21,6 +21,16 @@ LATER.txt
 
 # mail_import runtime artifacts
 artifacts/modules/mail_import/**
+artifacts/modules/draft_builder/**
+artifacts/modules/operator_actions/**
+artifacts/modules/reply_sender/**
+artifacts/modules/telegram_operator_delivery/**
+artifacts/telegram_operator_delivery/**
+artifacts/operator_actions/**
+artifacts/mock_outbox/**
+artifacts/mock_mailbox_errors/**
+artifacts/agent_backups/**
+fixtures/mock_mailbox/**
 
 # runtime state
 artifacts/state/**

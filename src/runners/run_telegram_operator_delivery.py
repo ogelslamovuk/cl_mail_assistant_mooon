@@ -6,10 +6,18 @@ from src.runners._runner_utils import base_parser, init_context, persist_single_
 
 def main() -> None:
     parser = base_parser("Run telegram_operator_delivery module in isolation")
+    parser.add_argument("--dossier-path", default=None)
+    parser.add_argument("--card-status", default="mock_sent")
+    parser.add_argument("--status-notice", default="")
     args = parser.parse_args()
 
     context = init_context(run_id=args.run_id)
-    result = TelegramOperatorDeliveryModule().run(context)
+    result = TelegramOperatorDeliveryModule(
+        dossier_path=args.dossier_path,
+        artifacts_dir=args.artifacts_dir,
+        card_status=args.card_status,
+        status_notice=args.status_notice,
+    ).run(context)
 
     persist_single_module_result(
         artifacts_dir=args.artifacts_dir,
@@ -19,6 +27,7 @@ def main() -> None:
             "status": result.status,
             "notes": result.notes,
             "artifact_refs": result.artifact_refs,
+            "metrics": result.metrics,
         },
     )
 
