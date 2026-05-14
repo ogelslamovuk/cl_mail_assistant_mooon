@@ -117,6 +117,14 @@ def run_watch_loop(
 
     try:
         while True:
+            # First catch /start and operator comments, then process mailbox.
+            # Otherwise a fresh email can be processed before the operator DM is registered.
+            if poll_seconds > 0:
+                try:
+                    run_telegram_polling(artifacts_dir=artifacts_dir, poll_seconds=1, poll_timeout=1)
+                except Exception as exc:
+                    print(f"[mock_flow] telegram_polling=error error={exc}")
+
             process_pending_emails(
                 inbox_dir=inbox_dir,
                 processing_dir=processing_dir,
@@ -140,9 +148,9 @@ def run_watch_loop(
                     )
                 except Exception as exc:
                     print(f"[mock_flow] telegram_polling=error error={exc}")
-                    time.sleep(max(int(poll_timeout), 1))
+                    time.sleep(1)
             else:
-                time.sleep(max(int(poll_timeout), 1))
+                time.sleep(1)
     except KeyboardInterrupt:
         print("[mock_flow] stopped by operator")
 
@@ -327,9 +335,11 @@ def process_eml(
             delivery_mode=telegram_delivery_mode,
         ).run(context)
         require_ok("telegram_operator_delivery", telegram_result)
-        result["telegram"] = "sent"
+        delivery_mode = str(telegram_result.metrics.get("telegram_delivery_mode") or "")
+        result["telegram"] = "sent" if telegram_result.metrics.get("telegram_message_id") else delivery_mode or "artifact_only"
         result["telegram_chat_id"] = telegram_result.metrics.get("telegram_chat_id")
         result["telegram_message_id"] = telegram_result.metrics.get("telegram_message_id")
+        result["telegram_delivery_mode"] = delivery_mode
         result["card_artifact_path"] = telegram_result.metrics.get("card_artifact_path")
         result["dossier_path"] = dossier_path
 
@@ -387,7 +397,7 @@ def run_telegram_polling(*, artifacts_dir: str, poll_seconds: int, poll_timeout:
                     message = callback_query.get("message") or {}
                     chat = message.get("chat") or {}
                     from_user = callback_query.get("from") or {}
-                    handler.handle_callback(
+                    callback_result = handler.handle_callback(
                         callback_data=str(callback_query.get("data") or ""),
                         chat_id=chat.get("id"),
                         message_id=int(message.get("message_id")),
@@ -395,6 +405,12 @@ def run_telegram_polling(*, artifacts_dir: str, poll_seconds: int, poll_timeout:
                         operator_username=str(from_user.get("username") or ""),
                         callback_query_id=str(callback_query.get("id") or ""),
                     )
+                    if callback_result.get("action"):
+                        print(
+                            "[mock_flow] telegram_callback="
+                            f"{callback_result.get('status')} action={callback_result.get('action')} "
+                            f"chat_id={chat.get('id')} user_id={callback_result.get('operator_telegram_id') or from_user.get('id') or ''}"
+                        )
 
                 message = update.get("message")
                 if message and message.get("text"):
@@ -402,17 +418,24 @@ def run_telegram_polling(*, artifacts_dir: str, poll_seconds: int, poll_timeout:
                     from_user = message.get("from") or {}
                     reply_to = message.get("reply_to_message") or {}
                     reply_to_message_id = reply_to.get("message_id") if isinstance(reply_to, dict) else None
-                    handler.handle_operator_message(
+                    message_result = handler.handle_operator_message(
                         chat_id=chat.get("id"),
                         text=str(message.get("text") or ""),
                         message_id=int(message.get("message_id")),
                         reply_to_message_id=int(reply_to_message_id) if reply_to_message_id else None,
                         operator_telegram_id=str(from_user.get("id") or ""),
                         operator_username=str(from_user.get("username") or ""),
+                        chat_type=str(chat.get("type") or ""),
                     )
+                    if message_result.get("action"):
+                        print(
+                            "[mock_flow] telegram_message="
+                            f"{message_result.get('status')} action={message_result.get('action')} "
+                            f"reason={message_result.get('reason') or ''} "
+                            f"chat_id={chat.get('id')} user_id={message_result.get('operator_telegram_id') or from_user.get('id') or ''} "
+                            f"username={from_user.get('username') or ''} uid={message_result.get('uid') or ''}"
+                        )
             except Exception as exc:
-                # Do not keep re-processing the same broken Telegram update forever.
-                # The error is visible in console, while the offset still advances.
                 print(f"[mock_flow] telegram_update=error update_id={update_id} error={exc}")
             finally:
                 write_json(state_path, state)

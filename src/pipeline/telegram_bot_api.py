@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 from typing import Any
@@ -7,6 +8,7 @@ from typing import Any
 import requests
 
 from src.layers.config.local_yaml_config_store import LocalYamlConfigStore
+from src.shared.common.paths import resolve_project_path
 
 
 class TelegramBotApiClient:
@@ -34,6 +36,63 @@ class TelegramBotApiClient:
     def operator_chat_id_from_config() -> str:
         config = LocalYamlConfigStore().get_section("telegram_operator_delivery")
         return str(os.getenv("TELEGRAM_OPERATOR_CHAT_ID") or config.get("operator_chat_id") or "").strip()
+
+    @staticmethod
+    def operator_dm_chat_id_from_config() -> str:
+        config = LocalYamlConfigStore().get_section("telegram_operator_delivery")
+        return str(os.getenv("TELEGRAM_OPERATOR_DM_CHAT_ID") or config.get("operator_dm_chat_id") or "").strip()
+
+    @staticmethod
+    def allowed_operator_user_ids_from_config() -> set[str]:
+        config = LocalYamlConfigStore().get_section("telegram_operator_delivery")
+        raw = os.getenv("TELEGRAM_ALLOWED_OPERATOR_USER_IDS") or config.get("allowed_operator_user_ids") or config.get("operator_allowed_user_ids") or ""
+        if isinstance(raw, (list, tuple, set)):
+            values = raw
+        else:
+            values = str(raw).replace(";", ",").split(",")
+        return {str(item).strip() for item in values if str(item).strip()}
+
+    @staticmethod
+    def is_operator_allowed(operator_telegram_id: str | int | None) -> bool:
+        allowed_ids = TelegramBotApiClient.allowed_operator_user_ids_from_config()
+        if not allowed_ids:
+            return False
+        return str(operator_telegram_id or "").strip() in allowed_ids
+
+    @staticmethod
+    def operator_chat_id_from_registry(artifacts_dir: str = "artifacts") -> str:
+        path = resolve_project_path(artifacts_dir) / "state" / "operator_registry.json"
+        if not path.exists():
+            return ""
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return ""
+        if not isinstance(data, dict):
+            return ""
+        # Strict DM mode: never use a group/channel id from the old operator_chat_id flow.
+        # Only an allowed /start received in a private chat may register the destination for active cards.
+        if str(data.get("latest_operator_chat_type") or "").strip() != "private":
+            return ""
+        if not data.get("latest_operator_authorized"):
+            return ""
+        allowed_ids = TelegramBotApiClient.allowed_operator_user_ids_from_config()
+        if not allowed_ids:
+            return ""
+        operator_id = str(data.get("latest_operator_telegram_id") or "").strip()
+        if operator_id not in allowed_ids:
+            return ""
+        return str(data.get("latest_operator_chat_id") or "").strip()
+
+    @staticmethod
+    def operator_delivery_chat_id(artifacts_dir: str = "artifacts") -> str:
+        # Active operator cards must go only to a private DM.
+        # telegram_operator_delivery.operator_chat_id is kept for the old group/channel log
+        # and is intentionally NOT used here.
+        return (
+            TelegramBotApiClient.operator_dm_chat_id_from_config()
+            or TelegramBotApiClient.operator_chat_id_from_registry(artifacts_dir)
+        )
 
     def send_message(
         self,
@@ -117,8 +176,19 @@ class TelegramBotApiClient:
             payload["text"] = text
         return self._post("answerCallbackQuery", payload)
 
-    def get_updates(self, *, offset: int | None = None, timeout: int = 30) -> dict[str, Any]:
-        payload: dict[str, Any] = {"timeout": timeout}
+    def get_updates(
+        self,
+        *,
+        offset: int | None = None,
+        timeout: int = 30,
+        allowed_updates: list[str] | None = None,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "timeout": timeout,
+            # DM-mode needs ordinary private messages for /start and operator comments.
+            # Telegram previously had allowed_updates=["callback_query"], so polling did not receive messages.
+            "allowed_updates": allowed_updates or ["message", "callback_query"],
+        }
         if offset is not None:
             payload["offset"] = offset
         return self._post("getUpdates", payload)

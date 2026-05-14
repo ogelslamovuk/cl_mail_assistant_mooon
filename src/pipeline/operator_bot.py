@@ -77,10 +77,27 @@ class OperatorBotHandler:
         reply_to_message_id: int | None = None,
         operator_telegram_id: str = "",
         operator_username: str = "",
+        chat_type: str = "",
     ) -> dict[str, Any]:
+        clean_text = (text or "").strip()
+        if clean_text.startswith("/start"):
+            return self._handle_start_message(
+                chat_id=chat_id,
+                operator_telegram_id=operator_telegram_id,
+                operator_username=operator_username,
+                chat_type=chat_type,
+            )
+
         pending = self._get_pending(chat_id)
         if not pending:
             return {"status": "ignored", "reason": "no pending revision request", "bot_api_operations": []}
+
+        if not clean_text:
+            result = self.client.send_message(
+                chat_id=chat_id,
+                text="Комментарий пустой. Напиши, что именно нужно изменить в черновике.",
+            )
+            return {"status": "ignored", "reason": "empty operator comment", "bot_api_operations": [result]}
 
         dossier_path = str(pending["dossier_path"])
         payload = load_dossier(dossier_path)
@@ -89,7 +106,7 @@ class OperatorBotHandler:
             "case_id": pending["case_id"],
             "thread_id": pending["thread_id"],
             "latest_revision": pending.get("latest_revision", 0),
-            "operator_comment": text.strip(),
+            "operator_comment": clean_text,
             "operator_telegram_id": operator_telegram_id,
             "operator_username": operator_username,
             "source_callback_data": pending["callback_data"],
@@ -107,7 +124,7 @@ class OperatorBotHandler:
 
         draft_result = DraftBuilderModule(
             dossier_path=dossier_path,
-            operator_comment=text,
+            operator_comment=clean_text,
             revision_reason="operator_needs_edit_comment",
         ).run(PipelineContext(run_id=f"operator-comment-{revision_request['created_at']}"))
         if draft_result.status != "ok":
@@ -117,7 +134,7 @@ class OperatorBotHandler:
             build_action_suggestion_revision(
                 payload,
                 dossier_path=dossier_path,
-                operator_comment=text,
+                operator_comment=clean_text,
                 revision_reason="operator_needs_edit_comment",
             )
             save_dossier(dossier_path, payload)
@@ -129,14 +146,13 @@ class OperatorBotHandler:
             action="needs_edit",
         )
         update_ops, target_message_id, delivery_mode = self._update_revision_card(
-            chat_id=pending["source_chat_id"] if "source_chat_id" in pending else pending["chat_id"],
+            chat_id=pending["chat_id"],
             message_id=int(pending["message_id"]),
             text=card_text,
             payload=payload,
         )
         cleanup_ops = self._cleanup_revision_messages(
             chat_id=chat_id,
-            prompt_message_id=pending.get("prompt_message_id"),
             operator_message_id=message_id,
         )
         ops = update_ops + cleanup_ops
@@ -190,39 +206,30 @@ class OperatorBotHandler:
             operator_telegram_id,
             operator_username,
         )
-        card_text = render_operator_card(payload, status_notice=needs_edit_waiting_notice(), action="")
+        card_text = render_operator_card(payload, status_notice=needs_edit_waiting_notice(), action="needs_edit")
         ops = self._edit_existing_card(chat_id=chat_id, message_id=message_id, text=card_text)
         if callback_query_id:
-            ops.append(
-                self.client.answer_callback_query(
-                    callback_query_id=callback_query_id,
-                    text="Напиши комментарий ответом на сообщение бота.",
-                )
-            )
+            ops.append(self.client.answer_callback_query(callback_query_id=callback_query_id, text="Напиши комментарий следующим сообщением в личке с ботом."))
         self._assert_required_edits_ok(ops)
 
-        pending_value = {
-            "uid": resolve_uid(payload),
-            "case_id": self._case_id(payload),
-            "thread_id": self._thread_id(payload),
-            "dossier_path": dossier_path,
-            "callback_data": callback_data,
-            "chat_id": chat_id,
-            "message_id": message_id,
-            "operator_telegram_id": operator_telegram_id,
-            "operator_username": operator_username,
-            "latest_revision": latest_draft_module(payload).get("latest_revision")
-            or ((payload.get("modules") or {}).get("action_suggestion_builder") or {}).get("latest_revision")
-            or 0,
-            "created_at": timestamp_for_filename(),
-        }
-        self._set_pending(chat_id, pending_value)
-
-        # Do not send a separate ForceReply prompt here. In this demo group it caused
-        # Telegram "inline keyboard expected" errors and left the original card in a
-        # broken pending state. The edited card itself is now the prompt: the operator
-        # replies to this card or sends the next text message, and the pending state
-        # below binds that text to this case.
+        self._set_pending(
+            chat_id,
+            {
+                "uid": resolve_uid(payload),
+                "case_id": self._case_id(payload),
+                "thread_id": self._thread_id(payload),
+                "dossier_path": dossier_path,
+                "callback_data": callback_data,
+                "chat_id": chat_id,
+                "message_id": message_id,
+                "operator_telegram_id": operator_telegram_id,
+                "operator_username": operator_username,
+                "latest_revision": latest_draft_module(payload).get("latest_revision")
+                or ((payload.get("modules") or {}).get("action_suggestion_builder") or {}).get("latest_revision")
+                or 0,
+                "created_at": timestamp_for_filename(),
+            },
+        )
         card_payload = persist_operator_card(
             payload,
             dossier_path=dossier_path,
@@ -347,6 +354,210 @@ class OperatorBotHandler:
             "real_routing": False,
         }
 
+    def _handle_start_message(
+        self,
+        *,
+        chat_id: int | str,
+        operator_telegram_id: str = "",
+        operator_username: str = "",
+        chat_type: str = "",
+    ) -> dict[str, Any]:
+        if chat_type and chat_type != "private":
+            result = self.client.send_message(
+                chat_id=chat_id,
+                text="Регистрация оператора выполняется только в личном чате с ботом. Открой личку с ботом и отправь /start там.",
+            )
+            return {
+                "status": "ignored",
+                "action": "operator_registration_rejected",
+                "reason": "not_private_chat",
+                "bot_api_operations": [result],
+            }
+
+        operator_id = str(operator_telegram_id or chat_id or "").strip()
+        allowed_ids = self.client.allowed_operator_user_ids_from_config()
+        if not allowed_ids:
+            result = self.client.send_message(
+                chat_id=chat_id,
+                text=(
+                    "Оператор не зарегистрирован: в config.local.yaml не задан список разрешённых операторов.\n"
+                    f"Твой Telegram user_id: {operator_id}.\n"
+                    "Добавь его в telegram_operator_delivery.allowed_operator_user_ids и перезапусти runner."
+                ),
+            )
+            return {
+                "status": "ignored",
+                "action": "operator_registration_rejected",
+                "reason": "allowed_operator_user_ids_missing",
+                "operator_telegram_id": operator_id,
+                "operator_username": operator_username,
+                "bot_api_operations": [result],
+            }
+
+        if operator_id not in allowed_ids:
+            result = self.client.send_message(
+                chat_id=chat_id,
+                text=(
+                    "Нет доступа к операторскому боту.\n"
+                    f"Твой Telegram user_id: {operator_id}."
+                ),
+            )
+            return {
+                "status": "ignored",
+                "action": "operator_registration_rejected",
+                "reason": "operator_not_allowed",
+                "operator_telegram_id": operator_id,
+                "operator_username": operator_username,
+                "bot_api_operations": [result],
+            }
+
+        registry = read_json(self._operator_registry_path(), {"operators": {}})
+        if not isinstance(registry, dict):
+            registry = {"operators": {}}
+        operators = registry.get("operators")
+        if not isinstance(operators, dict):
+            operators = {}
+        key = operator_id
+        operators[key] = {
+            "chat_id": chat_id,
+            "chat_type": chat_type or "private",
+            "operator_telegram_id": operator_id,
+            "operator_username": operator_username,
+            "authorized": True,
+            "registered_at": timestamp_for_filename(),
+        }
+        registry["operators"] = operators
+        registry["latest_operator_chat_id"] = chat_id
+        registry["latest_operator_chat_type"] = chat_type or "private"
+        registry["latest_operator_telegram_id"] = operator_id
+        registry["latest_operator_username"] = operator_username
+        registry["latest_operator_authorized"] = True
+        write_json(self._operator_registry_path(), registry)
+
+        pending_ops, pending_sent_count = self._deliver_pending_operator_cards(chat_id=chat_id)
+        extra = f"\nОтправил ожидающие карточки: {pending_sent_count}." if pending_sent_count else ""
+        result = self.client.send_message(
+            chat_id=chat_id,
+            text=(
+                "Оператор зарегистрирован. Теперь новые карточки будут приходить сюда, "
+                "в личный чат с ботом."
+                f"{extra}"
+            ),
+        )
+        return {"status": "ok", "action": "operator_registered", "operator_telegram_id": operator_id, "bot_api_operations": [*pending_ops, result]}
+
+    def _operator_registry_path(self):
+        return resolve_project_path(self.artifacts_dir) / "state" / "operator_registry.json"
+
+    def _pending_cards_path(self):
+        return resolve_project_path(self.artifacts_dir) / "state" / "pending_operator_cards.json"
+
+    def _deliver_pending_operator_cards(self, *, chat_id: int | str) -> tuple[list[dict[str, Any]], int]:
+        path = self._pending_cards_path()
+        data = read_json(path, {"cards": []})
+        if not isinstance(data, dict):
+            return [], 0
+        cards = data.get("cards")
+        if not isinstance(cards, list):
+            return [], 0
+
+        ops: list[dict[str, Any]] = []
+        sent_count = 0
+        for item in cards:
+            if not isinstance(item, dict) or item.get("sent"):
+                continue
+            dossier_path = str(item.get("dossier_path") or "").strip()
+            if not dossier_path:
+                item["error"] = "missing dossier_path"
+                continue
+            try:
+                payload = load_dossier(dossier_path)
+                card_text = render_operator_card(payload)
+                send_result = self.client.send_message(
+                    chat_id=chat_id,
+                    text=card_text,
+                    reply_markup=build_reply_markup(payload),
+                )
+                ops.append(send_result)
+                if not send_result.get("ok"):
+                    item["error"] = send_result.get("error") or "send failed"
+                    item["last_attempt_at"] = timestamp_for_filename()
+                    continue
+
+                card_payload = persist_operator_card(
+                    payload,
+                    dossier_path=dossier_path,
+                    artifacts_dir=self.artifacts_dir,
+                    card_text=card_text,
+                    card_status="sent_after_operator_registration",
+                    telegram_message_id=send_result.get("message_id"),
+                    telegram_chat_id=send_result.get("chat_id") or chat_id,
+                    telegram_delivery_mode="telegram_bot_api_dm",
+                    telegram_operations=[send_result],
+                )
+                save_dossier(dossier_path, payload)
+                item["sent"] = True
+                item["sent_at"] = timestamp_for_filename()
+                item["sent_card_artifact_path"] = card_payload.get("card_artifact_path")
+                item["telegram_message_id"] = send_result.get("message_id")
+                item["telegram_chat_id"] = send_result.get("chat_id") or chat_id
+                sent_count += 1
+            except Exception as exc:
+                item["error"] = str(exc)
+                item["last_attempt_at"] = timestamp_for_filename()
+        data["cards"] = cards
+        write_json(path, data)
+        return ops, sent_count
+
+    def _update_revision_card(
+        self,
+        *,
+        chat_id: int | str,
+        message_id: int,
+        text: str,
+        payload: dict[str, Any],
+    ) -> tuple[list[dict[str, Any]], int, str]:
+        edit_result = self.client.edit_message_text(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=text,
+            reply_markup=build_reply_markup(payload),
+        )
+        if edit_result.get("ok"):
+            return [edit_result], message_id, "telegram_edit"
+
+        stale_text = "Эта карточка устарела: актуальная версия отправлена ниже."
+        stale_ops = self._edit_existing_card(chat_id=chat_id, message_id=message_id, text=stale_text)
+        send_result = self.client.send_message(
+            chat_id=chat_id,
+            text=text,
+            reply_markup=build_reply_markup(payload),
+        )
+        if not send_result.get("ok"):
+            errors = "; ".join(
+                f"{item.get('operation')}: {item.get('error')}"
+                for item in [edit_result, *stale_ops, send_result]
+                if not item.get("ok")
+            )
+            raise RuntimeError(f"Telegram revision card update failed. {errors}")
+        return [edit_result, *stale_ops, send_result], int(send_result.get("message_id") or message_id), "telegram_send_fallback"
+
+    def _cleanup_revision_messages(
+        self,
+        *,
+        chat_id: int | str,
+        operator_message_id: int | None,
+    ) -> list[dict[str, Any]]:
+        if operator_message_id in {None, ""}:
+            return []
+        try:
+            result = self.client.delete_message(chat_id=chat_id, message_id=int(operator_message_id))
+        except Exception as exc:
+            result = {"operation": "deleteMessage", "ok": False, "error": str(exc), "message_id": operator_message_id}
+        if not result.get("ok"):
+            result["warning"] = "best-effort cleanup failed; revision card was updated"
+        return [result]
+
     def _edit_existing_card(self, *, chat_id: int | str, message_id: int, text: str) -> list[dict[str, Any]]:
         transient_markup = {
             "inline_keyboard": [[{"text": "Обработано", "callback_data": "ma|noop|done"}]]
@@ -363,60 +574,6 @@ class OperatorBotHandler:
             reply_markup={"inline_keyboard": []},
         )
         return [edit_text, edit_markup]
-
-    def _update_revision_card(
-        self,
-        *,
-        chat_id: int | str,
-        message_id: int,
-        text: str,
-        payload: dict[str, Any],
-    ) -> tuple[list[dict[str, Any]], int, str]:
-        edit_result = self.client.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text=text,
-            reply_markup=build_reply_markup(payload),
-        )
-        edit_ops = [edit_result]
-        if edit_result.get("ok"):
-            return edit_ops, message_id, "telegram_edit"
-
-        stale_text = "Эта карточка устарела: актуальная версия отправлена ниже."
-        stale_ops = self._edit_existing_card(chat_id=chat_id, message_id=message_id, text=stale_text)
-        send_result = self.client.send_message(
-            chat_id=chat_id,
-            text=text,
-            reply_markup=build_reply_markup(payload),
-        )
-        if not send_result.get("ok"):
-            errors = "; ".join(
-                f"{item.get('operation')}: {item.get('error')}"
-                for item in [*edit_ops, *stale_ops, send_result]
-                if not item.get("ok")
-            )
-            raise RuntimeError(f"Telegram revision card update failed. {errors}")
-        return [*edit_ops, *stale_ops, send_result], int(send_result.get("message_id") or message_id), "telegram_send_fallback"
-
-    def _cleanup_revision_messages(
-        self,
-        *,
-        chat_id: int | str,
-        prompt_message_id: Any,
-        operator_message_id: int | None,
-    ) -> list[dict[str, Any]]:
-        ops: list[dict[str, Any]] = []
-        for candidate in [prompt_message_id, operator_message_id]:
-            if candidate in {None, ""}:
-                continue
-            try:
-                result = self.client.delete_message(chat_id=chat_id, message_id=int(candidate))
-            except Exception as exc:
-                result = {"operation": "deleteMessage", "ok": False, "error": str(exc), "message_id": candidate}
-            if not result.get("ok"):
-                result["warning"] = "best-effort cleanup failed; revision card was updated"
-            ops.append(result)
-        return ops
 
     @staticmethod
     def _assert_required_edits_ok(ops: list[dict[str, Any]]) -> None:

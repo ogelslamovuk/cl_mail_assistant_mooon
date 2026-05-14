@@ -171,7 +171,7 @@ def draft_revisions(payload: dict[str, Any]) -> list[dict[str, Any]]:
         return []
     return [
         {
-            "revision": int(draft.get("latest_revision") or 1),
+            "revision": int(draft.get("latest_revision") or 0),
             "draft_text": legacy_text,
             "operator_comment": "",
             "created_at": str(draft.get("created_at", "") or ""),
@@ -185,32 +185,6 @@ def latest_draft_text(payload: dict[str, Any]) -> str:
     if revisions:
         return str(revisions[-1].get("draft_text", "") or "").strip()
     return str(latest_draft_module(payload).get("draft_text", "") or "").strip()
-
-
-def _latest_operator_comment(payload: dict[str, Any]) -> str:
-    candidates: list[dict[str, Any]] = []
-    draft_revs = draft_revisions(payload)
-    if draft_revs:
-        candidates.append(draft_revs[-1])
-    action_module = modules(payload).get("action_suggestion_builder")
-    if isinstance(action_module, dict):
-        revisions = action_module.get("revisions")
-        if isinstance(revisions, list) and revisions:
-            latest = revisions[-1]
-            if isinstance(latest, dict):
-                candidates.append(latest)
-        else:
-            candidates.append(action_module)
-    revision_requests = modules(payload).get("revision_requests")
-    if isinstance(revision_requests, dict):
-        latest_request = revision_requests.get("latest_request")
-        if isinstance(latest_request, dict):
-            candidates.append(latest_request)
-    for candidate in candidates:
-        comment = " ".join(str(candidate.get("operator_comment") or "").split()).strip()
-        if comment:
-            return comment
-    return ""
 
 
 def latest_action_suggestion(payload: dict[str, Any]) -> dict[str, Any]:
@@ -244,24 +218,9 @@ def build_action_suggestion_revision(
     if isinstance(existing_module, dict) and isinstance(existing_module.get("revisions"), list):
         existing = [item for item in existing_module["revisions"] if isinstance(item, dict)]
     base = latest_action_suggestion(payload)
-    base_text = str(base.get("action_text") or "").strip()
-    base_type = str(base.get("action_type") or "").strip()
-    if not existing and base_text:
-        existing = [
-            {
-                "revision": 1,
-                "created_at": str((existing_module or {}).get("created_at") or now_utc().isoformat())
-                if isinstance(existing_module, dict)
-                else now_utc().isoformat(),
-                "revision_reason": "initial",
-                "operator_comment": "",
-                "action_type": base_type,
-                "action_text": base_text,
-            }
-        ]
-    revision = max([int(item.get("revision") or 0) for item in existing] or [0]) + 1
+    revision = len(existing) + 1
     comment = " ".join(operator_comment.split()).strip()
-    action_text = base_text or "Кейс помечен для ручной обработки. Реальная маршрутизация пока не подключена."
+    action_text = str(base.get("action_text") or "").strip() or "Кейс помечен для ручной обработки. Реальная маршрутизация пока не подключена."
     if comment:
         action_text = f"{action_text}\nУточнение оператора: {comment}"
     revision_payload = {
@@ -293,7 +252,7 @@ def _base_action_suggestion(payload: dict[str, Any]) -> dict[str, Any]:
     decision = decision_layer(payload)
     early = early_classification(payload)
     return {
-        "revision": 1,
+        "revision": 0,
         "action_type": str(decision.get("proposed_action_type") or early.get("proposed_action_type") or "").strip(),
         "action_text": str(decision.get("proposed_action_text") or early.get("proposed_action_text") or "").strip(),
         "operator_comment": "",
@@ -308,15 +267,18 @@ def build_draft_revision(
     revision_reason: str = "initial",
 ) -> dict[str, Any]:
     existing = draft_revisions(payload)
+    clean_operator_comment = operator_comment.strip()
     skip_reason = _draft_skip_reason(payload)
-    if skip_reason and not (operator_comment.strip() and latest_draft_text(payload)):
+    # Base draft is version 0. Operator comments create v1/v2/...
+    # If the initial case is skipped, keep it skipped until an operator comment arrives.
+    if skip_reason and not clean_operator_comment:
         draft_payload = {
             "uid": resolve_uid(payload),
             "status": "skipped",
             "error": "",
             "skip_reason": skip_reason,
             "draft_type": response_mode(payload),
-            "latest_revision": len(existing),
+            "latest_revision": _latest_draft_revision_number(existing),
             "draft_text": "",
             "operator_note": skip_reason,
             "source_response_mode": response_mode(payload),
@@ -332,8 +294,10 @@ def build_draft_revision(
         }
         modules(payload)["draft_builder"] = draft_payload
         return draft_payload
-    revision = len(existing) + 1
+    revision = _next_draft_revision_number(existing, has_operator_comment=bool(clean_operator_comment))
     mode = response_mode(payload)
+    if clean_operator_comment and skip_reason and mode in {"no_reply", "ignore", "handoff_to_operator"}:
+        mode = "operator_revision"
     draft_text = _build_draft_text(payload, mode=mode, operator_comment=operator_comment, prior_text=latest_draft_text(payload))
     created_at = now_utc().isoformat()
     revision_payload = {
@@ -397,16 +361,14 @@ def render_operator_card(
     lines.extend(_render_thread_history(payload))
     lines.extend(["", "<b>Вложения</b>"])
     lines.extend(_render_attachments(payload))
-    lines.extend(["", "<b>Проверка билетов</b>", _e(_compact_enrichment(payload))])
+    lines.extend(["", "<b>Проверка билетов / Enrichment</b>", _e(_compact_enrichment(payload))])
     lines.extend(["", "<b>Что понял ассистент</b>"])
     lines.extend(_render_understanding(payload))
-    lines.extend(["", "<b>Что предлагает система</b>"])
+    lines.extend(["", "<b>Предлагаемое решение</b>"])
     lines.extend(_render_decision(payload))
     action_lines = _render_proposed_action(payload)
     if action_lines:
-        action_revision = int(latest_action_suggestion(payload).get("revision") or 1)
-        action_heading = f"<b>Обновлённое действие v{_e(str(action_revision))}</b>" if action_revision > 1 else "<b>Предлагаемое действие</b>"
-        lines.extend(["", action_heading])
+        lines.extend(["", "<b>Предлагаемое действие</b>"])
         lines.extend(action_lines)
     lines.extend(["", "<b>База знаний</b>"])
     lines.extend(_render_knowledge(payload))
@@ -415,13 +377,11 @@ def render_operator_card(
     lines.extend(["", "<b>Риски</b>"])
     lines.extend(_render_list(decision_layer(payload).get("risks") or []))
 
-    operator_comment = _latest_operator_comment(payload)
-    if operator_comment:
-        lines.extend(["", "<b>Комментарий оператора</b>", _e(operator_comment)])
+    for idx, operator_comment in enumerate(_operator_comment_revisions(payload), start=1):
+        lines.extend(["", f"<b>Комментарий оператора v{idx}</b>", _e(operator_comment)])
 
     draft_text = latest_draft_text(payload)
-    draft = latest_draft_module(payload)
-    latest_revision = draft.get("latest_revision") or (len(draft_revisions(payload)) or 1)
+    latest_revision = _latest_draft_revision_number(draft_revisions(payload))
     if draft_text:
         lines.extend(["", f"<b>Черновик v{_e(str(latest_revision))}</b>"])
         lines.append(_e(draft_text))
@@ -434,6 +394,63 @@ def render_operator_card(
 
     return "\n".join(lines)
 
+
+
+def _operator_comment_revisions(payload: dict[str, Any]) -> list[str]:
+    comments: list[str] = []
+    seen: set[str] = set()
+
+    def add(raw: Any) -> None:
+        comment = " ".join(str(raw or "").split()).strip()
+        if not comment or comment in seen:
+            return
+        seen.add(comment)
+        comments.append(comment)
+
+    modules_payload = payload.get("modules") or {}
+    revision_requests = modules_payload.get("revision_requests") if isinstance(modules_payload.get("revision_requests"), dict) else {}
+    requests = revision_requests.get("requests") if isinstance(revision_requests, dict) else []
+    if isinstance(requests, list):
+        for item in requests:
+            if isinstance(item, dict):
+                add(item.get("operator_comment"))
+    latest_request = revision_requests.get("latest_request") if isinstance(revision_requests, dict) else {}
+    if isinstance(latest_request, dict):
+        add(latest_request.get("operator_comment"))
+
+    for item in draft_revisions(payload):
+        add(item.get("operator_comment"))
+
+    action_module = modules_payload.get("action_suggestion_builder") if isinstance(modules_payload.get("action_suggestion_builder"), dict) else {}
+    revisions = action_module.get("revisions") if isinstance(action_module, dict) else []
+    if isinstance(revisions, list):
+        for item in revisions:
+            if isinstance(item, dict):
+                add(item.get("operator_comment"))
+    if isinstance(action_module, dict):
+        add(action_module.get("operator_comment"))
+
+    return comments
+
+
+def _operator_draft_revision_count(revisions: list[dict[str, Any]]) -> int:
+    return sum(1 for item in revisions if str(item.get("operator_comment") or "").strip())
+
+
+def _next_draft_revision_number(revisions: list[dict[str, Any]], *, has_operator_comment: bool) -> int:
+    if has_operator_comment:
+        return _operator_draft_revision_count(revisions) + 1
+    return 0
+
+
+def _latest_draft_revision_number(revisions: list[dict[str, Any]]) -> int:
+    if not revisions:
+        return 0
+    latest = revisions[-1]
+    try:
+        return int(latest.get("revision") or 0)
+    except (TypeError, ValueError):
+        return _operator_draft_revision_count(revisions)
 
 def persist_operator_card(
     payload: dict[str, Any],
@@ -600,9 +617,8 @@ def action_status_notice(
 
 def needs_edit_waiting_notice() -> str:
     return (
-        "✏️ Статус: жду комментарий оператора\n"
-        "Ответь на эту карточку или напиши следующим сообщением, что нужно исправить. "
-        "После комментария я обновлю эту же карточку и пересоберу черновик."
+        "✏️ Статус: ожидается комментарий для доработки LLM\n"
+        "Напиши следующим сообщением, что нужно исправить в карточке/черновике."
     )
 
 
@@ -610,13 +626,14 @@ def _build_draft_text(payload: dict[str, Any], *, mode: str, operator_comment: s
     comment = operator_comment.strip()
     if comment and prior_text:
         return _revise_draft(prior_text, comment)
+    if comment and not prior_text:
+        return _draft_from_operator_comment(payload, comment)
 
     decision = decision_layer(payload)
     llm = llm_output(payload)
     missing = [str(item).strip() for item in decision.get("missing_data") or [] if str(item).strip()]
     knowledge_lines = _knowledge_template_lines(payload)
     need = str(llm.get("customer_need", "") or "обращение").strip()
-    resolved_ticket = _resolved_ticket(payload)
 
     if mode in {"no_reply", "ignore"}:
         reason = str(decision.get("decision_reason") or llm.get("response_mode_reason") or "Ответ не требуется").strip()
@@ -626,18 +643,6 @@ def _build_draft_text(payload: dict[str, Any], *, mode: str, operator_comment: s
         return "Кейс помечен для ручной обработки. Реальная маршрутизация пока не подключена."
 
     lines = ["Здравствуйте."]
-    if resolved_ticket and _is_ticket_related(payload):
-        ticket_line = _compact_ticket(resolved_ticket)
-        if _is_refund_intent(payload):
-            lines.append(f"Мы нашли ваш заказ: {ticket_line}.")
-            lines.append("Если нужно оформить возврат, подтвердите это в ответном письме; оператор продолжит обработку по найденному заказу.")
-        else:
-            lines.append(f"Мы нашли ваш билет/заказ: {ticket_line}.")
-            lines.append("Проверьте письмо с билетом и папки «Спам»/«Рассылки»; при необходимости оператор продолжит проверку по найденному заказу.")
-        lines.extend(knowledge_lines)
-        lines.append("С уважением, команда mooon.")
-        return "\n".join(line for line in lines if line.strip())
-
     if mode == "ask_clarifying_question":
         lines.append(f"Чтобы корректно обработать обращение ({need}), пожалуйста, уточните:")
         if missing:
@@ -654,23 +659,109 @@ def _build_draft_text(payload: dict[str, Any], *, mode: str, operator_comment: s
     return "\n".join(line for line in lines if line.strip())
 
 
+def _draft_from_operator_comment(payload: dict[str, Any], operator_comment: str) -> str:
+    instruction = _clean_operator_revision_instruction(operator_comment)
+    lines = ["Здравствуйте."]
+    if instruction:
+        # Ветка "На доработку (LLM)": комментарий оператора — это инструкция,
+        # а не текст, который нужно механически вставить в черновик.
+        lines.append(_sentence(instruction))
+    else:
+        need = str(llm_output(payload).get("customer_need", "") or "обращение").strip()
+        lines.append(f"Мы проверим ваше обращение: {need}.")
+    lines.append("С уважением, команда mooon.")
+    return "\n".join(line for line in lines if line.strip())
+
+
 def _revise_draft(prior_text: str, operator_comment: str) -> str:
     text = prior_text.strip()
-    comment = " ".join(operator_comment.split())
-    lowered = comment.lower()
-    if "короче" in lowered or "мягче" in lowered or "понятнее" in lowered:
-        return (
-            "Здравствуйте.\n"
-            "Поможем проверить билет. Пожалуйста, пришлите номер заказа или email/телефон, указанный при покупке.\n"
-            "Также проверьте папки «Спам» и «Рассылки»: письмо с билетами обычно приходит с адреса ticket@silverscreen.by.\n"
-            "С уважением, команда mooon."
-        )
-    addition = f"Дополнительно: {comment}"
-    if addition in text:
+    instruction = _clean_operator_revision_instruction(operator_comment)
+    lowered = instruction.casefold()
+    if not instruction:
         return text
-    if "С уважением, команда mooon." in text:
-        return text.replace("С уважением, команда mooon.", f"{addition}\nС уважением, команда mooon.")
+
+    # Ветка "На доработку (LLM)": используем комментарий как инструкцию для
+    # уточнения черновика. Не добавляем "Комментарий 1/2" и не вставляем сырую
+    # команду оператора в письмо клиенту.
+    if _asks_for_shorter_or_clearer(lowered):
+        core_lines = [line.strip() for line in text.splitlines() if line.strip()]
+        signature = "С уважением, команда mooon."
+        core_lines = [line for line in core_lines if line != signature]
+        body = " ".join(core_lines[1:] if core_lines and core_lines[0].lower().startswith("здравствуйте") else core_lines)
+        if not body:
+            body = instruction
+        return "\n".join(
+            [
+                "Здравствуйте.",
+                _sentence(_compact_sentence(body)),
+                signature,
+            ]
+        )
+
+    if lowered.startswith(("убери ", "удали ", "не пиши ")):
+        removal = re.sub(r"^(убери|удали|не пиши)\s+", "", instruction, flags=re.IGNORECASE).strip(" .:;")
+        if removal:
+            lines = [line for line in text.splitlines() if removal.casefold() not in line.casefold()]
+            return "\n".join(line for line in lines if line.strip()) or text
+        return text
+
+    addition = _sentence(instruction)
+    if _line_exists(text, addition):
+        return text
+
+    signature = "С уважением, команда mooon."
+    if signature in text:
+        return text.replace(signature, f"{addition}\n{signature}")
     return f"{text}\n{addition}"
+
+
+def _clean_operator_revision_instruction(operator_comment: str) -> str:
+    comment = " ".join(str(operator_comment or "").split()).strip()
+    lowered = comment.casefold()
+    prefixes = [
+        "добавь в ответ:",
+        "добавь в черновик:",
+        "добавь:",
+        "напиши:",
+        "ответь:",
+        "укажи:",
+        "исправь:",
+        "перепиши:",
+        "сделай:",
+    ]
+    for prefix in prefixes:
+        if lowered.startswith(prefix):
+            return comment[len(prefix):].strip(" .:-")
+    return comment
+
+
+def _asks_for_shorter_or_clearer(lowered_instruction: str) -> bool:
+    return any(token in lowered_instruction for token in ["короче", "мягче", "понятнее", "проще", "человечнее"])
+
+
+def _sentence(value: str) -> str:
+    text = " ".join(str(value or "").split()).strip()
+    if not text:
+        return ""
+    text = text[:1].upper() + text[1:]
+    if text[-1:] not in {".", "!", "?"}:
+        text += "."
+    return text
+
+
+def _compact_sentence(value: str) -> str:
+    text = " ".join(str(value or "").split()).strip()
+    if len(text) <= 260:
+        return text
+    return text[:257].rstrip() + "..."
+
+
+def _line_exists(text: str, line: str) -> bool:
+    target = " ".join(line.casefold().split()).strip()
+    for existing in text.splitlines():
+        if " ".join(existing.casefold().split()).strip() == target:
+            return True
+    return False
 
 
 def _knowledge_template_lines(payload: dict[str, Any]) -> list[str]:
@@ -705,24 +796,12 @@ def _is_irrelevant_knowledge_item(payload: dict[str, Any], item: dict[str, Any])
         ]
     ).casefold()
     is_payment_error = "ошибка" in body and ("оплат" in body or "платеж" in body or "платёж" in body)
+    if not is_payment_error:
+        return False
     item_text = " ".join(
         str(item.get(key) or "")
         for key in ("id", "title", "content", "operator_instruction", "template_hint")
     ).casefold()
-    if _resolved_ticket(payload) and _is_refund_intent(payload):
-        irrelevant_when_ticket_found = [
-            "подароч",
-            "сертификат",
-            "потерял",
-            "потерян",
-            "нет чека",
-            "без подтверждения оплаты",
-            "нестандартной жалобе",
-            "уточните",
-        ]
-        return any(token in item_text for token in irrelevant_when_ticket_found)
-    if not is_payment_error:
-        return False
     irrelevant_tokens = ["обмен", "возврат", "потерял", "потерян", "нет чека", "lost"]
     return any(token in item_text for token in irrelevant_tokens) and not any(
         token in body for token in ["возврат", "вернуть", "потерял", "потерян", "не приш"]
@@ -798,53 +877,15 @@ def _compact_enrichment(payload: dict[str, Any]) -> str:
     return "Билет: не найден"
 
 
-def _resolved_ticket(payload: dict[str, Any]) -> dict[str, Any]:
-    resolved = enrichment_result(payload).get("resolved_match")
-    return resolved if isinstance(resolved, dict) else {}
-
-
-def _is_ticket_related(payload: dict[str, Any]) -> bool:
-    text = " ".join(
-        str(value or "")
-        for value in [
-            subject(payload),
-            payload.get("body_text"),
-            _message_brief(payload),
-            str(llm_output(payload).get("topic") or ""),
-            str(llm_output(payload).get("customer_need") or ""),
-        ]
-    ).casefold().replace("ё", "е")
-    return any(token in text for token in ["билет", "ticket", "оплат", "заказ", "квитанц"])
-
-
-def _is_refund_intent(payload: dict[str, Any]) -> bool:
-    text = " ".join(
-        str(value or "")
-        for value in [
-            subject(payload),
-            payload.get("body_text"),
-            _message_brief(payload),
-            str(llm_output(payload).get("summary") or ""),
-            str(llm_output(payload).get("customer_need") or ""),
-        ]
-    ).casefold().replace("ё", "е")
-    return any(token in text for token in ["возврат", "вернуть", "деньги", "не тот кинотеатр"])
-
-
 def _compact_ticket(ticket: dict[str, Any]) -> str:
     parts = [
+        f"Билет #{ticket.get('ticket')}" if ticket.get("ticket") else "Билет найден",
         f"заказ {ticket.get('idTrading')}" if ticket.get("idTrading") else "",
         str(ticket.get("event") or ""),
         " ".join(str(ticket.get(key) or "") for key in ("dateShow", "timeShow")).strip(),
         str(ticket.get("theater") or ""),
     ]
-    if not parts[0] and ticket.get("ticket"):
-        parts[0] = f"внутренний ID билета {ticket.get('ticket')}"
-    deduped: list[str] = []
-    for part in parts:
-        if part and part not in deduped:
-            deduped.append(part)
-    return " · ".join(deduped) or "Билет найден"
+    return " · ".join(part for part in parts if part)
 
 
 def _received_at_display(payload: dict[str, Any]) -> str:
@@ -921,7 +962,7 @@ def _render_attachments(payload: dict[str, Any]) -> list[str]:
         name = str(item.get("filename_original") or item.get("filename") or item.get("filename_saved") or "файл").strip()
         content_type = str(item.get("content_type") or "").strip()
         type_label = _attachment_type_label(content_type, name)
-        meaning = attachment_human_description(payload, item)
+        meaning = _attachment_meaning(payload, item)
         lines.append(f"- {_e(name)} · {_e(type_label)} · {_e(meaning)}")
     if len(items) > 6:
         lines.append(f"- ещё файлов: {len(items) - 6}")
@@ -959,21 +1000,14 @@ def _attachment_type_label(content_type: str, name: str) -> str:
     return "файл"
 
 
-def attachment_uid_label(payload: dict[str, Any]) -> str:
-    uid = resolve_uid(payload)
-    return uid if uid.startswith("raw_email_") else f"raw_email_{uid}"
-
-
-def attachment_human_description(payload: dict[str, Any], item: dict[str, Any]) -> str:
+def _attachment_meaning(payload: dict[str, Any], item: dict[str, Any]) -> str:
     name = str(item.get("filename_original") or item.get("filename") or item.get("filename_saved") or "").casefold()
     body = " ".join([subject(payload), str(payload.get("body_text") or ""), _message_brief(payload)]).casefold()
-    preview = str(item.get("text_preview") or "").strip()
-    if _looks_like_ticket_attachment(name, preview, body):
-        return _ticket_attachment_description(preview)
     if "регистрационная форма" in name:
         return "регистрационная форма участника курса"
     if Path(name).suffix.lower() == ".pdf" and ("архив" in body or "обучен" in body):
         return "информационное письмо о курсе по архивному делу"
+    preview = str(item.get("text_preview") or "").strip()
     if preview and not _looks_like_attachment_noise(preview):
         return _truncate(preview, 120)
     content_type = str(item.get("content_type") or "").lower()
@@ -982,85 +1016,34 @@ def attachment_human_description(payload: dict[str, Any], item: dict[str, Any]) 
     if content_type.startswith("image/"):
         return "изображение без распознанного текста"
     if content_type == "application/pdf" or Path(name).suffix.lower() == ".pdf":
-        return "PDF-документ, содержание автоматически не распознано"
-    if Path(name).suffix.lower() == ".docx":
-        return "DOCX-документ, текст автоматически не распознан"
+        return "скан документа, текст распознан частично"
     return "содержимое не распознано"
-
-
-def _looks_like_ticket_attachment(name: str, preview: str, body: str) -> bool:
-    haystack = " ".join([name, preview, body]).casefold().replace("ё", "е")
-    return (
-        ("ticket" in haystack or "билет" in haystack or "квитанц" in haystack)
-        and any(token in haystack for token in ["mooon", "кино", "сеанс", "зал", "место", "ряд", "номер заказа", "дата:"])
-    )
-
-
-def _ticket_attachment_description(preview: str) -> str:
-    text = " ".join(str(preview or "").split())
-    parts = ["электронный билет / билетный документ"]
-    order_match = re.search(r"(?:номер заказа|заказ|билет)[:\s№#-]+([0-9]{5,})", text, flags=re.IGNORECASE)
-    if order_match:
-        parts.append(f"заказ/билет {order_match.group(1)}")
-    movie = _ticket_movie_from_preview(text)
-    if movie:
-        parts.append(movie)
-    time_match = re.search(r"(?:дата[:\s]+)?([0-3]?\d[./-][01]?\d)(?:\D{0,30}(?:начало|сеанс)[:\s]+([0-2]?\d:[0-5]\d))?", text, flags=re.IGNORECASE)
-    if time_match:
-        when = time_match.group(1)
-        if time_match.group(2):
-            when += f" {time_match.group(2)}"
-        parts.append(when)
-    return " · ".join(parts)
-
-
-def _ticket_movie_from_preview(text: str) -> str:
-    match = re.search(r"(?:Dolby Digital|2D|3D|RU|BY)\s+(.+?)(?:\s+Ряд:|\s+Место:|\s+Внимание!|$)", text, flags=re.IGNORECASE)
-    if not match:
-        return ""
-    candidate = " ".join(match.group(1).split()).strip()
-    candidate = re.sub(r"^(?:RU|BY|Dolby Digital)\s+", "", candidate, flags=re.IGNORECASE).strip()
-    return _truncate(candidate, 70) if candidate else ""
 
 
 def _render_thread_history(payload: dict[str, Any]) -> list[str]:
     history = case_binding(payload).get("thread_history") or []
     if not isinstance(history, list) or not history:
-        return ["отсутствует"]
-    filtered = [item for item in history if isinstance(item, dict) and not _is_current_history_item(payload, item)]
+        return ["нет"]
     out: list[str] = []
-    for item in filtered[-3:]:
+    current_message = str(payload.get("message_id") or "").strip()
+    for item in history[-3:]:
         if not isinstance(item, dict):
             continue
         direction = _ru_direction(str(item.get("direction", "") or ""))
         sent_at = _short_datetime(str(item.get("sent_at", "") or ""))
         item_subject = str(item.get("subject", "") or "").strip() or "<empty>"
-        preview = _thread_preview(item)
+        preview = _thread_preview(item, payload if str(item.get("message_id") or "").strip() == current_message else None)
         subject_part = item_subject if item_subject not in {"<empty>", "Re:"} else "без темы"
         if preview and preview.casefold() not in subject_part.casefold():
             out.append(f"- {_e(direction)} · {_e(sent_at)} · {_e(_truncate(subject_part, 42))} · {_e(_truncate(preview, 92))}")
         else:
             out.append(f"- {_e(direction)} · {_e(sent_at)} · {_e(_truncate(subject_part, 92))}")
-    return out or ["отсутствует"]
+    return out or ["нет"]
 
 
-def _is_current_history_item(payload: dict[str, Any], item: dict[str, Any]) -> bool:
-    current_message = str(payload.get("message_id") or "").strip()
-    item_message = str(item.get("message_id") or "").strip()
-    if current_message and item_message and current_message == item_message:
-        return True
-    current_uid = resolve_uid(payload)
-    path = str(item.get("parsed_email_path") or "").strip()
-    if current_uid and path:
-        name = Path(path).name
-        if name in {f"message_{current_uid}.md", f"parsed_email_{current_uid}.json"}:
-            return True
-        if f"_{current_uid}." in name or f"_{current_uid}_" in name:
-            return True
-    return False
-
-
-def _thread_preview(item: dict[str, Any]) -> str:
+def _thread_preview(item: dict[str, Any], current_payload: dict[str, Any] | None) -> str:
+    if current_payload is not None:
+        return _message_brief(current_payload)
     path = str(item.get("parsed_email_path") or "").strip()
     if not path:
         return ""
@@ -1079,11 +1062,7 @@ def _render_understanding(payload: dict[str, Any]) -> list[str]:
         return ["нет"]
     topic = str(decision.get("classification") or early.get("classification") or llm.get("topic") or "").strip()
     need = str(early.get("operator_summary") or llm.get("customer_need") or "").strip()
-    if decision:
-        route = decision.get("recommended_route") if isinstance(decision.get("recommended_route"), dict) else {}
-        proposal = _human_next_step(payload, mode=response_mode(payload), reason=str(decision.get("decision_reason") or ""), route=route)
-    else:
-        proposal = str(early.get("proposed_action_text") or llm.get("suggested_next_step") or "").strip()
+    proposal = str(decision.get("decision_reason") or early.get("proposed_action_text") or llm.get("suggested_next_step") or "").strip()
     return [
         f"Тип обращения: {_e(_ru_classification(topic) or _clean_operator_text(str(llm.get('topic', '') or '<empty>')))}",
         f"Что хочет отправитель: {_e(_clean_operator_text(need) or _message_brief(payload))}",
@@ -1101,45 +1080,14 @@ def _render_decision(payload: dict[str, Any]) -> list[str]:
         mode = str(decision.get("response_mode_final") or decision.get("response_mode_initial") or "")
         reason = str(decision.get("decision_reason", "") or "").strip()
         route = decision.get("recommended_route") if isinstance(decision.get("recommended_route"), dict) else {}
-    next_step = _human_next_step(payload, mode=mode, reason=reason, route=route)
-    lines = [f"Что сделать: {_e(next_step)}"]
-    clean_reason = _clean_operator_text(reason)
-    if clean_reason and clean_reason != next_step:
-        lines.append(f"Почему: {_e(clean_reason)}")
+    lines = [
+        f"Режим: {_e(_ru_response_mode(mode))}",
+        f"Причина: {_e(_clean_operator_text(reason) or _message_brief(payload))}",
+    ]
     route_line = _format_route(route)
     if route_line:
-        lines.append(f"Кому: {_e(route_line)}")
+        lines.append(f"Передать: {_e(route_line)}")
     return lines
-
-
-def _human_next_step(payload: dict[str, Any], *, mode: str, reason: str, route: dict[str, Any]) -> str:
-    if _resolved_ticket(payload) and _is_refund_intent(payload):
-        return "отправить гостю инструкцию по возврату по найденному заказу."
-    if _resolved_ticket(payload) and _is_ticket_related(payload):
-        return "ответить гостю по найденному билету/заказу; уточнять email или номер заказа не нужно."
-    action_text = str(latest_action_suggestion(payload).get("action_text") or "").strip()
-    if action_text:
-        return _clean_operator_text(action_text) or "зафиксировать внутреннее действие в mock-режиме."
-    if route:
-        route_line = _format_route(route)
-        if route_line:
-            return f"передать письмо ответственным: {route_line}."
-    normalized = str(mode or "").strip()
-    if normalized == "no_reply" or normalized == "ignore" or normalized == "no_reply/ignore":
-        return "не отвечать гостю; кейс можно закрыть."
-    if normalized == "answer":
-        return "утвердить подготовленный ответ гостю."
-    if normalized == "ask_clarifying_question":
-        missing = [str(item).strip() for item in decision_layer(payload).get("missing_data") or [] if str(item).strip()]
-        if missing:
-            return "отправить гостю запрос недостающих данных."
-        return "ответить гостю по доступным данным."
-    if normalized == "handoff_to_operator":
-        clean = _clean_operator_text(reason)
-        if clean:
-            return clean
-        return "нужна ручная проверка: система не смогла определить безопасный ответ."
-    return "проверить карточку и выбрать действие кнопками."
 
 
 def _message_brief(payload: dict[str, Any]) -> str:
@@ -1242,7 +1190,12 @@ def _render_knowledge(payload: dict[str, Any]) -> list[str]:
     lines = []
     for item in items[:3]:
         title = str(item.get("title", "") or item.get("id", "") or "<empty>")
-        lines.append(f"- {_e(_truncate(title, 90))}")
+        item_id = str(item.get("id", "") or "")
+        score = str(item.get("score", "") or "")
+        suffix = f" / {item_id}" if item_id else ""
+        if score:
+            suffix += f" / балл {score}"
+        lines.append(f"- {_e(_truncate(title, 70) + suffix)}")
     for route in routes[:2]:
         route_line = _format_route(route)
         if route_line:

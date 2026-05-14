@@ -33,14 +33,13 @@ class OperatorFlowTest(unittest.TestCase):
             card = self._read_json(Path(card_result.metrics["card_artifact_path"]))
             text = card["card_text"]
             self.assertIn("<b>📩 Новое письмо</b>", text)
-            self.assertLess(text.index("<b>Проверка билетов</b>"), text.index("<b>Что понял ассистент</b>"))
+            self.assertLess(text.index("<b>Проверка билетов / Enrichment</b>"), text.index("<b>Что понял ассистент</b>"))
             self.assertIn("Билет: не найден", text)
             self.assertIn("<b>История переписки</b>", text)
             self.assertIn("входящее", text)
             self.assertIn("✏️ На доработку (LLM)", json.dumps(card["keyboard"], ensure_ascii=False))
 
-
-    def test_revision_callback_does_not_send_force_reply_and_updates_card(self) -> None:
+    def test_dm_registration_and_revision_updates_same_card(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             dossier_path = self._write_dossier(Path(tmp) / "message_demo.md")
             artifacts_dir = str(Path(tmp) / "artifacts")
@@ -51,29 +50,41 @@ class OperatorFlowTest(unittest.TestCase):
                 artifacts_dir=artifacts_dir,
                 delivery_mode="artifact",
             ).run(PipelineContext(run_id="test-card"))
-            self.assertEqual(card_result.status, "ok")
             card = self._read_json(Path(card_result.metrics["card_artifact_path"]))
             callback_data = next(item["callback_data"] for item in card["keyboard"] if item["action"] == "needs_edit")
 
             client = _FakeTelegramClient()
             handler = OperatorBotHandler(artifacts_dir=artifacts_dir, client=client)
+            start_result = handler.handle_operator_message(
+                chat_id=777,
+                text="/start",
+                message_id=1,
+                operator_telegram_id="777",
+                operator_username="operator",
+            )
+            self.assertEqual(start_result["status"], "ok")
+            registry = self._read_json(Path(artifacts_dir) / "state" / "operator_registry.json")
+            self.assertEqual(str(registry["latest_operator_chat_id"]), "777")
+            client.operations.clear()
+
             callback_result = handler.handle_callback(
                 callback_data=callback_data,
-                chat_id=100,
+                chat_id=777,
                 message_id=int(card["telegram_message_id"]),
                 callback_query_id="callback-1",
             )
             self.assertEqual(callback_result["status"], "ok")
-            self.assertNotIn("sendMessage", [op["operation"] for op in client.operations])
+            self.assertNotIn("sendMessage", [op["operation"] for op in client.operations if op.get("operation") != "answerCallbackQuery"])
 
             comment_result = handler.handle_operator_message(
-                chat_id=100,
+                chat_id=777,
                 text="Добавь конкретную инструкцию по возврату.",
                 message_id=555,
                 reply_to_message_id=int(card["telegram_message_id"]),
             )
             self.assertEqual(comment_result["status"], "ok")
             updated_card = self._read_json(Path(comment_result["card_artifact_path"]))
+            self.assertEqual(int(updated_card["telegram_message_id"]), int(card["telegram_message_id"]))
             self.assertIn("<b>Комментарий оператора</b>", updated_card["card_text"])
             self.assertIn("Добавь конкретную инструкцию по возврату.", updated_card["card_text"])
             self.assertIn("<b>Черновик v2</b>", updated_card["card_text"])
