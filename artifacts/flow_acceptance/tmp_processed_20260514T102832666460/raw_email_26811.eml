@@ -1,0 +1,129 @@
+Received: from postback11b.mail.yandex.net (postback11b.mail.yandex.net [2a02:6b8:c02:900:1:45:d181:da11])
+	by qlbyrov2ssu7cgq2.sas.yp-c.yandex.net (notsolitesrv) with LMTPS id 3PHsSnMXTJqZ-gk80CzgK
+	for <info@mooon.by>; Wed, 06 May 2026 00:08:21 +0300
+Received: from mail-nwsmtp-mxfront-production-main-60.iva.yp-c.yandex.net (mail-nwsmtp-mxfront-production-main-60.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:bd06:0:640:8a5c:0])
+	by postback11b.mail.yandex.net (Yandex) with ESMTPS id 6690FC00F2
+	for <info@mooon.by>; Wed, 06 May 2026 00:08:21 +0300 (MSK)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [2a00:1450:4864:20::530])
+	by mail-nwsmtp-mxfront-production-main-60.iva.yp-c.yandex.net (mxfront) with ESMTPS id K8oX2u2LLuQ0-4Whs58wN;
+	Wed, 06 May 2026 00:08:21 +0300
+X-Yandex-Fwd: 1
+Authentication-Results: mail-nwsmtp-mxfront-production-main-60.iva.yp-c.yandex.net; spf=pass (mail-nwsmtp-mxfront-production-main-60.iva.yp-c.yandex.net: domain of gmail.com designates 2a00:1450:4864:20::530 as permitted sender, rule=[ip6:2a00:1450:4864::/56]) smtp.mail=ninago558@gmail.com; dkim=pass header.i=@gmail.com
+X-Yandex-Spam: 1
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-67b7c71c165so7024657a12.0
+        for <info@mooon.by>; Tue, 05 May 2026 14:08:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778015300; cv=none;
+        d=google.com; s=arc-20240605;
+        b=ELCN0LxVZyEdE5vHywYDZjD2t0wDcDNBc9AsMhJeTdDYj+MFZmQq4LvMQqdmqGxKen
+         rZd/ByFZQqGswyc2Rcunxjj4efnBcue2d76trL1kcOjgXOE/iUx1OZqS3C5Sm9D95Iar
+         g+23ZRIao7rxAS/NFM19muJ5n3CImYRIPqDldw9OELhmxgbgyhSZ858sbmVwdGi3Yrs1
+         tHob6ayE1fAbblRP9QN5DZ4z3K3aKfcqXN1AyMQCtMFaP5sMVHmTuEfE01TEdHsQJ9Bt
+         Jr1TfA55Xr88DGVAOpKCXkPH6WfumQKTr9cgs27DgOFEjTd1piocuQpLZVRyZEdWNyDm
+         7mrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=PRR9JXPIq7ezKzvZw1cKABLcw0PMWoAKsb9LHyCGXiY=;
+        fh=GgBjxJOT51bynVg0d/XU6Oq7QuhXZWhL3eb7Lz78hbA=;
+        b=ciNnxkY2OVqkQwONC2OMvHH+65UnA0l7kg85SD0sF+9F0t59RurGAxM1VtTP0TP83f
+         DNkHA9HO/GGKrExJ7dfcEIXUp8Kas5NWC5UjedX8U+u2QqwSDnyr15JOYghMQwLNKTdM
+         Gz9udpm3IQhlsVZ7lrh1uD3V+umon/+rhMBvfS2FGTNDaDO5IIMC5zIh/UvSknXYjbaD
+         ZXOW8HiliOrtMjuVn9tndqEUUrJwPGtMdCftpl0OfmTfKQr/vt+NNhYHOrtDGYXwMPY0
+         FrDAelAGgTBDzMVnf5GdIGkS0AEH64wSqrqh9Y39WE/Azv91sX6Zqi9spjs6VWrvH0F6
+         YhUg==;
+        darn=mooon.by
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778015300; x=1778620100; darn=mooon.by;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PRR9JXPIq7ezKzvZw1cKABLcw0PMWoAKsb9LHyCGXiY=;
+        b=MfhAG8NRDxM1z9+fcfFnPnpuvYZLg28/xeeRUB4MHhl8r/1b3TLI+WDL/UF7jzyf+S
+         CBsvNxkzaWxxy7rTYRpRSdhcfY7WSEelPmcmMN/vMCwuop4A/pwg5hzaDohBMiEIO0jD
+         UzE/YQULX9ILaMDHB5KBb04Z7GRyxcLCanZbVLcIx+cjYUnkx3y931KWDRuMpQ7p5DvE
+         3Ws14vO3nEPkdxaisHIQ//5VPuUCtOKotNEgYFFll8qrzn9eBUQNP0Qt7+45HrXAomir
+         zeopeA2SJZUXlj1iQa/S5IwZdYSurmwDz/ivOm3unj/KxaJfk2M++CbHZwc0xJS/XYj8
+         Oo6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778015300; x=1778620100;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PRR9JXPIq7ezKzvZw1cKABLcw0PMWoAKsb9LHyCGXiY=;
+        b=agD7KIVyZSiIC8FBEmR6MATmqOULZuVXa3Oq63qIyHoc+iCeJ37DKcUuAsCNaSiA18
+         BiaXazWgnDiSAfP/zzRRgWheXNPsu93UVaXs1pziJXvrvd/5iPKb4rTHD7/M0wAUybb+
+         qEN15YbAPHoe0s3MAtbQ1j4gKbprm3jJiIzDB+5oZATSM9/NYQDIgbi4clrTqiwAH5Ev
+         jU5dCmwYBKdQErUY0X02z7P4TgJCBiNXaNEIY5/sfPKm1lTRvViwraW2E4HdmB6VuNxH
+         BAmYH2NhXfu1r+XDYFPgiCwUA7KCa/HQu73PEdUwwM8dukOBjX+N1gGUgGN1gbW1Jsii
+         tVcQ==
+X-Gm-Message-State: AOJu0YwBFEzhnaX0rtQYCCT2Em1Bw8bfFGgxBzwcEFO32PFpDZOVAA4S
+	kz4ahaDpIIeBH+kq/YS1ne7iDs328rnS7nJkwjXKKUQnydliqEJzuQr6UEfceEO2ld/jOvgLBkP
+	xc3YZcDVXkDnEuq6LOv2hXMXQabFj5746/w==
+X-Gm-Gg: AeBDiettJ5ucGZ3YyRmXazqyzFg5Wwystraa8A0I0FdVibd4H5x2yem6i4QSzw2CJ1Q
+	qCKDLHNiv8lB3B/tvD6BSTcDLOEIMuDwRsQ2dh3C5ETB8yEquG1b1j8fqnsk8es+3254NDNPMu7
+	lVTsdHqKebhs9cY4fRYd4BDx42ijFYUKQFG8H1bjVV/mFUmEySnamtw2JeYkvDYNE6ycbWJl5Ys
+	PqEOTittbjRfxyOLXwezWYwn7EeQK6KIcQcjC0aTLBubxG2HjjOThhXy/p1zsXag6r3OAAVFSgT
+	T9Jj4gA9TKYPTm8csdKWQD+85/q2MKAsaxWjBCuun0cJh5kE5uw=
+X-Received: by 2002:aa7:d445:0:b0:67b:cd3f:ec8 with SMTP id
+ 4fb4d7f45d1cf-67d63d89ac5mr84261a12.6.1778015299738; Tue, 05 May 2026
+ 14:08:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAH4Fh+iSvGcDSVZxQK30B4kR5kdH0BdCeiPY-C99JdoXRxU-oA@mail.gmail.com>
+ <45621776629162@3d1cd0e9-1e27-45a4-b8ec-96a96b28957c>
+In-Reply-To: <45621776629162@3d1cd0e9-1e27-45a4-b8ec-96a96b28957c>
+From: =?UTF-8?B?0J3QmNCd0JAg0JPQvg==?= <ninago558@gmail.com>
+Date: Wed, 6 May 2026 00:08:07 +0300
+X-Gm-Features: AVHnY4JOt5pqiPh9vBd1d4KYvAcUZONik5eVw4kl_UnWBy3IaTpNHHj-EoSWOY4
+Message-ID: <CAH4Fh+j2fFagprqRhiK8_iEKJsi9YPkKdZ2rXss=_Fgk2StcFw@mail.gmail.com>
+Subject: Re:
+To: =?UTF-8?B?0J7QsdGJ0LDRjyBtb29vbg==?= <info@mooon.by>
+Content-Type: multipart/alternative; boundary="00000000000058a25a0651187271"
+Return-Path: ninago558@gmail.com
+X-Yandex-Forward: 0857c52d081fdf2e3183d7ccdf48b137
+
+--00000000000058a25a0651187271
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1INC10YnRkSDRgNCw0LcsINC90LUg0LzQvtCz0LvQuCDQ
+sdGLINCy0Ysg0YHQutCw0LfQsNGC0YwsINC10YnRkSDQvdC1INC00L7Qs9C+0LLQsNGA0LjQstCw
+0LvQuNGB0Ywg0YHQvg0K0YHRgtGD0LTQuNC10LkgR2xpdGNoPyDQktGB0LXQvCDQo9GA0YPRh9GM
+0LXQvCDQttC00ZHQvCDQv9C+0LrQsNC3INGB0LXRgNC40LDQu9CwLCDQuNC90YLRgNC40LPRg9GO
+0YnQuNC1INC20LTRkdC8INC40Y7QvdGPLg0KDQrQstGBLCAxOSDQsNC/0YAuIDIwMjYg0LMuLCAy
+MzowNiDQntCx0YnQsNGPIG1vb29uIDxpbmZvQG1vb29uLmJ5PjoNCg0KPiDQlNC+0LHRgNC+0LPQ
+viDQstGA0LXQvNC10L3QuCDRgdGD0YLQvtC6Lg0KPiDQnNGLINCy0LjQtNC40Lwg0LLRi9GB0L7Q
+utC40Lkg0LjQvdGC0LXRgNC10YEg0L3QsNGI0LjRhSDQt9GA0LjRgtC10LvQtdC5INC6INGN0YLQ
+vtC80YMg0L/RgNC+0LXQutGC0YMg0LggINC00LXQu9Cw0LXQvCDQstGB0ZENCj4g0LLQvtC30LzQ
+vtC20L3QvtC1LCDRh9GC0L7QsdGLINC+0L/RgNCw0LLQtNCw0YLRjCDQstCw0YjQuCDQvtC20LjQ
+tNCw0L3QuNGPLi4g0JIg0YHQu9GD0YfQsNC1INGD0YHQv9C10YjQvdGL0YUg0L/QtdGA0LXQs9C+
+0LLQvtGA0L7QsiDRgQ0KPiDQv9GA0LDQstC+0L7QsdC70LDQtNCw0YLQtdC70LXQvCDQv9GA0L7Q
+tdC60YLQsCDCq9Cj0LTQuNCy0LjRgtC10LvRjNC90YvQuSDRhtC40YTRgNC+0LLQvtC5INGG0LjR
+gNC6wrsg0L3QsCDRgtC10YDRgNC40YLQvtGA0LjQuA0KPiDQoNC10YHQv9GD0LHQu9C40LrQuCDQ
+kdC10LvQsNGA0YPRgdGMLCDQvNGLINC90LXQv9GA0LXQvNC10L3QvdC+INC+0YDQs9Cw0L3QuNC3
+0YPQtdC8INC10LPQviDQv9C+0LrQsNC30YsNCg==
+--00000000000058a25a0651187271
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PGRpdiBkaXI9ImF1dG8iPtCX0LTRgNCw0LLRgdGC0LLRg9C50YLQtSDQtdGJ0ZEg0YDQsNC3LCDQ
+vdC1INC80L7Qs9C70Lgg0LHRiyDQstGLINGB0LrQsNC30LDRgtGMLCDQtdGJ0ZEg0L3QtSDQtNC+
+0LPQvtCy0LDRgNC40LLQsNC70LjRgdGMINGB0L4g0YHRgtGD0LTQuNC10LkgR2xpdGNoPyDQktGB
+0LXQvCDQo9GA0YPRh9GM0LXQvCDQttC00ZHQvCDQv9C+0LrQsNC3INGB0LXRgNC40LDQu9CwLCDQ
+uNC90YLRgNC40LPRg9GO0YnQuNC1INC20LTRkdC8INC40Y7QvdGPLjwvZGl2Pjxicj48ZGl2IGNs
+YXNzPSJnbWFpbF9xdW90ZSBnbWFpbF9xdW90ZV9jb250YWluZXIiPjxkaXYgZGlyPSJsdHIiIGNs
+YXNzPSJnbWFpbF9hdHRyIj7QstGBLCAxOSDQsNC/0YAuIDIwMjYg0LMuLCAyMzowNiDQntCx0YnQ
+sNGPIG1vb29uICZsdDs8YSBocmVmPSJtYWlsdG86aW5mb0Btb29vbi5ieSI+aW5mb0Btb29vbi5i
+eTwvYT4mZ3Q7Ojxicj48L2Rpdj48YmxvY2txdW90ZSBjbGFzcz0iZ21haWxfcXVvdGUiIHN0eWxl
+PSJtYXJnaW46MCAwIDAgLjhleDtib3JkZXItbGVmdDoxcHggI2NjYyBzb2xpZDtwYWRkaW5nLWxl
+ZnQ6MWV4Ij7QlNC+0LHRgNC+0LPQviDQstGA0LXQvNC10L3QuCDRgdGD0YLQvtC6Ljxicj4NCtCc
+0Ysg0LLQuNC00LjQvCDQstGL0YHQvtC60LjQuSDQuNC90YLQtdGA0LXRgSDQvdCw0YjQuNGFINC3
+0YDQuNGC0LXQu9C10Lkg0Log0Y3RgtC+0LzRgyDQv9GA0L7QtdC60YLRgyDQuMKgINC00LXQu9Cw
+0LXQvCDQstGB0ZEg0LLQvtC30LzQvtC20L3QvtC1LCDRh9GC0L7QsdGLINC+0L/RgNCw0LLQtNCw
+0YLRjCDQstCw0YjQuCDQvtC20LjQtNCw0L3QuNGPLi4g0JIg0YHQu9GD0YfQsNC1INGD0YHQv9C1
+0YjQvdGL0YUg0L/QtdGA0LXQs9C+0LLQvtGA0L7QsiDRgSDQv9GA0LDQstC+0L7QsdC70LDQtNCw
+0YLQtdC70LXQvCDQv9GA0L7QtdC60YLQsCDCq9Cj0LTQuNCy0LjRgtC10LvRjNC90YvQuSDRhtC4
+0YTRgNC+0LLQvtC5INGG0LjRgNC6wrsg0L3QsCDRgtC10YDRgNC40YLQvtGA0LjQuCDQoNC10YHQ
+v9GD0LHQu9C40LrQuCDQkdC10LvQsNGA0YPRgdGMLCDQvNGLINC90LXQv9GA0LXQvNC10L3QvdC+
+INC+0YDQs9Cw0L3QuNC30YPQtdC8INC10LPQviDQv9C+0LrQsNC30Ys8L2Jsb2NrcXVvdGU+PC9k
+aXY+DQo=
+--00000000000058a25a0651187271--

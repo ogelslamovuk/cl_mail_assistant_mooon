@@ -1,0 +1,652 @@
+Received: from postback16d.mail.yandex.net (postback16d.mail.yandex.net [2a02:6b8:c41:1300:1:45:d181:da16])
+	by mail-notsolitesrv-production-main-90.klg.yp-c.yandex.net (notsolitesrv) with LMTPS id 2epS2xyJNTdG-Xz1OsrH2
+	for <info@silverscreen.by>; Wed, 06 May 2026 11:01:42 +0300
+Received: from mail-nwsmtp-mxfront-production-main-74.klg.yp-c.yandex.net (mail-nwsmtp-mxfront-production-main-74.klg.yp-c.yandex.net [IPv6:2a02:6b8:c43:4b84:0:640:44f1:0])
+	by postback16d.mail.yandex.net (Yandex) with ESMTPS id 44816C00C7
+	for <info@silverscreen.by>; Wed, 06 May 2026 11:01:42 +0300 (MSK)
+Received: from kl-203-28-35.kmta.shared.klaviyomail.com (kl-203-28-35.kmta.shared.klaviyomail.com [170.203.28.35])
+	by mail-nwsmtp-mxfront-production-main-74.klg.yp-c.yandex.net (mxfront) with ESMTPS id e1c1J96KIKo0-YiiHkOYl;
+	Wed, 06 May 2026 11:01:41 +0300
+X-Yandex-Fwd: 1
+Authentication-Results: mail-nwsmtp-mxfront-production-main-74.klg.yp-c.yandex.net; spf=pass (mail-nwsmtp-mxfront-production-main-74.klg.yp-c.yandex.net: domain of k3.send.uniquex.com designates 170.203.28.35 as permitted sender, rule=[ip4:170.203.16.0/20]) smtp.mail=bounce-kl_29549663666-kl_101101kqws7rpv6qj2p5-h-24762a245c=2@k3.send.uniquex.com; dkim=pass header.i=@send.uniquex.com
+X-Yandex-Spam: 1
+X-Mailer-Info-Extra2: 6d3a70cd1a:0UDcyoWc2YHcydzc3F3axATMxATMfx2aAMHA5
+ JmLuVWZyN2cyVmdsl2cA9mZulGAyBQNz4SO04CNuATMAA3bAUzMtgjMtMDMy0CbrBgbvB
+ AM2YDAp9GAt92YuwWah12b5lmdhx2auQWZyFGaz5SY012auUzMtgjMtMDMy0CbrBAavBw
+ Nfd3bsBgbtBgN4kDAp1GA381dvxGAtBgN2YzM2YTO0UTOy8FbrBAbAUDUyoUU2YFUSdzU
+ XF1SxATMxATMAkGA91nIsFWduFWbiojI4JCLikzRBNlMGhlQ3okWR1UQSt0MFBVWzkVUL
+ FDMiojItRnIsYjN0QTNwgzN3EjOiQnIsIyQWhUR40EVCp1R1AlMKFlNWBlU3M1VRtUMwI
+ iOi0mIskjN0QTNwgzN3EjOiQHaiwSM6ISbhNmIsISdwd1RFhlI6IyYisnOikzRBNlMGhl
+ Q3okWR1UQSt0MFBVWzkVULFDMisHIAMGA3QmY1UDZxQmN3YWN++
+X-Mailer-Info: 10.sGbfJTO1QTO2YzM2YjN.sGbfFDMxEDMxsWc3N3NyBnd2EnayAXN.kmbm9GQ
+ zlGb2VmczNmclVmbuIWe.gsnIwEzSRl1MZBVRzskUB1UUap0NChlRyMVQHljI6snIjJiOigVRHdF
+ c1JCLiMWYtJiOxwiIoRnI6EzN3gDM1QDN2kDLi0mI6ICMxsUUXN1NSBlV2ElSyAVNHplQU1EOFhk
+ VDJCLiQnI6EzN3gDM1QDN2YDLiQXbiojIwEzSRl1MZBVRzskUB1UUap0NChlRyMVQHljIsICeioj
+ ItFmb1FGbi0Xf..EDMxEDMxsUUXN1NSBlV2ElSyAVN..
+X-Mailer-Info-Extra: 24762a245c:0QNQJjSRZjVQJ1NTdVULFDMxEDMxAQaA0XfiwW
+ Y15WYtJiOignIsISOHF0UyYEWCdjSaFVTBJ1SzUEUZNTWRtUMwIiOi0GdiwiN2QDN1ADO
+ 3cTM6ICdiwiIDZFSFhTTUJkWHVDUyoUU2YFUSdzUXF1SxAjI6ISbiwSO2QDN1ADO3cTM6
+ ICdoJCLxojItF2YiwiI1B3VHVEWiojIjJye6ISOHF0UyYEWCdjSaFVTBJ1SzUEUZNTWRt
+ UMwIyegAwYAknYu4WZlJ3YzJXZ2xWazB0bm5Wa++
+Received: from unknown (HELO kmta-worker-prod-go-b984dfb7f-l9dmd) (kmta-send@vmta.klaviyomail.com@10.8.210.122)
+  by kmta-mta-blue-06b5ddca91a079b03.servers.clovesoftware.com with SMTP; 6 May 2026 08:01:15 -0000
+CFBL-Address: fbl@kmta.shared.klaviyomail.com; report=arf
+Date: Wed, 06 May 2026 08:01:09 +0000
+List-Unsubscribe: <https://manage.kmail-lists.com/subscriptions/unsubscribe?a=XEGWpu&c=01JVTCPBT0BJGVZ61SWYB4F138&k=9b6a935fd8f7ce190fa18a8b9e00ff41&se=info%40silverscreen.by&m=01KQWS7RPV6QJ2P5GZBTM8EHVC&r=01KQY3YPE3KRAMQZJ7BXF2SAG9>,
+ <mailto:unsub1-01JVTCPBT0BJGVZ61SWYB4F138-LBCUOV3QOU======@shared.klaviyomail.com?subject=request%20unsubscribe%20ME6VQRKHK5YHKJTDHUYDCSSWKRBVAQSUGBBEUR2WLI3DCU2XLFBDIRRRGM4CM2Z5HFRDMYJZGM2WMZBYMY3WGZJRHEYGMYJRHBQTQYRZMUYDAZTGGQYSM43FHVUW4ZTPEU2DA43JNR3GK4TTMNZGKZLOFZRHSJTNHUYDCS2RK5JTOUSQKY3FCSRSKA2UOWSCKRGTQRKIKZBSM4R5GAYUWUKZGNMVARJTJNJECTKRLJFDOQSYIYZFGQKHHE======>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+MIME-Version: 1.0
+Message-ID: <01KQY3YPE3KRAMQZJ7BXF2SAG9@klaviyomail.com>
+Reply-To: <sales@uniquex.com>
+Subject: Unique X and AUWE Sign Agreement for Movie Transit Deployment
+ in Brazil
+X-Kmail-Account: XEGWpu
+X-Kmail-Message: 01KQWS7RPV6QJ2P5GZBTM8EHVC
+X-Kmail-Ops: 01JVTCPBT0BJGVZ61SWYB4F138
+X-Report-Abuse: Please report any spam or abuse to: abuse@klaviyo.com
+DKIM-Signature: a=rsa-sha256; bh=UC4Y+zq6261B8h9+Oe163jUS3IrmDCHTfsCpnFHq+fw=;
+ c=relaxed/relaxed; d=shared.klaviyomail.com;
+ h=DKIM-Signature:Date:From:To:List-Unsubscribe:CFBL-Address:List-Unsubscribe-Post:Subject:Reply-To:Message-ID:Subject:From:To:CC:Date:CFBL-Feedback-ID:CFBL-Address;
+ s=def1; t=1778054475; v=1;
+ b=PmjjwzfkjVlK/T52PPy4eE+ol1J+Ae8DCAuuECSW3WCZi1a7MjiqGueaorBKnE/PHZiJ+Kth
+ SLlkKi/Lt6/eQxi1IIlH9yYoWNEP2pGevKNplrv7Aj6NBqAhk29NQ4ZjxK29abCirt2b9rhrCVD
+ JIuyasgVrW2aDxAzxq6+ws4Q=
+DKIM-Signature: a=rsa-sha256; bh=UC4Y+zq6261B8h9+Oe163jUS3IrmDCHTfsCpnFHq+fw=;
+ c=relaxed/relaxed; d=send.uniquex.com;
+ h=Date:From:To:List-Unsubscribe:CFBL-Address:List-Unsubscribe-Post:Subject:Reply-To:Message-ID:Subject:From:To:CC:Date:CFBL-Feedback-ID:CFBL-Address;
+ s=mtd1; t=1778054475; v=1;
+ b=jxIrspdefiYpe6oFRXklovZMzFLGNVl+J0YDWfJnzICJNVSkDpbJKi/TlayH229PQOucpJe4
+ 2sNQ7JokLs7Q+fSUSNjdAgy2KdI56WxUoiIBniDPNYenDhlaCdZay+CcPCDdluCWqkVDzJNaslB
+ o1EgleeguM97EjrA9atRxDXA=
+From: "UniqueX Team" <hello@uniquex.com>
+To: "Oleg Tronik" <info@silverscreen.by>
+Content-Type: multipart/alternative;
+ boundary=e9878cd1c20c17ae0216582218340c16fff48acceb1b53acdf6036b6cc24
+Return-Path: bounce-kl_29549663666-kl_101101kqws7rpv6qj2p5-h-24762a245c=2@k3.send.uniquex.com
+X-Yandex-Forward: 0857c52d081fdf2e3183d7ccdf48b137
+
+--e9878cd1c20c17ae0216582218340c16fff48acceb1b53acdf6036b6cc24
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+
+https://uniquex.com/latest-news/auwe-brazil/
+=E2=80=8A
+
+Unique X and AUWE Sign Agreement for Movie Transit Deployment in Brazil
+
+=E2=80=8A
+
+Dublin, Ireland =E2=80=93 06th May 2026 =E2=80=93 Unique X, the world-leadi=
+ng cinema software and content delivery company, and AUWE, a premier e-deli=
+very operator in Brazil, are proud to announce a 5-year strategic agreement=
+ for the deployment of the Movie Transit network across the country.
+
+This landmark partnership marks a significant milestone in Unique X's Latin=
+ American strategy. By combining AUWE's established local leadership with t=
+he Movie Transit network, the collaboration will provide near-complete cove=
+rage of the Brazilian market, reducing logistical complexities for both dis=
+tributors and exhibitors.
+
+AUWE, which currently connects 423 cinemas and 1,193 screens, projects to d=
+ouble its reach within this year. This growth will be powered by the integr=
+ation of the Movie Transit infrastructure into=C2=A0AUWE's state-of-the-art=
+ operations, ensuring that the highest standards of content delivery are ma=
+intained nationwide.
+
+Jos=C3=A9 Eduardo Ferr=C3=A3o, CEO of AUWE, commented: "Excellence in techn=
+ology and service defines the essence of AUWE; these are the bricks with wh=
+ich we build long-term relationships of trust. Our partnership with Unique =
+X is born from a shared dedication to the state-of-the-art. Together, we wi=
+ll achieve 100% market coverage, broadening our horizons and deepening the =
+confidence our partners have placed in us since 2010 as we move to double t=
+he number of screens we serve this year."
+
+Roger Harris, CEO of Unique X, added: "Brazil is=C2=A0a=C2=A0strategic mark=
+et for Unique X, and partnering with=C2=A0AUWE=C2=A0was=C2=A0a=C2=A0natural=
+ choice given their impeccable track record and technological leadership. T=
+his agreement is=C2=A0a=C2=A0testament to our commitment to the Latin Ameri=
+can market and our belief in the power of technology to transform cinema op=
+erations. We are thrilled to support=C2=A0AUWE=C2=A0in their mission to ach=
+ieve total coverage, fully integrating Brazil into the global Movie Transit=
+ network, and we are excited to bring the benefits of Movie Transit to Braz=
+il's largest cinema operators as we continue our expansion across the regio=
+n."
+
+=E2=80=8A
+
+About UniqueX
+Unique X is the market-leading brand and product portfolio for the future s=
+trategy and innovation of digital cinema, providing intelligent autonomous =
+cost-saving solutions and revenue-generating fully managed content services=
+. Unique X operates in 100 countries across the globe and excels in deliver=
+ing mission-critical cinema software. Advertising Accord currently powers 1=
+.1 billion advertising spots annually across 31 territories and 45,000 scre=
+ens worldwide. With its fully automated and scalable capabilities, it is tr=
+ansforming cinema advertising by providing exhibitors with=C2=A0a=C2=A0comp=
+lete end-to-end solution that integrates both traditional and programmatic =
+sales. Market-leading cinema solutions include RosettaBridge Eco TMS (Theat=
+er Management System), RosettaNet (Circuit Management System), Movie Transi=
+t (Digital Cinema Package Content Delivery Network), Basekey (KDM managemen=
+t), RosettaLive (Event Streaming), Advertising Accord (Complete Advertising=
+ Sales Management and Programmatic Advertising), KDMX (next generation glob=
+al KDM services) SmartTrailering (Intelligent Trailer Scheduling) and Uniqu=
+e=E2=80=99s unrivalled consumer product, the movie and gaming content priva=
+te cinema hire event platform =E2=80=9CBook The Cinema=E2=80=9D.
+
+About=C2=A0AUWE
+Founded in 2010,=C2=A0AUWE=C2=A0is=C2=A0a=C2=A0leading S=C3=A3o Paulo-based=
+ cinema delivery and post-production company. It operates one of Brazil's l=
+argest electronic networks, connecting 420+ cinemas and 46 distributors nat=
+ionwide. Specializing in DCP, KDM, and mastering,=C2=A0AUWE=C2=A0provides s=
+ecure, state-of-the-art delivery for feature films and trailers.=C2=A0[www.=
+auwe.com](http://www.auwe.com/)
+
+=E2=80=8A
+
+[Get in Touch to Learn More](https://uniquex.com/content-services/rosettabr=
+idge-sign-up-page/)
+
+=E2=80=8A
+
+=E2=80=8A
+
+[facebook](https://www.facebook.com/WeAreUniqueX)	[linkedin](https://www.li=
+nkedin.com/company/unique-x/posts/?feedView=3Dall)
+
+Office 204, Nesta Business Centre, Glencullen House, Kylemore Road, Dublin =
+10 D10 CA33, Ireland
+
+[a white text on a black background](https://uniquex.com/)
+
+You received this email from UniqueX. If you would like to unsubscribe, [cl=
+ick here](https://manage.kmail-lists.com/subscriptions/unsubscribe?a=3DXEGW=
+pu&c=3D01JVTCPBT0BJGVZ61SWYB4F138&k=3D9b6a935fd8f7ce190fa18a8b9e00ff41&se=
+=3Dinfo%40silverscreen.by&m=3D01KQWS7RPV6QJ2P5GZBTM8EHVC&r=3D01KQY3YPE3KRAM=
+QZJ7BXF2SAG9).
+--e9878cd1c20c17ae0216582218340c16fff48acceb1b53acdf6036b6cc24
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html><html lang=3D"en" xmlns:o=3D"urn:schemas-microsoft-com:offic=
+e:office" xmlns:v=3D"urn:schemas-microsoft-com:vml"><head>
+<title></title>
+<meta content=3D"text/html; charset=3Dutf-8" http-equiv=3D"Content-Type">
+<meta content=3D"width=3Ddevice-width, initial-scale=3D1.0" name=3D"viewpor=
+t"><!--[if mso]>
+<xml><w:WordDocument xmlns:w=3D"urn:schemas-microsoft-com:office:word"><w:D=
+ontUseAdvancedTypographyReadingMail/></w:WordDocument>
+<o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/=
+></o:OfficeDocumentSettings></xml>
+<![endif]--><!--[if !mso]><!-->
+<!--<![endif]-->
+<!--[if mso ]><style>sup, sub { font-size: 100% !important; } sup { mso-tex=
+t-raise:10% } sub { mso-text-raise:-10% }</style> <![endif]-->
+<style>.row-2 .column-1 .block-10 .button:hover {background-color:#7a7a7a !=
+important;border-bottom:0 solid transparent !important;border-left:0 solid =
+transparent !important;border-right:0 solid transparent !important;border-t=
+op:0 solid transparent !important;color:#fff !important}</style><style>* {
+    box-sizing: border-box
+    }
+body {
+    margin: 0;
+    padding: 0
+    }
+a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: inherit !important
+    }
+#MessageViewBody a {
+    color: inherit;
+    text-decoration: none
+    }
+p {
+    line-height: inherit
+    }
+.desktop_hide, .desktop_hide table {
+    mso-hide: all;
+    display: none;
+    max-height: 0;
+    overflow: hidden
+    }
+.image_block img + div {
+    display: none
+    }
+sup, sub {
+    font-size: 75%;
+    line-height: 0
+    }
+@media (max-width: 720px) {
+    .social_block .social-table {
+        display: inline-block !important
+        }
+    .mobile_hide {
+        display: none
+        }
+    .row-content {
+        width: 100% !important
+        }
+    .stack .column {
+        width: 100%;
+        display: block
+        }
+    .mobile_hide {
+        min-height: 0;
+        max-height: 0;
+        max-width: 0;
+        overflow: hidden;
+        font-size: 0
+        }
+    .desktop_hide, .desktop_hide table {
+        display: table !important;
+        max-height: none !important
+        }
+    .row-2 .column-1 .block-4.paragraph_block td.pad > div {
+        font-size: 24px !important
+        }
+    .row-2 .column-1 .block-10.button_block span {
+        line-height: 32px !important
+        }
+    .row-2 .column-1 .block-10.button_block td.pad .button {
+        width: 75% !important
+        }
+    }</style></head>
+<body class=3D"body" style=3D"margin: 0; background-color: #000000; padding=
+: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"nl-contain=
+er" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-table-rspace:=
+ 0pt; background-size: auto; background-color: #000000; background-image: n=
+one; background-position: top left; background-repeat: no-repeat;" width=3D=
+"100%">
+<tbody>
+<tr>
+<td>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row row-1" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt;" width=3D"100%">
+<tbody>
+<tr>
+<td>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row-content stack" role=3D"presentation" style=3D"mso-table-lspace: =
+0pt; mso-table-rspace: 0pt; background-color: #000000; border-radius: 0; co=
+lor: #000000; width: 700px; margin: 0 auto;" width=3D"700">
+<tbody>
+<tr>
+<td class=3D"column column-1" style=3D"mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt; font-weight: 400; text-align: left; vertical-align: top;" width=
+=3D"100%">
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentatio=
+n" style=3D"mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td class=3D"col-pad" style=3D"padding-bottom:5px;padding-top:5px;">
+<div class=3D"spacer_block block-1" style=3D"height:20px;line-height:20px;f=
+ont-size:1px;">=E2=80=8A</div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row row-2" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt; background-size: auto;" width=3D"100%">
+<tbody>
+<tr>
+<td>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row-content stack" role=3D"presentation" style=3D"mso-table-lspace: =
+0pt; mso-table-rspace: 0pt; background-size: auto; background-color: #00000=
+0; border-radius: 0; color: #000000; padding: 10px; width: 700px; margin: 0=
+ auto;" width=3D"700">
+<tbody>
+<tr>
+<td>
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentatio=
+n" style=3D"mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width=3D"100%">
+<tbody>
+<tr>
+<td class=3D"column column-1" style=3D"mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt; font-weight: 400; text-align: left; vertical-align: top;" width=
+=3D"100%">
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentatio=
+n" style=3D"mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td class=3D"col-pad" style=3D"padding-bottom:5px;padding-top:5px;">
+<div class=3D"spacer_block block-1" style=3D"height:20px;line-height:20px;f=
+ont-size:1px;">=E2=80=8A</div>
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"image_bloc=
+k block-2" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-table-=
+rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td align=3D"center" class=3D"pad" style=3D"width:100%;">
+<div style=3D"max-width: 680px;"><a target=3D"_blank" href=3D"https://trk.s=
+end.uniquex.com/l/01KQY481P64FS8W4T214SVW9R0_0"><img alt=3D"" height=3D"aut=
+o" src=3D"https://media.beefree.cloud/pub/bfra/py8xor19/ozu/yh6/v20/Awue_PR=
+.001.jpeg" style=3D"display: block; height: auto; border: 0; width: 100%;" =
+title=3D"" width=3D"680"></a></div>
+</td>
+</tr>
+</tbody></table>
+<div class=3D"spacer_block block-3" style=3D"height:20px;line-height:20px;f=
+ont-size:1px;">=E2=80=8A</div>
+<table border=3D"0" cellpadding=3D"10" cellspacing=3D"0" class=3D"paragraph=
+_block block-4" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-t=
+able-rspace: 0pt; word-break: break-word;" width=3D"100%">
+<tbody><tr>
+<td class=3D"pad">
+<div style=3D"color:#ffffff;direction:ltr;font-family:'Roboto', Arial;font-=
+size:32px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:cen=
+ter;mso-line-height-alt:38px;">
+<p style=3D"margin: 0;"><strong>Unique X and AUWE Sign Agreement for Movie =
+Transit Deployment in Brazil<br></strong></p>
+</div>
+</td>
+</tr>
+</tbody></table>
+<div class=3D"spacer_block block-5" style=3D"height:20px;line-height:20px;f=
+ont-size:1px;">=E2=80=8A</div>
+<table border=3D"0" cellpadding=3D"10" cellspacing=3D"0" class=3D"paragraph=
+_block block-6" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-t=
+able-rspace: 0pt; word-break: break-word;" width=3D"100%">
+<tbody><tr>
+<td class=3D"pad">
+<div style=3D"color:#ffffff;direction:ltr;font-family:'Roboto', Arial;font-=
+size:18px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:lef=
+t;mso-line-height-alt:22px;">
+<p style=3D"margin: 0; margin-bottom: 16px;"><em><strong>Dublin, Ireland =
+=E2=80=93 06th May 2026 =E2=80=93 Unique X, the world-leading cinema softwa=
+re and content delivery company, and AUWE, a premier e-delivery operator in=
+ Brazil, are proud to announce a 5-year strategic agreement for the deploym=
+ent of the Movie Transit network across the country.</strong></em></p>
+<p style=3D"margin: 0; margin-bottom: 16px;">This landmark partnership mark=
+s a significant milestone in Unique X's Latin American strategy. By combini=
+ng AUWE's established local leadership with the Movie Transit network, the =
+collaboration will provide near-complete coverage of the Brazilian market, =
+reducing logistical complexities for both distributors and exhibitors.</p>
+<p style=3D"margin: 0; margin-bottom: 16px;">AUWE, which currently connects=
+ 423 cinemas and 1,193 screens, projects to double its reach within this ye=
+ar. This growth will be powered by the integration of the Movie Transit inf=
+rastructure into&nbsp;AUWE's state-of-the-art operations, ensuring that the=
+ highest standards of content delivery are maintained nationwide.</p>
+<p style=3D"margin: 0; margin-bottom: 16px;">Jos=C3=A9 Eduardo Ferr=C3=A3o,=
+ CEO of AUWE, commented: "Excellence in technology and service defines the =
+essence of AUWE; these are the bricks with which we build long-term relatio=
+nships of trust. Our partnership with Unique X is born from a shared dedica=
+tion to the state-of-the-art. Together, we will achieve 100% market coverag=
+e, broadening our horizons and deepening the confidence our partners have p=
+laced in us since 2010 as we move to double the number of screens we serve =
+this year."</p>
+<p style=3D"margin: 0;">Roger Harris, CEO of Unique X, added: "Brazil is&nb=
+sp;a&nbsp;strategic market for Unique X, and partnering with&nbsp;AUWE&nbsp=
+;was&nbsp;a&nbsp;natural choice given their impeccable track record and tec=
+hnological leadership. This agreement is&nbsp;a&nbsp;testament to our commi=
+tment to the Latin American market and our belief in the power of technolog=
+y to transform cinema operations. We are thrilled to support&nbsp;AUWE&nbsp=
+;in their mission to achieve total coverage, fully integrating Brazil into =
+the global Movie Transit network, and we are excited to bring the benefits =
+of Movie Transit to Brazil's largest cinema operators as we continue our ex=
+pansion across the region."</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+<div class=3D"spacer_block block-7" style=3D"height:20px;line-height:20px;f=
+ont-size:1px;">=E2=80=8A</div>
+<table border=3D"0" cellpadding=3D"10" cellspacing=3D"0" class=3D"paragraph=
+_block block-8" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-t=
+able-rspace: 0pt; word-break: break-word;" width=3D"100%">
+<tbody><tr>
+<td class=3D"pad">
+<div style=3D"color:#ffffff;direction:ltr;font-family:'Roboto', Arial;font-=
+size:18px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:lef=
+t;mso-line-height-alt:22px;">
+<p style=3D"margin: 0;"><strong>About UniqueX</strong><br>Unique X is the m=
+arket-leading brand and product portfolio for the future strategy and innov=
+ation of digital cinema, providing intelligent autonomous cost-saving solut=
+ions and revenue-generating fully managed content services. Unique X operat=
+es in 100 countries across the globe and excels in delivering mission-criti=
+cal cinema software. Advertising Accord currently powers 1.1 billion advert=
+ising spots annually across 31 territories and 45,000 screens worldwide. Wi=
+th its fully automated and scalable capabilities, it is transforming cinema=
+ advertising by providing exhibitors with&nbsp;a&nbsp;complete end-to-end s=
+olution that integrates both traditional and programmatic sales. Market-lea=
+ding cinema solutions include RosettaBridge Eco TMS (Theater Management Sys=
+tem), RosettaNet (Circuit Management System), Movie Transit (Digital Cinema=
+ Package Content Delivery Network), Basekey (KDM management), RosettaLive (=
+Event Streaming), Advertising Accord (Complete Advertising Sales Management=
+ and Programmatic Advertising), KDMX (next generation global KDM services) =
+SmartTrailering (Intelligent Trailer Scheduling) and Unique=E2=80=99s unriv=
+alled consumer product, the movie and gaming content private cinema hire ev=
+ent platform =E2=80=9CBook The Cinema=E2=80=9D.<br><br><strong>About&nbsp;A=
+UWE</strong><br>Founded in 2010,&nbsp;AUWE&nbsp;is&nbsp;a&nbsp;leading S=C3=
+=A3o Paulo-based cinema delivery and post-production company. It operates o=
+ne of Brazil's largest electronic networks, connecting 420+ cinemas and 46 =
+distributors nationwide. Specializing in DCP, KDM, and mastering,&nbsp;AUWE=
+&nbsp;provides secure, state-of-the-art delivery for feature films and trai=
+lers.&nbsp;<a rel=3D"noopener" style=3D"text-decoration: underline; color: =
+#008acd;" target=3D"_blank" href=3D"https://trk.send.uniquex.com/l/01KQY481=
+P64FS8W4T214SVW9R0_1">www.auwe.com</a></p>
+</div>
+</td>
+</tr>
+</tbody></table>
+<div class=3D"spacer_block block-9" style=3D"height:20px;line-height:20px;f=
+ont-size:1px;">=E2=80=8A</div>
+<table border=3D"0" cellpadding=3D"10" cellspacing=3D"0" class=3D"button_bl=
+ock block-10" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td align=3D"center" class=3D"pad"><a style=3D"color:#000000;text-decoratio=
+n:none;" target=3D"_blank" href=3D"https://trk.send.uniquex.com/l/01KQY481P=
+64FS8W4T214SVW9R0_2"><!--[if mso]>
+<v:roundrect xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:w=3D"urn:schem=
+as-microsoft-com:office:word"  href=3D"https://uniquex.com/content-services=
+/rosettabridge-sign-up-page/"  style=3D"height:42px;width:363px;v-text-anch=
+or:middle;" arcsize=3D"24%" fillcolor=3D"#ff6800">
+<v:stroke dashstyle=3D"Solid" weight=3D"0px" color=3D"#ff6800"/>
+<w:anchorlock/>
+<v:textbox inset=3D"0px,0px,0px,0px">
+<center dir=3D"false" style=3D"color:#000000;font-family:sans-serif;font-si=
+ze:16px">
+<![endif]--><span class=3D"button" style=3D"background-color: #ff6800; bord=
+er-bottom: 0px solid transparent; border-left: 0px solid transparent; borde=
+r-radius: 10px; border-right: 0px solid transparent; border-top: 0px solid =
+transparent; color: #000000; display: inline-block; font-family: Helvetica =
+Neue, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; mso-=
+border-alt: none; text-align: center; width: 55%; word-break: keep-all; let=
+ter-spacing: normal;"><span class=3D"btn-pad" style=3D"word-break: break-wo=
+rd; padding-left: 20px; padding-right: 20px; padding-top: 5px; padding-bott=
+om: 5px; display: block;"><span style=3D"word-break: break-word; line-heigh=
+t: 32px;"><strong>Get in Touch to Learn More</strong></span></span></span><=
+!--[if mso]></center></v:textbox></v:roundrect><![endif]--></a></td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row row-3" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt; background-size: auto;" width=3D"100%">
+<tbody>
+<tr>
+<td>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row-content stack" role=3D"presentation" style=3D"mso-table-lspace: =
+0pt; mso-table-rspace: 0pt; background-size: auto; background-color: #00000=
+0; border-radius: 20px; color: #000000; width: 700px; margin: 0 auto;" widt=
+h=3D"700">
+<tbody>
+<tr>
+<td class=3D"column column-1" style=3D"mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt; font-weight: 400; text-align: left; vertical-align: top;" width=
+=3D"100%">
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentatio=
+n" style=3D"mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td class=3D"col-pad" style=3D"padding-bottom:5px;padding-top:5px;">
+<div class=3D"spacer_block block-1" style=3D"height:10px;line-height:10px;f=
+ont-size:1px;">=E2=80=8A</div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row row-4" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt;" width=3D"100%">
+<tbody>
+<tr>
+<td>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row-content stack" role=3D"presentation" style=3D"mso-table-lspace: =
+0pt; mso-table-rspace: 0pt; background-color: #000000; border-radius: 0; co=
+lor: #000000; width: 700px; margin: 0 auto;" width=3D"700">
+<tbody>
+<tr>
+<td class=3D"column column-1" style=3D"mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt; font-weight: 400; text-align: left; vertical-align: top;" width=
+=3D"100%">
+<div class=3D"spacer_block block-1" style=3D"height:5px;line-height:5px;fon=
+t-size:1px;">=E2=80=8A</div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row row-5" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt;" width=3D"100%">
+<tbody>
+<tr>
+<td>
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"row-content stack" role=3D"presentation" style=3D"mso-table-lspace: =
+0pt; mso-table-rspace: 0pt; background-color: #000000; border-radius: 20px =
+20px 0 0; color: #000000; width: 700px; margin: 0 auto;" width=3D"700">
+<tbody>
+<tr>
+<td class=3D"column column-1" style=3D"mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt; font-weight: 400; text-align: left; vertical-align: top;" width=
+=3D"100%">
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentatio=
+n" style=3D"mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td class=3D"col-pad" style=3D"padding-bottom:5px;padding-top:5px;">
+<table border=3D"0" cellpadding=3D"10" cellspacing=3D"0" class=3D"social_bl=
+ock block-1" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-tabl=
+e-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td align=3D"center" class=3D"pad">
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"social-tab=
+le" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-table-rspace:=
+ 0pt;" width=3D"69px">
+<tbody><tr>
+<td style=3D"padding:0 0 0 0px;"><a target=3D"_blank" href=3D"https://trk.s=
+end.uniquex.com/l/01KQY481P64FS8W4T214SVW9R0_3"><img alt=3D"Facebook" heigh=
+t=3D"auto" src=3D"https://app-rsrc.getbee.io/public/resources/social-networ=
+ks-icon-sets/t-circle-white/facebook@2x.png" style=3D"display: block; heigh=
+t: auto; border: 0;" title=3D"facebook" width=3D"32"></a></td>
+<td style=3D"padding:0 0 0 5px;"><a target=3D"_blank" href=3D"https://trk.s=
+end.uniquex.com/l/01KQY481P64FS8W4T214SVW9R0_4"><img alt=3D"Linkedin" heigh=
+t=3D"auto" src=3D"https://app-rsrc.getbee.io/public/resources/social-networ=
+ks-icon-sets/t-circle-white/linkedin@2x.png" style=3D"display: block; heigh=
+t: auto; border: 0;" title=3D"linkedin" width=3D"32"></a></td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"paragraph_=
+block block-2" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-ta=
+ble-rspace: 0pt; word-break: break-word;" width=3D"100%">
+<tbody><tr>
+<td class=3D"pad" style=3D"padding-top:25px;padding-bottom:25px;padding-lef=
+t:60px;padding-right:60px;">
+<div style=3D"color:#ffffff;direction:ltr;font-family:'Helvetica Neue', Hel=
+vetica, Arial, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px=
+;line-height:1.2;text-align:center;mso-line-height-alt:14px;">
+<p style=3D"margin: 0;">Office 204, Nesta Business Centre, Glencullen House=
+, Kylemore Road, Dublin 10 D10 CA33, Ireland</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+<table border=3D"0" cellpadding=3D"20" cellspacing=3D"0" class=3D"image_blo=
+ck block-3" role=3D"presentation" style=3D"mso-table-lspace: 0pt; mso-table=
+-rspace: 0pt;" width=3D"100%">
+<tbody><tr>
+<td align=3D"center" class=3D"pad" style=3D"width:100%;">
+<div style=3D"max-width: 660px;"><a target=3D"_blank" href=3D"https://trk.s=
+end.uniquex.com/l/01KQY481P64FS8W4T214SVW9R0_5"><img alt=3D"a white text on=
+ a black background" height=3D"auto" src=3D"https://d15k2d11r6t6rl.cloudfro=
+nt.net/pub/bfra/py8xor19/gi2/ios/gs2/UNIQUE_X_White_CMYK.png" style=3D"disp=
+lay: block; height: auto; border: 0; width: 100%;" title=3D"a white text on=
+ a black background" width=3D"660"></a></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table><!-- End -->
+<center>
+    <br><br><br><br><br>
+    <table align=3D"center" style=3D"text-align:center;background:#fafafa;w=
+idth:100%;" width=3D"100%">
+    <tbody><tr>
+        <td align=3D"center" valign=3D"top" style=3D"color:#444;font-family=
+:Helvetica,Arial,sans-serif;font-size:12px;line-height:110%;padding:20px 0;=
+text-align:center;">
+            You received this email from UniqueX.<br>
+            If you would like to unsubscribe, <a class=3D"unsubscribe-link"=
+ href=3D"https://trk.send.uniquex.com/l/01KQY481P64FS8W4T214SVW9R0_6">click=
+ here</a>.
+        </td>
+    </tr>
+    </tbody></table>
+</center>
+
+<img src=3D"https://trk.send.uniquex.com/o/01KQY481P64FS8W4T214SVW9R0" alt=
+=3D"" width=3D"1" height=3D"1" border=3D"0" style=3D"height:1px !important;=
+width:1px !important;border-width:0 !important;margin-top:0 !important;marg=
+in-bottom:0 !important;margin-right:0 !important;margin-left:0 !important;p=
+adding-top:0 !important;padding-bottom:0 !important;padding-right:0 !import=
+ant;padding-left:0 !important;"/></body></html>
+--e9878cd1c20c17ae0216582218340c16fff48acceb1b53acdf6036b6cc24--

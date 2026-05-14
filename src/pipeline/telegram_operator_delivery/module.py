@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from src.pipeline.operator_flow import (
+    attachment_human_description,
+    attachment_uid_label,
     build_reply_markup,
     load_dossier,
     persist_operator_card,
@@ -24,12 +28,16 @@ class TelegramOperatorDeliveryModule:
         card_status: str = "mock_sent",
         status_notice: str = "",
         delivery_mode: str = "auto",
+        client: TelegramBotApiClient | None = None,
+        operator_chat_id: str | int | None = None,
     ) -> None:
         self.dossier_path = dossier_path
         self.artifacts_dir = artifacts_dir
         self.card_status = card_status
         self.status_notice = status_notice
         self.delivery_mode = delivery_mode
+        self.client = client
+        self.operator_chat_id = operator_chat_id
 
     def run(self, context: PipelineContext) -> ModuleResult:
         dossier_path = resolve_dossier_input(self.dossier_path, context.artifacts)
@@ -47,8 +55,19 @@ class TelegramOperatorDeliveryModule:
             telegram_message_id = None
             telegram_chat_id = None
             telegram_delivery_mode = "artifact_only"
-            client = TelegramBotApiClient.from_config()
-            operator_chat_id = TelegramBotApiClient.operator_chat_id_from_config()
+            client = self.client
+            operator_chat_id = self.operator_chat_id
+            if self.delivery_mode in {"real", "auto"}:
+                if client is None:
+                    try:
+                        client = TelegramBotApiClient.from_config()
+                    except Exception:
+                        client = None
+                if operator_chat_id is None:
+                    try:
+                        operator_chat_id = TelegramBotApiClient.operator_chat_id_from_config()
+                    except Exception:
+                        operator_chat_id = ""
             should_send_real = self.delivery_mode == "real" or (
                 self.delivery_mode == "auto" and client is not None and bool(operator_chat_id)
             )
@@ -68,6 +87,7 @@ class TelegramOperatorDeliveryModule:
                 telegram_message_id = send_result.get("message_id")
                 telegram_chat_id = send_result.get("chat_id") or operator_chat_id
                 telegram_delivery_mode = "telegram_bot_api"
+                telegram_ops.extend(_send_attachments(client, operator_chat_id, payload))
 
             card_payload = persist_operator_card(
                 payload,
@@ -99,3 +119,30 @@ class TelegramOperatorDeliveryModule:
             artifact_refs=[str(dossier_path), card_path],
             metrics=card_payload,
         )
+
+
+def _send_attachments(client: TelegramBotApiClient, chat_id: str | int, payload: dict) -> list[dict]:
+    module = (payload.get("modules") or {}).get("attachment_extraction") or {}
+    items = module.get("items") if isinstance(module, dict) else []
+    if not isinstance(items, list):
+        return []
+    operations: list[dict] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        path = str(item.get("saved_path") or "").strip()
+        if not path:
+            continue
+        name = str(item.get("filename_original") or Path(path).name)
+        content_type = str(item.get("content_type") or "").lower()
+        description = attachment_human_description(payload, item)
+        uid_label = attachment_uid_label(payload)
+        caption = f"Вложение к {uid_label}: {description}"[:1024]
+        if content_type in {"image/png", "image/jpeg", "image/jpg", "image/webp"}:
+            result = client.send_photo(chat_id=chat_id, photo_path=path, caption=caption)
+        else:
+            result = client.send_document(chat_id=chat_id, document_path=path, caption=caption)
+        if not result.get("ok"):
+            result["warning"] = "attachment delivery failed; card delivery kept"
+        operations.append(result)
+    return operations

@@ -1,0 +1,29 @@
+{
+  "status": "approved_mock_not_sent",
+  "to": "guest@example.test",
+  "subject": "Re: Не пришёл билет",
+  "uid": "callback_approve",
+  "case_id": "case-callback-approve",
+  "thread_id": "thread-callback-approve",
+  "operator_action": {
+    "uid": "callback_approve",
+    "case_id": "case-callback-approve",
+    "thread_id": "thread-callback-approve",
+    "action": "approve",
+    "operator_comment": "",
+    "operator_telegram_id": "101",
+    "operator_username": "demo_operator",
+    "created_at": "20260514T114145813378",
+    "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114140869459\\callback_fixtures\\message_callback_approve.md#modules.draft_builder",
+    "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114140869459\\callback_fixtures\\message_callback_approve.md",
+    "callback_data": "ma|approve|cc429fd324543ca4",
+    "mock_reply_refs": [],
+    "updated_card_ref": "",
+    "real_email_sent": false
+  },
+  "final_draft_text": "Здравствуйте.\nЧтобы корректно обработать обращение (Получить билет или инструкцию по восстановлению.), пожалуйста, уточните:\n- Номер заказа или email/телефон, указанный при покупке.\nПисьмо с билетами отправляется с адреса ticket@silverscreen.by.\nПосле этого мы сможем продолжить проверку.\nДополнительно: Добавь просьбу указать номер заказа.\nС уважением, команда mooon.",
+  "draft_revision": 2,
+  "timestamp": "20260514T114145815354",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114140869459\\callback_fixtures\\message_callback_approve.md",
+  "real_email_sent": false
+}

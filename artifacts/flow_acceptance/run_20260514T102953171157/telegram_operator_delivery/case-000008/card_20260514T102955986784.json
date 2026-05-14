@@ -1,0 +1,45 @@
+{
+  "uid": "raw_email_26835",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T10:29:55.986665+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26835-20260514T102955776996\\message_raw_email_26835.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26835-20260514T102955776996\\message_raw_email_26835.md",
+  "case_id": "case-000008",
+  "thread_id": "thread-000008",
+  "telegram_message_id": 8,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|59d0ea641ac4c541",
+    "ma|needs_edit|59d0ea641ac4c541",
+    "ma|handoff|59d0ea641ac4c541",
+    "ma|ignore|59d0ea641ac4c541"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|59d0ea641ac4c541"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|59d0ea641ac4c541"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|59d0ea641ac4c541"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|59d0ea641ac4c541"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: raw_email_26835\nПолучено: 07.05.2026 17:14\nОт: no-reply@tilda.by\nТема письма: Вход в аккаунт с нового устройства\nСуть обращения: Tilda прислала no-reply уведомление о входе в аккаунт с нового устройства.\n\n<b>Кейс</b>\nCase ID: case-000008 · Thread ID: thread-000008\n\n<b>История переписки</b>\n- входящее · 2026-05-07 17:14 · Вход в аккаунт с нового устройства · Tilda прислала no-reply уведомление о входе в аккаунт с нового устройства.\n\n<b>Вложения</b>\nнет\n\n<b>Enrichment</b>\nПроверка билетов: не запускалась — письмо не похоже на клиентский билетный вопрос.\n\n<b>Что понял ассистент</b>\nТип обращения: no-reply/security уведомление\nЧто хочет отправитель: Проверить как служебное security-уведомление; клиентский ответ не нужен.\nЧто предлагает система: Tilda прислала no-reply уведомление о входе в аккаунт с нового устройства.\n\n<b>Что предлагает система</b>\nРежим: не отвечать\nПричина: Tilda прислала no-reply уведомление о входе в аккаунт с нового устройства.\n\n<b>База знаний</b>\nне применялась — письмо не является клиентским обращением по билетам.\n\n<b>Что не хватает</b>\nнет\n\n<b>Риски</b>\nнет\n\n<b>Черновик</b>\nЧерновик не создавался: ответ клиенту не требуется.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157"
+}

@@ -1,0 +1,55 @@
+Received: from postback18a.mail.yandex.net (postback18a.mail.yandex.net [2a02:6b8:c0e:500:1:45:d181:da18])
+	by bjnhvphodofzj2t6.vla.yp-c.yandex.net (notsolitesrv) with LMTPS id k4DyPW2tXJOU-3eUyMBLl;
+	Wed, 06 May 2026 13:18:36 +0300
+Received: from mail-nwsmtp-mxback-production-main-31.vla.yp-c.yandex.net (mail-nwsmtp-mxback-production-main-31.vla.yp-c.yandex.net [IPv6:2a02:6b8:c2d:33a2:0:640:d702:0])
+	by postback18a.mail.yandex.net (Yandex) with ESMTPS id 2F83CC02EF;
+	Wed, 06 May 2026 13:18:36 +0300 (MSK)
+Received: from mail.yandex.ru (2a02:6b8:c15:2b1b:0:640:ebdd:0 [2a02:6b8:c15:2b1b:0:640:ebdd:0])
+	by mail-nwsmtp-mxback-production-main-31.vla.yp-c.yandex.net (mxback) with HTTPS id VIeuhv1vlW20-vXUwRX6G;
+	Wed, 06 May 2026 13:18:36 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1778062716; bh=RrnGt4VLFFWzKDnZpkZHUOo562uEWKv9vPsrMV/Pu84=;
+	h=Message-Id:References:Date:Subject:To:In-Reply-To:From;
+	b=Tj6xbVrom9mMObBtaI3cRqhKIH0WuJv4fX1up9gMpTEGwcopwVRE8AZWKo78OAcxA
+	 jQdlm2lczysQlz5JEQYN5TWSQNkssK4rE4I/U/WqNEjqFXu1bkbSo2VLD9CM3xxLpz
+	 YqkW0DMG9hHsP2R1d4ssR9ufpYSPI7IdlMhFixEE=
+Authentication-Results: mail-nwsmtp-mxback-production-main-31.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+X-Yandex-Spam: 1
+Received: by tbolwgpj3odg7fdr.vla.yp-c.yandex.net (sendbernar) with HTTPS id 92ce06ae372b28c73e255caae8f51a9b;
+	Wed, 06 May 2026 13:18:36 +0300
+From: Danilenko Alexandra <danilenko.sash@yandex.ru>
+To: =?utf-8?B?0J7QsdGJ0LDRjyBtb29vbg==?= <info@mooon.by>
+In-Reply-To: <10101777910254@mail.yandex.by>
+References: <10101777910254@mail.yandex.by> <1693811777904112@c2a5d8fa-3df2-458e-978b-30e7657e33bd>
+Subject: =?utf-8?B?UmU6ICjQkdC10Lcg0YLQtdC80Ysp?=
+MIME-Version: 1.0
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date: Wed, 06 May 2026 13:18:36 +0300
+Message-Id: <2015231778062716@931ec2c2-2c26-4c20-b293-0968012507f7>
+Content-Transfer-Encoding: base64
+Content-Type: text/html; charset=utf-8
+Return-Path: danilenko.sash@yandex.ru
+X-Yandex-Forward: 0857c52d081fdf2e3183d7ccdf48b137
+
+0JTQvtCx0YDRi9C5INC00LXQvdGMISDQktC+0L/RgNC+0YEg0YEg0L/RgNC40LPQu9Cw0YHQuNGC
+0LXQu9GM0L3Ri9C8INGD0LvQsNC20LXQvSwg0LHQu9Cw0LPQvtC00LDRgNGOINC30LAg0LLQsNGI
+INC+0YLQutC70LjQuiDQvdCwINGB0LvQvtC20LjQstGI0YPRjtGB0Y8g0YHQuNGC0YPQsNGG0LjR
+jsKgPGJyIC8+PGJyIC8+LS08YnIgLz7QntGC0L/RgNCw0LLQu9C10L3QviDQuNC3INC80L7QsdC4
+0LvRjNC90L7QuSDQr9C90LTQtdC60YHCoNCf0L7Rh9GC0Ys8YnIgLz48YnIgLz48Yj7QmtC+0LzR
+gzo8L2I+IERhbmlsZW5rbyBBbGV4YW5kcmEgJmx0O2RhbmlsZW5rby5zYXNoQHlhbmRleC5ydSZn
+dDs7PGJyIC8+PGI+0KLQtdC80LA6PC9iPiAo0JHQtdC3INGC0LXQvNGLKTs8YnIgLz4wNC4wNS4y
+MDI2LCAxODo1OCwgItCe0LHRidCw0Y8gbW9vb24iICZsdDtpbmZvQG1vb29uLmJ5Jmd0Ozo8YnIg
+Lz48YmxvY2txdW90ZT48ZGl2PtC+0YLQv9GA0LDQstC40LvQuCDQuNC90YTQvtGA0LzQsNGG0LjR
+jiDRgdC/0LXRhtC40LDQu9C40YHRgtGDLCDQvtC20LjQtNCw0LnRgtC1INC+0LHRgNCw0YLQvdGD
+0Y4g0YHQstGP0LfRjC48L2Rpdj48ZGl2PsKgPC9kaXY+PGRpdj4tLS0tLS0tLS0tLS0tLS0tPC9k
+aXY+PGRpdj7QmtC+0LzRgzogPGEgaHJlZj0ibWFpbHRvOmluZm9AbW9vb24uYnkiPmluZm9AbW9v
+b24uYnk8L2E+ICg8YSBocmVmPSJtYWlsdG86aW5mb0Btb29vbi5ieSI+aW5mb0Btb29vbi5ieTwv
+YT4pOzwvZGl2PjxkaXY+0KLQtdC80LA6ICjQkdC10Lcg0YLQtdC80YspOzwvZGl2PjxkaXY+MDQu
+MDUuMjAyNiwgMTc6MTUsICJEYW5pbGVua28gQWxleGFuZHJhIiAmbHQ7PGEgaHJlZj0ibWFpbHRv
+OmRhbmlsZW5rby5zYXNoQHlhbmRleC5ydSI+ZGFuaWxlbmtvLnNhc2hAeWFuZGV4LnJ1PC9hPiZn
+dDs6PC9kaXY+PGJsb2NrcXVvdGU+PGJyIC8+PGJyIC8+LS08YnIgLz7QntGC0L/RgNCw0LLQu9C1
+0L3QviDQuNC3INC80L7QsdC40LvRjNC90L7QuSDQr9C90LTQtdC60YHCoNCf0L7Rh9GC0Ys8L2Js
+b2NrcXVvdGU+PGRpdj7CoDwvZGl2PjxkaXY+wqA8L2Rpdj48ZGl2Pi0twqA8L2Rpdj48ZGl2PkMg
+0YPQstCw0LbQtdC90LjQtdC8LDwvZGl2PjxkaXY+0LrQvtC80LDQvdC00LAgbW9vb24g0LggU2ls
+dmVyIFNjcmVlbjwvZGl2PjxkaXY+wqA8L2Rpdj4NCjwvYmxvY2txdW90ZT4=

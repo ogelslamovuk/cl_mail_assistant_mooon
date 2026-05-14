@@ -1,0 +1,64 @@
+{
+  "uid": "raw_email_26812",
+  "status": "waiting_operator_comment",
+  "error": "",
+  "created_at": "2026-05-14T10:31:21.166477+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T102954506635\\message_raw_email_26812.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T102954506635\\message_raw_email_26812.md",
+  "case_id": "case-000004",
+  "thread_id": "thread-000004",
+  "telegram_message_id": 4,
+  "telegram_chat_id": 12345,
+  "telegram_delivery_mode": "telegram_bot_api",
+  "telegram_operations": [
+    {
+      "operation": "editMessageText",
+      "ok": true,
+      "message_id": 4,
+      "chat_id": 12345
+    },
+    {
+      "operation": "editMessageReplyMarkup",
+      "ok": true,
+      "message_id": 4,
+      "chat_id": 12345
+    },
+    {
+      "operation": "answerCallbackQuery",
+      "ok": true,
+      "result": true,
+      "text": ""
+    }
+  ],
+  "callback_data": [
+    "ma|approve|3371aac8e4bf03d2",
+    "ma|needs_edit|3371aac8e4bf03d2",
+    "ma|handoff|3371aac8e4bf03d2",
+    "ma|ignore|3371aac8e4bf03d2"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|3371aac8e4bf03d2"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|3371aac8e4bf03d2"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|3371aac8e4bf03d2"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|3371aac8e4bf03d2"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n✏️ Статус: ожидается комментарий для доработки LLM\nНапиши следующим сообщением, что нужно исправить в черновике.\n\n<b>Письмо</b>\nUID: raw_email_26812\nПолучено: 06.05.2026 08:17\nОт: olga.evs2010@gmail.com\nТема письма: Ошибка оплаты\nСуть обращения: Гость сообщает об ошибке оплаты при покупке билетов и приложил скриншот.\n\n<b>Кейс</b>\nCase ID: case-000004 · Thread ID: thread-000004\n\n<b>История переписки</b>\n- входящее · 2026-05-06 08:17 · Ошибка оплаты · Гость сообщает об ошибке оплаты при покупке билетов и приложил скриншот.\n\n<b>Вложения</b>\nФайлов: 1\n- image0.png · изображение PNG · скриншот ошибки оплаты / отклонённого платежа\n\n<b>Enrichment</b>\nБилет: не найден\n\n<b>Что понял ассистент</b>\nТип обращения: клиентский вопрос\nЧто хочет отправитель: Получить помощь по билету или оплате.\nЧто предлагает система: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>Что предлагает система</b>\nРежим: уточнить данные\nПричина: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>База знаний</b>\n- Если не проходит оплата или невозможно купить билет / kb_payment_general_failed_payment / балл 11.9\n\n<b>Что не хватает</b>\n- Время попытки оплаты и последние 4 цифры карты/банк, если это потребуется для проверки.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Получить помощь по билету или оплате.), пожалуйста, уточните:\n- Время попытки оплаты и последние 4 цифры карты/банк, если это потребуется для проверки.\nПопробуйте, пожалуйста, повторить оплату в другом браузере или на другом устройстве. Если ошибка сохранится, пришлите скриншот.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.\n\n<b>Последнее действие</b>\nна доработку",
+  "action": "needs_edit",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157"
+}

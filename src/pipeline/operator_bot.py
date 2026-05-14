@@ -6,7 +6,10 @@ from src.pipeline.draft_builder.module import DraftBuilderModule
 from src.pipeline.operator_flow import (
     action_status_notice,
     build_reply_markup,
+    latest_action_suggestion,
     find_dossier_from_card_index,
+    latest_draft_module,
+    latest_draft_text,
     load_dossier,
     needs_edit_waiting_notice,
     parse_callback_data,
@@ -16,6 +19,7 @@ from src.pipeline.operator_flow import (
     resolve_uid,
     save_dossier,
     timestamp_for_filename,
+    build_action_suggestion_revision,
     write_json,
 )
 from src.pipeline.reply_sender.module import ReplySenderModule
@@ -52,7 +56,7 @@ class OperatorBotHandler:
                 operator_username=operator_username,
                 callback_query_id=callback_query_id,
             )
-        if action in {"approve", "handoff", "ignore"}:
+        if action in {"approve", "handoff", "ignore", "action_request"}:
             return self._handle_terminal_callback(
                 action=action,
                 callback_data=callback_data,
@@ -69,6 +73,8 @@ class OperatorBotHandler:
         *,
         chat_id: int | str,
         text: str,
+        message_id: int | None = None,
+        reply_to_message_id: int | None = None,
         operator_telegram_id: str = "",
         operator_username: str = "",
     ) -> dict[str, Any]:
@@ -82,12 +88,15 @@ class OperatorBotHandler:
             "uid": resolve_uid(payload),
             "case_id": pending["case_id"],
             "thread_id": pending["thread_id"],
+            "latest_revision": pending.get("latest_revision", 0),
             "operator_comment": text.strip(),
             "operator_telegram_id": operator_telegram_id,
             "operator_username": operator_username,
             "source_callback_data": pending["callback_data"],
             "source_chat_id": pending["chat_id"],
             "source_message_id": pending["message_id"],
+            "operator_message_id": message_id,
+            "operator_reply_to_message_id": reply_to_message_id,
             "created_at": timestamp_for_filename(),
             "source_dossier_path": dossier_path,
             "status": "created",
@@ -103,36 +112,60 @@ class OperatorBotHandler:
         ).run(PipelineContext(run_id=f"operator-comment-{revision_request['created_at']}"))
         if draft_result.status != "ok":
             raise RuntimeError(f"DraftBuilder failed: {draft_result.notes}")
+        payload = load_dossier(dossier_path)
+        if not latest_draft_text(payload):
+            build_action_suggestion_revision(
+                payload,
+                dossier_path=dossier_path,
+                operator_comment=text,
+                revision_reason="operator_needs_edit_comment",
+            )
+            save_dossier(dossier_path, payload)
 
-        from src.pipeline.telegram_operator_delivery.module import TelegramOperatorDeliveryModule
-
-        card_result = TelegramOperatorDeliveryModule(
+        payload = load_dossier(dossier_path)
+        card_text = render_operator_card(
+            payload,
+            status_notice=action_status_notice("needs_edit", payload=payload),
+            action="needs_edit",
+        )
+        update_ops, target_message_id, delivery_mode = self._update_revision_card(
+            chat_id=pending["source_chat_id"] if "source_chat_id" in pending else pending["chat_id"],
+            message_id=int(pending["message_id"]),
+            text=card_text,
+            payload=payload,
+        )
+        cleanup_ops = self._cleanup_revision_messages(
+            chat_id=chat_id,
+            prompt_message_id=pending.get("prompt_message_id"),
+            operator_message_id=message_id,
+        )
+        ops = update_ops + cleanup_ops
+        card_payload = persist_operator_card(
+            payload,
             dossier_path=dossier_path,
             artifacts_dir=self.artifacts_dir,
-            card_status="revision_sent",
-            status_notice=action_status_notice("needs_edit"),
-            delivery_mode="real",
-        ).run(PipelineContext(run_id=f"operator-revision-card-{revision_request['created_at']}"))
-        if card_result.status != "ok":
-            raise RuntimeError(f"Telegram revision card failed: {card_result.notes}")
+            card_text=card_text,
+            card_status="revision_edited" if delivery_mode == "telegram_edit" else "revision_sent_fallback",
+            action="needs_edit",
+            telegram_message_id=target_message_id,
+            telegram_chat_id=chat_id,
+            telegram_delivery_mode=delivery_mode,
+            telegram_operations=ops,
+        )
+        save_dossier(dossier_path, payload)
 
         self._clear_pending(chat_id)
-        send_ops = [
-            item
-            for item in card_result.metrics.get("telegram_operations", [])
-            if item.get("operation") == "sendMessage"
-        ]
         return {
             "status": "ok",
             "action": "needs_edit_comment",
             "uid": revision_request["uid"],
             "case_id": revision_request["case_id"],
             "thread_id": revision_request["thread_id"],
-            "telegram_chat_id": card_result.metrics.get("telegram_chat_id"),
-            "telegram_message_id": card_result.metrics.get("telegram_message_id"),
-            "bot_api_operations": send_ops,
+            "telegram_chat_id": chat_id,
+            "telegram_message_id": target_message_id,
+            "bot_api_operations": ops,
             "revision_request_path": revision_request_path,
-            "card_artifact_path": card_result.metrics.get("card_artifact_path"),
+            "card_artifact_path": card_payload["card_artifact_path"],
             "dossier_path": dossier_path,
             "draft_result": draft_result.metrics,
         }
@@ -157,27 +190,39 @@ class OperatorBotHandler:
             operator_telegram_id,
             operator_username,
         )
-        card_text = render_operator_card(payload, status_notice=needs_edit_waiting_notice(), action="needs_edit")
+        card_text = render_operator_card(payload, status_notice=needs_edit_waiting_notice(), action="")
         ops = self._edit_existing_card(chat_id=chat_id, message_id=message_id, text=card_text)
         if callback_query_id:
-            ops.append(self.client.answer_callback_query(callback_query_id=callback_query_id))
+            ops.append(
+                self.client.answer_callback_query(
+                    callback_query_id=callback_query_id,
+                    text="Напиши комментарий ответом на сообщение бота.",
+                )
+            )
         self._assert_required_edits_ok(ops)
 
-        self._set_pending(
-            chat_id,
-            {
-                "uid": resolve_uid(payload),
-                "case_id": self._case_id(payload),
-                "thread_id": self._thread_id(payload),
-                "dossier_path": dossier_path,
-                "callback_data": callback_data,
-                "chat_id": chat_id,
-                "message_id": message_id,
-                "operator_telegram_id": operator_telegram_id,
-                "operator_username": operator_username,
-                "created_at": timestamp_for_filename(),
-            },
-        )
+        pending_value = {
+            "uid": resolve_uid(payload),
+            "case_id": self._case_id(payload),
+            "thread_id": self._thread_id(payload),
+            "dossier_path": dossier_path,
+            "callback_data": callback_data,
+            "chat_id": chat_id,
+            "message_id": message_id,
+            "operator_telegram_id": operator_telegram_id,
+            "operator_username": operator_username,
+            "latest_revision": latest_draft_module(payload).get("latest_revision")
+            or ((payload.get("modules") or {}).get("action_suggestion_builder") or {}).get("latest_revision")
+            or 0,
+            "created_at": timestamp_for_filename(),
+        }
+        self._set_pending(chat_id, pending_value)
+
+        # Do not send a separate ForceReply prompt here. In this demo group it caused
+        # Telegram "inline keyboard expected" errors and left the original card in a
+        # broken pending state. The edited card itself is now the prompt: the operator
+        # replies to this card or sends the next text message, and the pending state
+        # below binds that text to this case.
         card_payload = persist_operator_card(
             payload,
             dossier_path=dossier_path,
@@ -232,25 +277,41 @@ class OperatorBotHandler:
         )
         mock_reply_refs: list[str] = []
         if action == "approve":
-            reply_result = ReplySenderModule(
-                dossier_path=dossier_path,
-                artifacts_dir=self.artifacts_dir,
-                operator_action=action_payload,
-            ).run(PipelineContext(run_id=f"operator-approve-{action_payload['created_at']}"))
-            if reply_result.status != "ok":
-                raise RuntimeError(f"ReplySender failed: {reply_result.notes}")
-            mock_reply_refs = list(reply_result.metrics.get("mock_reply_refs", []))
-            action_payload["mock_reply_refs"] = mock_reply_refs
-            payload = load_dossier(dossier_path)
+            if latest_draft_text(payload) and latest_draft_module(payload).get("status") != "skipped":
+                reply_result = ReplySenderModule(
+                    dossier_path=dossier_path,
+                    artifacts_dir=self.artifacts_dir,
+                    operator_action=action_payload,
+                ).run(PipelineContext(run_id=f"operator-approve-{action_payload['created_at']}"))
+                if reply_result.status != "ok":
+                    raise RuntimeError(f"ReplySender failed: {reply_result.notes}")
+                mock_reply_refs = list(reply_result.metrics.get("mock_reply_refs", []))
+                action_payload["mock_reply_refs"] = mock_reply_refs
+                payload = load_dossier(dossier_path)
+            else:
+                action_payload["status"] = "no_draft"
+                action_payload["note"] = "approve ignored: no draft available, mock_outbox not created"
+        elif action == "action_request":
+            suggestion = latest_action_suggestion(payload)
+            action_payload["action"] = "action_requested"
+            action_payload["action_type"] = str(suggestion.get("action_type") or "mark_manual_processing")
+            action_payload["status"] = "stub_recorded"
+            action_payload["real_routing"] = False
+            action_payload["proposed_action_text"] = str(suggestion.get("action_text") or "")
+        elif action == "handoff":
+            action_payload["status"] = "manual_processing_marked"
+            action_payload["real_routing"] = False
+        elif action == "ignore":
+            action_payload["status"] = "ignored_no_reply"
 
         card_text = render_operator_card(
             payload,
-            status_notice=action_status_notice(action, mock_refs=mock_reply_refs),
+            status_notice=action_status_notice(action, mock_refs=mock_reply_refs, payload=payload),
             action=action,
         )
         ops = self._edit_existing_card(chat_id=chat_id, message_id=message_id, text=card_text)
         if callback_query_id:
-            ops.append(self.client.answer_callback_query(callback_query_id=callback_query_id))
+            ops.append(self.client.answer_callback_query(callback_query_id=callback_query_id, text=_callback_answer_text(action, mock_reply_refs)))
         self._assert_required_edits_ok(ops)
 
         card_payload = persist_operator_card(
@@ -283,6 +344,7 @@ class OperatorBotHandler:
             "mock_reply_refs": mock_reply_refs,
             "dossier_path": dossier_path,
             "real_email_sent": False,
+            "real_routing": False,
         }
 
     def _edit_existing_card(self, *, chat_id: int | str, message_id: int, text: str) -> list[dict[str, Any]]:
@@ -301,6 +363,60 @@ class OperatorBotHandler:
             reply_markup={"inline_keyboard": []},
         )
         return [edit_text, edit_markup]
+
+    def _update_revision_card(
+        self,
+        *,
+        chat_id: int | str,
+        message_id: int,
+        text: str,
+        payload: dict[str, Any],
+    ) -> tuple[list[dict[str, Any]], int, str]:
+        edit_result = self.client.edit_message_text(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=text,
+            reply_markup=build_reply_markup(payload),
+        )
+        edit_ops = [edit_result]
+        if edit_result.get("ok"):
+            return edit_ops, message_id, "telegram_edit"
+
+        stale_text = "Эта карточка устарела: актуальная версия отправлена ниже."
+        stale_ops = self._edit_existing_card(chat_id=chat_id, message_id=message_id, text=stale_text)
+        send_result = self.client.send_message(
+            chat_id=chat_id,
+            text=text,
+            reply_markup=build_reply_markup(payload),
+        )
+        if not send_result.get("ok"):
+            errors = "; ".join(
+                f"{item.get('operation')}: {item.get('error')}"
+                for item in [*edit_ops, *stale_ops, send_result]
+                if not item.get("ok")
+            )
+            raise RuntimeError(f"Telegram revision card update failed. {errors}")
+        return [*edit_ops, *stale_ops, send_result], int(send_result.get("message_id") or message_id), "telegram_send_fallback"
+
+    def _cleanup_revision_messages(
+        self,
+        *,
+        chat_id: int | str,
+        prompt_message_id: Any,
+        operator_message_id: int | None,
+    ) -> list[dict[str, Any]]:
+        ops: list[dict[str, Any]] = []
+        for candidate in [prompt_message_id, operator_message_id]:
+            if candidate in {None, ""}:
+                continue
+            try:
+                result = self.client.delete_message(chat_id=chat_id, message_id=int(candidate))
+            except Exception as exc:
+                result = {"operation": "deleteMessage", "ok": False, "error": str(exc), "message_id": candidate}
+            if not result.get("ok"):
+                result["warning"] = "best-effort cleanup failed; revision card was updated"
+            ops.append(result)
+        return ops
 
     @staticmethod
     def _assert_required_edits_ok(ops: list[dict[str, Any]]) -> None:
@@ -424,3 +540,15 @@ class OperatorBotHandler:
     @staticmethod
     def _thread_id(payload: dict[str, Any]) -> str:
         return str(((payload.get("modules") or {}).get("case_thread_binding") or {}).get("thread_id") or "thread-unknown")
+
+
+def _callback_answer_text(action: str, mock_reply_refs: list[str]) -> str:
+    if action == "approve":
+        return "Mock-ответ создан." if mock_reply_refs else "Черновик отсутствует, mock-ответ не создан."
+    if action == "handoff":
+        return "Кейс помечен для ручной обработки."
+    if action == "ignore":
+        return "Кейс помечен как не требующий ответа."
+    if action == "action_request":
+        return "Действие зафиксировано. Реальная маршрутизация пока не подключена."
+    return "Действие обработано."

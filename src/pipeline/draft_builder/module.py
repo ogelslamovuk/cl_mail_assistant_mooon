@@ -45,7 +45,8 @@ class DraftBuilderModule:
         context.draft = None
         notes = [
             f"draft_builder processed uid={draft_payload['uid']}",
-            f"revision={draft_payload['latest_revision']}",
+            f"status={draft_payload.get('status', 'ok')}",
+            f"revision={draft_payload.get('latest_revision')}",
             "real_email_sent=False",
         ]
         return ModuleResult(
@@ -55,7 +56,9 @@ class DraftBuilderModule:
             artifact_refs=[str(dossier_path)],
             metrics={
                 "dossier_path": str(dossier_path),
-                "latest_revision": draft_payload["latest_revision"],
+                "status": draft_payload.get("status", "ok"),
+                "skip_reason": draft_payload.get("skip_reason", ""),
+                "latest_revision": draft_payload.get("latest_revision"),
                 "draft_text": latest_draft_text(payload),
                 "real_email_sent": False,
             },

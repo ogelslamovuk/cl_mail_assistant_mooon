@@ -1,0 +1,15 @@
+{
+  "uid": "callback_approve",
+  "case_id": "case-callback-approve",
+  "thread_id": "thread-callback-approve",
+  "latest_revision": 1,
+  "operator_comment": "Добавь просьбу указать номер заказа.",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "source_callback_data": "ma|needs_edit|cc429fd324543ca4",
+  "source_chat_id": "mock-operator-chat",
+  "source_message_id": 7,
+  "created_at": "20260514T114517375078",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114512098843\\callback_fixtures\\message_callback_approve.md",
+  "status": "created"
+}

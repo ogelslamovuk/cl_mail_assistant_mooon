@@ -1,0 +1,96 @@
+Received: from postback16b.mail.yandex.net (postback16b.mail.yandex.net [2a02:6b8:c02:900:1:45:d181:da16])
+	by k6o5hfpbdoiwr2lr.sas.yp-c.yandex.net (notsolitesrv) with LMTPS id 5g30mYc06JQv-GfbeeNdW
+	for <info@mooon.by>; Tue, 05 May 2026 20:40:29 +0300
+Received: from mail-nwsmtp-mxfront-production-main-95.iva.yp-c.yandex.net (mail-nwsmtp-mxfront-production-main-95.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:1e06:0:640:ef89:0])
+	by postback16b.mail.yandex.net (Yandex) with ESMTPS id 2AE69C0156
+	for <info@mooon.by>; Tue, 05 May 2026 20:40:29 +0300 (MSK)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [2a00:1450:4864:20::62e])
+	by mail-nwsmtp-mxfront-production-main-95.iva.yp-c.yandex.net (mxfront) with ESMTPS id SekYBG2Lk0U0-3EOeo2kv;
+	Tue, 05 May 2026 20:40:28 +0300
+X-Yandex-Fwd: 1
+Authentication-Results: mail-nwsmtp-mxfront-production-main-95.iva.yp-c.yandex.net; spf=pass (mail-nwsmtp-mxfront-production-main-95.iva.yp-c.yandex.net: domain of cinemalab.io designates 2a00:1450:4864:20::62e as permitted sender, rule=[ip6:2a00:1450:4864::/56]) smtp.mail=kk@cinemalab.io; dkim=pass header.i=@cinemalab.io
+X-Yandex-Spam: 1
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-ba922426c5cso962474666b.3
+        for <info@mooon.by>; Tue, 05 May 2026 10:40:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778002828; cv=none;
+        d=google.com; s=arc-20240605;
+        b=dxZIyon62eqZTUtXMxEJYeW9qCHoCehbiqPc/se5ZfSPIn+tEmV4MqVYnhHFGF60pB
+         Mx6M0iAUn/NCH5cVLd1peiVesQZpnd8vxwlqC9sRquJHtNfMnomMqCAApHCrlQ6Cy2Nn
+         OWK1qbCw1ls9cuNcBT6W5y4hR9X8hCuJnwMPdSMQ/0c8VA1u4vX5Ze/h8Vr8+zu75zKD
+         EsBpalm9e4EkrS4rCZqyMuIdVdjwwpPl++3WbBaiECl8gVb6r1iZ3xgGo1UBUIoI136p
+         z22c4OkxaUna23z3/FJHepm+BUTlEbXJwIvGX6M9JMTApODfjkfckQSxuCWeiIdc5IAE
+         wgOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=xI8x1AO6wXsGzTeGMmFoEXXqiG58GOO5ncW+YhEgEDg=;
+        fh=GgBjxJOT51bynVg0d/XU6Oq7QuhXZWhL3eb7Lz78hbA=;
+        b=j6N1ogmAT88c++e3aivoSrtfUpo78rVcDmUi+R/i6K7+kHx5AN6IYhGqPCaQJWCYO/
+         7ZrEl9wh6KEVDLS0NBQZ1iYEL1Ar7vvQugPwzAmY32ZD+8wjxiVVWyRPiWK2FqxI0wTY
+         LG+KPPMT2NzaeVU5yh05PdRbn3yFOx2Fw0OK41DvFrp/h7h20vlqHuBEAZgivYkEDKse
+         BcIZ/9Eh+wHU2REddNS/964g1Ubrg2R/rp563DPPCWnyyVasVJrOusCWYNX5ccLo79Dx
+         c/r9FWeCGtcwMtqAULMIOd6xc2TkhhQaSBf63c1FmOlnFGtRUC4kZayqJTSLpVxCLO54
+         dSog==;
+        darn=mooon.by
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cinemalab.io; s=google; t=1778002828; x=1778607628; darn=mooon.by;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xI8x1AO6wXsGzTeGMmFoEXXqiG58GOO5ncW+YhEgEDg=;
+        b=HP1nj23Z/4GcCNlfAE+/GcMVCsZj0HRRITHzLVpZj2d4DbBU6zgzS6R6M4jRCq7Qr6
+         dkpKkvLhq70z1WUr2h40cSHDygsqgrRDnmshsMHUmfZgqGa7GYUC4SMpooEK6WS0AN9Z
+         /RTWUDZQP/nsPAHVxx+qE7Bzd/5ZTqV5njnxlkn6hLggml8+6o7CpIsIkG8DmBYeaekK
+         +TiqYPm0f7aXhLHxA8bjcQUTNK1FgZtqapNb4RnKjUrKRV8vUKNvU4msecTgQ/sWqcGL
+         /JaXB7G32HuI+ivNeCft4NTr5auOgZxRbXrsxcVXz1D3vgZAn4x52Bdx6BqRfxAxwaZy
+         RBUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778002828; x=1778607628;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xI8x1AO6wXsGzTeGMmFoEXXqiG58GOO5ncW+YhEgEDg=;
+        b=GfncRnbTAYDskYqiWDrCykpyZAHAGuDOnKXvVe9sT/v+Uy6UUZTEpf5f3wPKDFYfrY
+         6EgePfz52AMJtd2llIofdqYqIpqSXEEJwCWbipnBkB6lxdoiAsSrU0A/YdQ+figadGti
+         J5Y/zvUBzGy1Ql+ElYYCS5QsbvU6ECiYXPZqiMQ47xQn9/4JfZGBnV7zU9UDKXu3/urS
+         DjXrhQiu7GOF7FsplgadliJK55k5bvVmrWbImZ2nvQRLlweIFvwGwuUOLivHzwuMxkSU
+         fZCU62LF5xvi7ZH/qlOH5LN6H5B2xgmnO7qyZrVk6dp5dNFeqj5U3Ww98WyTEA//n1KF
+         YszA==
+X-Gm-Message-State: AOJu0Yy5xvb190Hi1XlAtOZPUoy9DmX2LjXVHl/x4RgVETxztjD1Qsr1
+	HIVSWwBQzSRyCJMnvCeaV/iChcBB7gw+vseA3FdtoVdCgmX62nskXql7GwquQ9kCrOLaCHkqAIJ
+	nm/A3g5zHLHfKoUsv/oyGZ218E8XhLUrX40mb6QwZYra4H9Olj/7WIlSXlrSN
+X-Gm-Gg: AeBDievmdUqzI6kh0O4W9OyH2v6UGtobcBYXmnfzOwRrDUCpQ4ryCsVpDE2QRwsCg73
+	gf6FoTu5JAsHsJWooqDih08Y7a2hOOgt0Ajmv0QCtTbXkESTkQwgK8DA6Z9a8G9bIJTN0rWJ977
+	b4vs/RK4z2uNQMNkt+iglCbK7WJBOUQq8OgtMLOqwdzKgZ1o7rqNWx+C12LlZVnglG7BOJttP3q
+	k062IM7Cr78C53j8NgJTrOVk3+DUNKUFdY1fKz8Ovg5LKMGHfWYb1teqr/ZTcFexgwkPHDqcstT
+	dfOrNtBS8+hGWabCVvGGYd7NhCClQpFm+N4nxIf3iONMpdJpMpAZx6aF3h+kIjrLjuPqq5lXzcD
+	qN2Xv6el4SlnRUkUg/oto3/iltDrpVFc=
+X-Received: by 2002:a17:907:1b1b:b0:bbe:7709:5a8a with SMTP id
+ a640c23a62f3a-bc40f1430f8mr224166666b.7.1778002827600; Tue, 05 May 2026
+ 10:40:27 -0700 (PDT)
+MIME-Version: 1.0
+From: "Carol O." <kk@cinemalab.io>
+Date: Tue, 5 May 2026 20:39:50 +0300
+X-Gm-Features: AVHnY4KrMpASUWFaDIZ3lSQWaQjhUObMaoa9bcynOwIctKlNywkYjOhH-nByqLA
+Message-ID: <CAP5WF-W+uK0mcvSBkcZ1QOTqkbU1fJx9Cnf7nGLObL6=RZYz4Q@mail.gmail.com>
+Subject: =?UTF-8?B?0JrQsNC6INCy0LXRgNC90YPRgtGMINCx0LjQu9C10YIg0LTQtdC90YzQs9C4INC30LAg?=
+	=?UTF-8?B?0LHQuNC70LXRgg==?=
+To: =?UTF-8?B?0J7QsdGJ0LDRjyBtb29vbg==?= <info@mooon.by>
+Content-Type: multipart/alternative; boundary="000000000000f2fa540651158a62"
+Return-Path: kk@cinemalab.io
+X-Yandex-Forward: 0857c52d081fdf2e3183d7ccdf48b137
+
+--000000000000f2fa540651158a62
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+0LzRiyDQutGD0L/QuNC70Lgg0LHQuNC70LXRgiDQutCw0Log0L3QsNC8INCy0LXRgNC90YPRgtGM
+INCx0LjQu9C10YIg0L/QvtC60YPQv9Cw0LvQuCDQvdCwINC/0L7Rh9GC0YMNCmthdGVyaW5rYTE2
+NkBnbWFpbC5jb20NCg==
+--000000000000f2fa540651158a62
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PGRpdiBkaXI9Imx0ciI+0LzRiyDQutGD0L/QuNC70Lgg0LHQuNC70LXRgiDQutCw0Log0L3QsNC8
+INCy0LXRgNC90YPRgtGMINCx0LjQu9C10YIg0L/QvtC60YPQv9Cw0LvQuCDQvdCwINC/0L7Rh9GC
+0YPCoA0KPGEgaHJlZj0ibWFpbHRvOmthdGVyaW5rYTE2NkBnbWFpbC5jb20iPmthdGVyaW5rYTE2
+NkBnbWFpbC5jb208L2E+DQoNCjwvZGl2Pg0K
+--000000000000f2fa540651158a62--

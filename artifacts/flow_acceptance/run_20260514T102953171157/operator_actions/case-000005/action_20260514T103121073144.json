@@ -1,0 +1,20 @@
+{
+  "uid": "raw_email_26813",
+  "case_id": "case-000005",
+  "thread_id": "thread-000005",
+  "action": "action_requested",
+  "operator_comment": "",
+  "operator_telegram_id": "42",
+  "operator_username": "tester",
+  "created_at": "20260514T103121073144",
+  "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26813-20260514T102954938112\\message_raw_email_26813.md#modules.draft_builder",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26813-20260514T102954938112\\message_raw_email_26813.md",
+  "callback_data": "ma|action_request|8efb7c94681901e8",
+  "mock_reply_refs": [],
+  "updated_card_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\telegram_operator_delivery\\case-000005\\card_20260514T103121075021.json",
+  "real_email_sent": false,
+  "action_type": "forward_to_chat_stub",
+  "status": "stub_recorded",
+  "real_routing": false,
+  "proposed_action_text": "Переслать уведомление в ответственный чат по платёжным алертам."
+}

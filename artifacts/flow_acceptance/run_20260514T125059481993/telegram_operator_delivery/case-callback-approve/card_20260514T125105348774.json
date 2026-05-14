@@ -1,0 +1,45 @@
+{
+  "uid": "callback_approve",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T12:51:05.348669+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\callback_fixtures\\message_callback_approve.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\callback_fixtures\\message_callback_approve.md",
+  "case_id": "case-callback-approve",
+  "thread_id": "thread-callback-approve",
+  "telegram_message_id": 8,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|cc429fd324543ca4",
+    "ma|needs_edit|cc429fd324543ca4",
+    "ma|handoff|cc429fd324543ca4",
+    "ma|ignore|cc429fd324543ca4"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|cc429fd324543ca4"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|cc429fd324543ca4"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|cc429fd324543ca4"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|cc429fd324543ca4"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: callback_approve\nПолучено: 13.05.2026 10:00\nОт: guest@example.test\nТема письма: Не пришёл билет\nСуть обращения: Гость оплатил билет, но не получил письмо.\n\n<b>Кейс</b>\nCase ID: case-callback-approve · Thread ID: thread-callback-approve\n\n<b>История переписки</b>\nотсутствует\n\n<b>Вложения</b>\nнет\n\n<b>Проверка билетов</b>\nБилет: не найден\n\n<b>Что понял ассистент</b>\nТип обращения: Не пришёл электронный билет\nЧто хочет отправитель: Получить билет или инструкцию по восстановлению.\nСледующий шаг: отправить гостю запрос недостающих данных.\n\n<b>Что предлагает система</b>\nЧто сделать: отправить гостю запрос недостающих данных.\nПочему: Не хватает номера заказа или контактных данных для проверки.\n\n<b>База знаний</b>\n- Адрес отправителя электронных билетов\n\n<b>Что не хватает</b>\n- Номер заказа или email/телефон, указанный при покупке.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Получить билет или инструкцию по восстановлению.), пожалуйста, уточните:\n- Номер заказа или email/телефон, указанный при покупке.\nПисьмо с билетами отправляется с адреса ticket@silverscreen.by.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993"
+}

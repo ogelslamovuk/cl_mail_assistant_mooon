@@ -1,0 +1,70 @@
+{
+  "uid": "raw_email_26813",
+  "status": "action_action_request",
+  "error": "",
+  "created_at": "2026-05-14T10:31:21.074859+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26813-20260514T102954938112\\message_raw_email_26813.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26813-20260514T102954938112\\message_raw_email_26813.md",
+  "case_id": "case-000005",
+  "thread_id": "thread-000005",
+  "telegram_message_id": 5,
+  "telegram_chat_id": 12345,
+  "telegram_delivery_mode": "telegram_bot_api",
+  "telegram_operations": [
+    {
+      "operation": "editMessageText",
+      "ok": true,
+      "message_id": 5,
+      "chat_id": 12345
+    },
+    {
+      "operation": "editMessageReplyMarkup",
+      "ok": true,
+      "message_id": 5,
+      "chat_id": 12345
+    },
+    {
+      "operation": "answerCallbackQuery",
+      "ok": true,
+      "result": true,
+      "text": "Действие зафиксировано. Реальная маршрутизация пока не подключена."
+    }
+  ],
+  "callback_data": [
+    "ma|approve|8efb7c94681901e8",
+    "ma|needs_edit|8efb7c94681901e8",
+    "ma|handoff|8efb7c94681901e8",
+    "ma|ignore|8efb7c94681901e8",
+    "ma|action_request|8efb7c94681901e8"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|8efb7c94681901e8"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|8efb7c94681901e8"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|8efb7c94681901e8"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|8efb7c94681901e8"
+    },
+    {
+      "action": "action_request",
+      "label": "⚡ Выполнить действие",
+      "callback_data": "ma|action_request|8efb7c94681901e8"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n⚡ Действие зафиксировано. Реальная маршрутизация пока не подключена.\n\n<b>Письмо</b>\nUID: raw_email_26813\nПолучено: 06.05.2026 10:01\nОт: support@belassist.by\nТема письма: Плановые работы - ОАО \"Банковский процессинговый центр\" 07.05.2026\nСуть обращения: BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратком перерыве платежей.\n\n<b>Кейс</b>\nCase ID: case-000005 · Thread ID: thread-000005\n\n<b>История переписки</b>\n- входящее · 2026-05-06 07:01 · Плановые работы - ОАО \"Банковский процесс… · BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратко…\n\n<b>Вложения</b>\nнет\n\n<b>Enrichment</b>\nПроверка билетов: не запускалась — письмо не похоже на клиентский билетный вопрос.\n\n<b>Что понял ассистент</b>\nТип обращения: служебное уведомление, требуется действие\nЧто хочет отправитель: Зафиксировать служебное уведомление и уведомить ответственных stub-действием.\nЧто предлагает система: BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратком перерыве платежей.\n\n<b>Что предлагает система</b>\nРежим: передать оператору\nПричина: BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратком перерыве платежей.\n\n<b>Предлагаемое действие</b>\nПереслать уведомление в ответственный чат по платёжным алертам.\nТип действия: forward_to_chat_stub\n\n<b>База знаний</b>\nне применялась — письмо не является клиентским обращением по билетам.\n\n<b>Что не хватает</b>\nнет\n\n<b>Риски</b>\n- Реальная маршрутизация пока не подключена; доступно только stub-действие.\n\n<b>Черновик</b>\nЧерновик не создавался: это служебное уведомление, нужен только внутренний action.\n\n<b>Последнее действие</b>\nstub-действие зафиксировано",
+  "action": "action_request",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157"
+}

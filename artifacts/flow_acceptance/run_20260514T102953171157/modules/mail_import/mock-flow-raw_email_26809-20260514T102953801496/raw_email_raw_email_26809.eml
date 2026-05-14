@@ -1,0 +1,33 @@
+Received: from postback20a.mail.yandex.net (postback20a.mail.yandex.net [2a02:6b8:c0e:500:1:45:d181:da20])
+	by mail-notsolitesrv-production-main-48.vla.yp-c.yandex.net (notsolitesrv) with LMTPS id QAjiMAOJm8il-xRIScEOD
+	for <info@mooon.by>; Tue, 05 May 2026 21:08:03 +0300
+Received: from mail-nwsmtp-mxback-production-main-29.vla.yp-c.yandex.net (mail-nwsmtp-mxback-production-main-29.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:1403:0:640:95e2:0])
+	by postback20a.mail.yandex.net (Yandex) with ESMTPS id D697FC000F
+	for <info@mooon.by>; Tue, 05 May 2026 21:08:03 +0300 (MSK)
+Received: from 2a02:6b8:c1f:b31:0:5e2d:d73c:0 (2a02:6b8:c1f:b31:0:5e2d:d73c:0 [2a02:6b8:c1f:b31:0:5e2d:d73c:0])
+	by mail-nwsmtp-mxback-production-main-29.vla.yp-c.yandex.net (mxback) with HTTPS id 38ln0s0vi0U0-lHRi7slG;
+	Tue, 05 May 2026 21:08:03 +0300
+X-Yandex-Fwd: 1
+Authentication-Results: mail-nwsmtp-mxback-production-main-29.vla.yp-c.yandex.net; dkim=pass
+X-Yandex-Spam: 1
+Received: by pauhiohzdw2i7xd6.vla.yp-c.yandex.net (sendbernar) with HTTPS id 1778004483303172-14138912148174683277;
+	Tue, 05 May 2026 21:08:03 +0300
+From: olga_botvich@mail.ru
+To: "info@mooon.by" <info@mooon.by>
+Subject: =?utf-8?B?0J/QvtC00LDRgNC+0YfQvdGL0Lkg0YHQtdGA0YLQuNGE0LjQutCw0YIg?=
+MIME-Version: 1.0
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date: Tue, 05 May 2026 21:08:03 +0300
+Message-Id: <3668481778004483@48ea25d7-b3ec-4b25-b995-1390feb7d138>
+Content-Transfer-Encoding: base64
+Content-Type: text/html; charset=utf-8
+Return-Path: olga_botvich@mail.ru
+X-Yandex-Forward: 0857c52d081fdf2e3183d7ccdf48b137
+
+0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1LCDQvNC90LUg0L/QvtC00LDRgNC40LvQuCDQv9C+0LTQ
+sNGA0L7Rh9C90YPRjiDQutCw0YDRgtGDIG1vb29uLiDQodGA0L7QuiDQtNC10LnRgdGC0LLQuNGP
+INC10YnQtSDQvdC1INC40YHRgtC10LosINCy0L7RgdC/0L7Qu9GM0LfQvtCy0LDRgtGM0YHRjyDQ
+utCw0YDRgtC+0Lkg0L3QtdGCINCy0L7Qt9C80L7QttC90L7RgdGC0LguINCc0L7Qs9GDINC70Lgg
+0Y8g0LLQtdGA0L3Rg9GC0Ywg0LTQtdC90YzQs9C4INC30LAg0Y3RgtGDINC60LDRgNGC0YM/wqA8
+YnIgLz48YnIgLz4tLTxiciAvPtCe0YLQv9GA0LDQstC70LXQvdC+INC40Lcg0LzQvtCx0LjQu9GM
+0L3QvtC5INCv0L3QtNC10LrRgcKg0J/QvtGH0YLRiw==

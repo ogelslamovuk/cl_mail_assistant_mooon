@@ -1,0 +1,14 @@
+{
+  "uid": "raw_email_26812",
+  "case_id": "case-000004",
+  "thread_id": "thread-000004",
+  "operator_comment": "?????? ?????? ? ?? ????? ????????, ?? ??? ????????.",
+  "operator_telegram_id": "42",
+  "operator_username": "tester",
+  "source_callback_data": "ma|needs_edit|3371aac8e4bf03d2",
+  "source_chat_id": 12345,
+  "source_message_id": 4,
+  "created_at": "20260514T103121223131",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T102954506635\\message_raw_email_26812.md",
+  "status": "created"
+}

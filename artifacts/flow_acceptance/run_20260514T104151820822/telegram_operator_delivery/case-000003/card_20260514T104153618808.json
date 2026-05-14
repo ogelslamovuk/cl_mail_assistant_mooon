@@ -1,0 +1,51 @@
+{
+  "uid": "raw_email_26810",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T10:41:53.618700+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822\\modules\\mail_import\\mock-flow-raw_email_26810-20260514T104153179347\\message_raw_email_26810.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822\\modules\\mail_import\\mock-flow-raw_email_26810-20260514T104153179347\\message_raw_email_26810.md",
+  "case_id": "case-000003",
+  "thread_id": "thread-000003",
+  "telegram_message_id": 3,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|f5457b9352e473a2",
+    "ma|needs_edit|f5457b9352e473a2",
+    "ma|handoff|f5457b9352e473a2",
+    "ma|ignore|f5457b9352e473a2",
+    "ma|action_request|f5457b9352e473a2"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|f5457b9352e473a2"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|f5457b9352e473a2"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|f5457b9352e473a2"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|f5457b9352e473a2"
+    },
+    {
+      "action": "action_request",
+      "label": "⚡ Выполнить действие",
+      "callback_data": "ma|action_request|f5457b9352e473a2"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: raw_email_26810\nПолучено: 05.05.2026 23:18\nОт: kykruniksi765@gmail.com\nТема письма: без темы\nСуть обращения: Гость спрашивает, планирует ли mooon показывать «Цифровой цирк» в Беларуси.\n\n<b>Кейс</b>\nCase ID: case-000003 · Thread ID: thread-000003\n\n<b>История переписки</b>\n- входящее · 2026-05-05 23:18 · без темы · Гость спрашивает, планирует ли mooon показывать «Цифровой цирк» в Беларуси.\n\n<b>Вложения</b>\nнет\n\n<b>Enrichment</b>\nПроверка билетов: не запускалась — письмо не похоже на клиентский билетный вопрос.\n\n<b>Что понял ассистент</b>\nТип обращения: вопрос по репертуару/расписанию\nЧто хочет отправитель: Понять, возможен ли показ; без live schedule connector передать ответственным.\nЧто предлагает система: Вопрос касается репертуара/расписания; live schedule connector пока не подключён.\n\n<b>Что предлагает система</b>\nРежим: передать оператору\nПричина: Вопрос касается репертуара/расписания; live schedule connector пока не подключён.\n\n<b>Предлагаемое действие</b>\nПередать вопрос ответственным за репертуар/расписание; live schedule connector пока не подключён.\nТип действия: mark_manual_processing\n\n<b>База знаний</b>\n- Билеты не отправляются гостям в Viber или Telegram / kb_channel_no_messengers_for_guests / балл 3.85\n- Показываются фильмы с доступными лицензионными правами / kb_repertoire_rights_available_only / балл 3.8\n- Почему афиша в Гродно может отличаться / kb_repertoire_grodno_differs_by_demand / балл 3.75\n\n<b>Что не хватает</b>\nнет\n\n<b>Риски</b>\n- Нельзя отвечать фактом о показах без проверки актуального расписания.\n\n<b>Черновик</b>\nЧерновик не создавался: вопрос требует проверки расписания/репертуара ответственными.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822"
+}

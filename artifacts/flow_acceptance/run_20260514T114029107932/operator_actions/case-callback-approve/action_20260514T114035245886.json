@@ -1,0 +1,19 @@
+{
+  "uid": "callback_approve",
+  "case_id": "case-callback-approve",
+  "thread_id": "thread-callback-approve",
+  "action": "approve",
+  "operator_comment": "",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "created_at": "20260514T114035245886",
+  "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\callback_fixtures\\message_callback_approve.md#modules.draft_builder",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\callback_fixtures\\message_callback_approve.md",
+  "callback_data": "ma|approve|cc429fd324543ca4",
+  "mock_reply_refs": [
+    "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\mock_outbox\\case-callback-approve\\reply_20260514T114035248020.md",
+    "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\mock_outbox\\case-callback-approve\\reply_20260514T114035248020.json"
+  ],
+  "updated_card_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\telegram_operator_delivery\\case-callback-approve\\card_20260514T114035304025.json",
+  "real_email_sent": false
+}

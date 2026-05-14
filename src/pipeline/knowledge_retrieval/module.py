@@ -6,10 +6,12 @@ from typing import Any
 
 from openpyxl import load_workbook
 
+from src.pipeline.early_classification import early_classification
 from src.pipeline.operator_flow import load_dossier, resolve_uid, save_dossier
 from src.shared.common.paths import resolve_project_path
 from src.shared.contracts.module_contract import ModuleResult
 from src.shared.models.pipeline_context import PipelineContext
+
 
 
 class KnowledgeRetrievalModule:
@@ -27,11 +29,26 @@ class KnowledgeRetrievalModule:
         try:
             dossier_path = resolve_project_path(self.dossier_path)
             payload = load_dossier(dossier_path)
+            classification = early_classification(payload)
+            if classification and classification.get("should_run_customer_kb") is False:
+                reason = str(classification.get("classification_reason") or "early classification skipped customer KB")
+                module_payload = _skipped_payload(payload, reason)
+                payload.setdefault("modules", {})[self.name] = module_payload
+                save_dossier(dossier_path, payload)
+                context.artifacts.setdefault(self.name, []).append(str(dossier_path))
+                return ModuleResult(
+                    context=context,
+                    status="ok",
+                    notes=[f"knowledge_retrieval skipped uid={module_payload['uid']} reason={reason}"],
+                    artifact_refs=[str(dossier_path)],
+                    metrics=module_payload,
+                )
             kb_path = resolve_project_path(self.knowledge_base_path)
-            settings, rows = _load_knowledge_base(kb_path)
+            settings, rows, routing_rows = _load_knowledge_base(kb_path)
             query = _build_query(payload)
             matched = _score_rows(rows, query, settings)
-            status = "found" if matched else "empty"
+            routing_matches = _score_routing_rows(routing_rows, query, settings)
+            status = "found" if matched or routing_matches else "empty"
             module_payload = {
                 "uid": resolve_uid(payload),
                 "status": status,
@@ -43,6 +60,7 @@ class KnowledgeRetrievalModule:
                     "entities": query["entities"],
                 },
                 "matched_items": matched,
+                "routing_matches": routing_matches,
                 "settings": settings,
             }
             payload.setdefault("modules", {})[self.name] = module_payload
@@ -54,13 +72,34 @@ class KnowledgeRetrievalModule:
         return ModuleResult(
             context=context,
             status="ok",
-            notes=[f"knowledge_retrieval {status} uid={module_payload['uid']} items={len(matched)}"],
+            notes=[
+                f"knowledge_retrieval {status} uid={module_payload['uid']} items={len(matched)} routes={len(routing_matches)}"
+            ],
             artifact_refs=[str(dossier_path)],
             metrics=module_payload,
         )
 
 
-def _load_knowledge_base(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def _skipped_payload(payload: dict[str, Any], reason: str) -> dict[str, Any]:
+    classification = early_classification(payload)
+    return {
+        "uid": resolve_uid(payload),
+        "status": "skipped",
+        "error": "",
+        "reason": reason,
+        "classification": str(classification.get("classification") or ""),
+        "query": {
+            "text": "",
+            "response_mode": str(classification.get("response_mode_hint") or ""),
+            "entities": [],
+        },
+        "matched_items": [],
+        "routing_matches": [],
+        "settings": {},
+    }
+
+
+def _load_knowledge_base(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
     if not path.exists():
         raise FileNotFoundError(f"Knowledge base not found: {path}")
 
@@ -68,6 +107,7 @@ def _load_knowledge_base(path: Path) -> tuple[dict[str, Any], list[dict[str, Any
     settings = {
         "min_score": 2,
         "max_results": 3,
+        "max_routing_results": 2,
         "enabled_types": ["rule", "faq", "operator_instruction", "response_template", "regulation"],
     }
     if "KB_SETTINGS" in workbook.sheetnames:
@@ -76,10 +116,8 @@ def _load_knowledge_base(path: Path) -> tuple[dict[str, Any], list[dict[str, Any
             value = str(row[1] or "").strip()
             if not key:
                 continue
-            if key == "min_score" and value.isdigit():
-                settings["min_score"] = int(value)
-            elif key == "max_results" and value.isdigit():
-                settings["max_results"] = int(value)
+            if key in {"min_score", "max_results", "max_routing_results"} and value.isdigit():
+                settings[key] = int(value)
             elif key == "enabled_types":
                 settings["enabled_types"] = [part.strip() for part in value.split(";") if part.strip()]
             else:
@@ -98,7 +136,34 @@ def _load_knowledge_base(path: Path) -> tuple[dict[str, Any], list[dict[str, Any
         if str(item.get("type") or "").strip() not in set(settings["enabled_types"]):
             continue
         rows.append(item)
-    return settings, rows
+
+    routing_rows = _load_routing_rows(workbook)
+    return settings, rows, routing_rows
+
+
+def _load_routing_rows(workbook: Any) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    if "KB_ROUTING" in workbook.sheetnames:
+        sheet = workbook["KB_ROUTING"]
+        headers = [str(cell.value or "").strip() for cell in sheet[1]]
+        for values in sheet.iter_rows(min_row=2, values_only=True):
+            item = {headers[index]: values[index] if index < len(values) else "" for index in range(len(headers))}
+            if str(item.get("enabled") or "").strip().lower() not in {"yes", "true", "1"}:
+                continue
+            rows.append(item)
+    return _dedupe_routing_rows(rows)
+
+
+def _dedupe_routing_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for row in rows:
+        key = str(row.get("id") or row.get("email") or "").strip().casefold()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        result.append(row)
+    return result
 
 
 def _build_query(payload: dict[str, Any]) -> dict[str, Any]:
@@ -174,6 +239,50 @@ def _score_rows(rows: list[dict[str, Any]], query: dict[str, Any], settings: dic
     return [item for _, item in scored[:max_results]]
 
 
+def _score_routing_rows(rows: list[dict[str, Any]], query: dict[str, Any], settings: dict[str, Any]) -> list[dict[str, Any]]:
+    query_text = _normalize(query["text"])
+    query_tokens = set(_tokens(query_text))
+    min_score = int(settings.get("min_score", 2) or 2)
+    max_results = int(settings.get("max_routing_results", 2) or 2)
+
+    scored: list[tuple[float, dict[str, Any]]] = []
+    for row in rows:
+        score = 0.0
+        keyword_hits: list[str] = []
+        for column, weight in [
+            ("keywords", 5),
+            ("description", 2),
+            ("title", 2),
+            ("department", 1),
+            ("contact_name", 1),
+            ("email", 1),
+        ]:
+            for keyword in _split_keywords(row.get(column)) if column == "keywords" else [str(row.get(column) or "")]:
+                normalized = _normalize(keyword)
+                if not normalized:
+                    continue
+                if normalized in query_text:
+                    score += weight
+                    keyword_hits.append(keyword)
+                    continue
+                keyword_tokens = set(_tokens(normalized))
+                if keyword_tokens and keyword_tokens <= query_tokens:
+                    score += max(weight - 1, 1)
+                    keyword_hits.append(keyword)
+
+        try:
+            priority = float(row.get("priority") or 0)
+        except Exception:
+            priority = 0.0
+        score += priority / 100.0
+
+        if score >= min_score:
+            scored.append((score, _compact_routing_item(row, score, keyword_hits)))
+
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return [item for _, item in scored[:max_results]]
+
+
 def _compact_item(row: dict[str, Any], score: float, keyword_hits: list[str]) -> dict[str, Any]:
     return {
         "id": str(row.get("id") or "").strip(),
@@ -190,13 +299,26 @@ def _compact_item(row: dict[str, Any], score: float, keyword_hits: list[str]) ->
     }
 
 
+def _compact_routing_item(row: dict[str, Any], score: float, keyword_hits: list[str]) -> dict[str, Any]:
+    return {
+        "id": str(row.get("id") or "").strip(),
+        "department": str(row.get("department") or "").strip(),
+        "contact_name": str(row.get("contact_name") or "").strip(),
+        "email": str(row.get("email") or "").strip(),
+        "title": str(row.get("title") or "").strip(),
+        "description": str(row.get("description") or "").strip(),
+        "score": round(score, 2),
+        "matched_keywords": keyword_hits[:8],
+    }
+
+
 def _split_keywords(value: Any) -> list[str]:
     return [part.strip() for part in str(value or "").split(";") if part and part.strip()]
 
 
 def _normalize(value: str) -> str:
-    return " ".join(str(value or "").casefold().split())
+    return " ".join(str(value or "").casefold().replace("ё", "е").split())
 
 
 def _tokens(value: str) -> list[str]:
-    return re.findall(r"[0-9A-Za-zА-Яа-яЁё_.@-]+", value.casefold())
+    return re.findall(r"[0-9A-Za-zА-Яа-яЁё_.@-]+", value.casefold().replace("ё", "е"))

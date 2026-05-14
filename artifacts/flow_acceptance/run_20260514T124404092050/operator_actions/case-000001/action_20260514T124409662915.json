@@ -1,0 +1,20 @@
+{
+  "uid": "raw_email_26815",
+  "case_id": "case-000001",
+  "thread_id": "thread-000001",
+  "action": "action_requested",
+  "operator_comment": "",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "created_at": "20260514T124409662915",
+  "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124404092050\\modules\\mail_import\\mock-flow-raw_email_26815-20260514T124404128581\\message_raw_email_26815.md#modules.draft_builder",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124404092050\\modules\\mail_import\\mock-flow-raw_email_26815-20260514T124404128581\\message_raw_email_26815.md",
+  "callback_data": "ma|action_request|fe54afcf046099e7",
+  "mock_reply_refs": [],
+  "updated_card_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124404092050\\telegram_operator_delivery\\case-000001\\card_20260514T124409664649.json",
+  "real_email_sent": false,
+  "action_type": "notify_department_stub",
+  "status": "stub_recorded",
+  "real_routing": false,
+  "proposed_action_text": "Переслать письмо в отдел маркетинга/SMM или ответственному за практику."
+}

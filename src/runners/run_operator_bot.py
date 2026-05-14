@@ -46,13 +46,16 @@ def main() -> None:
                     callback_query_id=str(callback_query.get("id") or ""),
                 )
 
-            message = update.get("message")
+            message = update.get("message") or update.get("edited_message")
             if message and message.get("text"):
                 chat = message.get("chat") or {}
                 from_user = message.get("from") or {}
+                reply_to = message.get("reply_to_message") or {}
                 handler.handle_operator_message(
                     chat_id=chat.get("id"),
                     text=str(message.get("text") or ""),
+                    message_id=int(message.get("message_id")) if message.get("message_id") is not None else None,
+                    reply_to_message_id=int(reply_to.get("message_id")) if reply_to.get("message_id") is not None else None,
                     operator_telegram_id=str(from_user.get("id") or ""),
                     operator_username=str(from_user.get("username") or ""),
                 )

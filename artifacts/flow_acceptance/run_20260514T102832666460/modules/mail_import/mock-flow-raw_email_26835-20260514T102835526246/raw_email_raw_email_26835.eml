@@ -1,0 +1,249 @@
+Received: from postback23a.mail.yandex.net (postback23a.mail.yandex.net [2a02:6b8:c0e:500:1:45:d181:da23])
+	by 7ljf5b33fp5fo6lk.vla.yp-c.yandex.net (notsolitesrv) with LMTPS id wUlu7qW3fb6C-i9f0ZVgy
+	for <info@mooon.by>; Thu, 07 May 2026 17:14:03 +0300
+Received: from mail-nwsmtp-mxfront-production-main-68.vla.yp-c.yandex.net (mail-nwsmtp-mxfront-production-main-68.vla.yp-c.yandex.net [IPv6:2a02:6b8:c0d:295:0:640:3e3f:0])
+	by postback23a.mail.yandex.net (Yandex) with ESMTPS id C1F7FC000E
+	for <info@mooon.by>; Thu, 07 May 2026 17:14:03 +0300 (MSK)
+Received: from mx13.tildacdn.com (mx13.tildacdn.com [176.114.75.88])
+	by mail-nwsmtp-mxfront-production-main-68.vla.yp-c.yandex.net (mxfront) with ESMTPS id 2EGTTB0KMSw0-7cogsGVe;
+	Thu, 07 May 2026 17:14:03 +0300
+X-Yandex-Fwd: 1
+Authentication-Results: mail-nwsmtp-mxfront-production-main-68.vla.yp-c.yandex.net; spf=pass (mail-nwsmtp-mxfront-production-main-68.vla.yp-c.yandex.net: domain of tilda.by designates 176.114.75.88 as permitted sender, rule=[ip4:176.114.75.88]) smtp.mail=no-reply@tilda.by; dkim=pass header.i=@tilda.by
+X-Yandex-Spam: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tilda.by; s=mx13;
+	t=1778163242; bh=oRq5KpOFxfOKZ4McGnTgkpMKzKaMXwsJF/Pc0rMMY5c=;
+	h=To:Subject:From:List-Unsubscribe:Date:From;
+	b=NTjg0lnnD323mpbSAKaJZ6sC6mWSKrNrjmSaRzCuGpmVxRnS77fnm4OVF2e9eLrog
+	 nV6PbX7/3XhBh8hhpDUt756egY2aUAKQS1nFjNFj15sjbKSWJOy9vGP7ioh5mGLu9P
+	 Dv2vpDc0kAKZotobSs4h1QlzQ7bce0u77wsqnsFs=
+Received: by mx13.tildacdn.com (Postfix, from userid 0)
+	id 4gBDky6GP5z6ZhR; Thu,  7 May 2026 17:14:02 +0300 (MSK)
+To: info@mooon.by
+Subject: =?UTF-7?Q?+BBIERQQ+BDQ=20+BDI=20+BDAEOgQ=36BDAEQwQ=39BEI=20+BEE=20+BD=30-?=
+ =?UTF-7?Q?+BD=34EMgQ+BDMEPg=20+BEMEQQRCBEAEPgQ=35BEEEQgQyBDA-?=
+MIME-Version: 1.0
+From: Tilda<no-reply@tilda.by>
+List-Unsubscribe: https://mx13.tildacdn.com//unsubscribe/?email=info%40mooon.by
+Content-type: multipart/alternative;boundary=ad239c33c030244020986ae8f6a476bf334595d3
+Message-Id: <4gBDky6GP5z6ZhR@mx13.tildacdn.com>
+Date: Thu,  7 May 2026 17:14:02 +0300 (MSK)
+Return-Path: no-reply@tilda.by
+X-Yandex-Forward: 0857c52d081fdf2e3183d7ccdf48b137
+
+--ad239c33c030244020986ae8f6a476bf334595d3
+Content-Transfer-Encoding: quoted-printable
+Content-type: text/plain;charset=UTF-8
+
+    =0A=0A=0A=0A=09=0A=09=0A=09=0A=09=0A=09=09=09=09    =0A=09=0A=09 =0A=09=
+=09=0A=0A=0A=0A=0A=0A=0A=0A  =0A    =0A=0A=0A=0A=0A=0A=0A=0A=0A  =0A    =0A=
+=09=09=09=0A        =0A          =0A            =0A              =0A=09    =
+          =0A=09=09=09=09=0A=09=09=09=09=0A=09=09=09=09=0A=09=09=09=09=0A=
+=09=09=0A=09=09=09=09=09=09=09=09=0A=09=09=09=09    =0A=09=D0=92=D1=8B=
+=D0=BF=D0=BE=D0=BB=D0=BD=D0=B5=D0=BD =D0=B2=D1=85=D0=BE=D0=B4 =D0=B2 =D0=
+=B2=D0=B0=D1=88 =D0=B0=D0=BA=D0=BA=D0=B0=D1=83=D0=BD=D1=82 Tilda=0A=09=0A=
+=09=09=D0=9F=D0=BE=D0=B6=D0=B0=D0=BB=D1=83=D0=B9=D1=81=D1=82=D0=B0, =D0=
+=BF=D1=80=D0=BE=D0=B2=D0=B5=D1=80=D1=8C=D1=82=D0=B5 =D0=B4=D0=B5=D1=82=
+=D0=B0=D0=BB=D0=B8:=0A=09=0A=09=0A=09=09=0A=09=09=09=0A=09=09=09=09=0A=09=
+=09=09=09=09=0A=09=09=09=09=09=09=0A=09=09=09=09=09=0A=09=09=09=09=09=0A=09=
+=09=09=09=09=09=D0=9B=D0=BE=D0=B3=D0=B8=D0=BD=0A=09=09=09=09=09=09info@mooo=
+n.by=0A=09=09=09=09=0A=09=09=09=0A=09=09=0A=09=09=0A=09=09=09=0A=09=09=09=
+=09=0A=09=09=09=09=09=0A=09=09=09=09=09=09=0A=09=09=09=09=09=0A=09=09=09=09=
+=09=0A=09=09=09=09=09=09IP =D0=B0=D0=B4=D1=80=D0=B5=D1=81 =D0=B8 =D0=BF=
+=D1=80=D0=B8=D0=BC=D0=B5=D1=80=D0=BD=D0=BE=D0=B5 =D0=BC=D0=B5=D1=81=D1=
+=82=D0=BE=D0=BF=D0=BE=D0=BB=D0=BE=D0=B6=D0=B5=D0=BD=D0=B8=D0=B5=0A=09=09=09=
+=09=09=0937.17.31.210=0A                        Belarus, Minsk=0A=09=09=09=
+=09=09=0A=09=09=09=09=0A=09=09=09=0A=09=09=0A        =09=09=09=0A=09=09=09=
+=09=0A=09=09=09=09=09=0A=09=09=09=09=09=09=0A=09=09=09=09=09=09=09=0A=09=09=
+=09=09=09=09=0A=09=09=09=09=09=09=0A=09=09=09=09=09=09=09=D0=9F=D0=BB=D0=
+=B0=D1=82=D1=84=D0=BE=D1=80=D0=BC=D0=B0=0A                            Windo=
+ws 10                            Chrome 148=09=09=09=09=09=09=0A=09=09=09=
+=09=09=0A=09=09=09=09=0A=09=09=09=0A        =09=09=0A=09=09=09=0A=09=09=09=
+=09=0A=09=09=09=09=09=0A=09=09=09=09=09=09=0A=09=09=09=09=09=0A=09=09=09=09=
+=09=0A=09=09=09=09=09=09=D0=94=D0=B0=D1=82=D0=B0 =D0=B8 =D0=B2=D1=80=D0=
+=B5=D0=BC=D1=8F=0A=09=09=09=09=09=0907.05.2026 17:13:18 GMT+3:00=0A=09=09=
+=09=09=09=0A=09=09=09=09=0A=09=09=09=0A=09=09=0A=09=0A=09=0A=09=09=D0=95=
+=D1=81=D0=BB=D0=B8 =D1=8D=D1=82=D0=BE =D0=B1=D1=8B=D0=BB=D0=B8 =D0=BD=D0=
+=B5 =D0=B2=D1=8B, =D0=BF=D0=BE=D0=B6=D0=B0=D0=BB=D1=83=D0=B9=D1=81=D1=82=
+=D0=B0, =D1=81=D0=BC=D0=B5=D0=BD=D0=B8=D1=82=D0=B5=0A=09=09=09=D0=BF=D0=
+=B0=D1=80=D0=BE=D0=BB=D1=8C =D1=87=D1=82=D0=BE=D0=B1=D1=8B =D0=B7=D0=B0=
+=D1=89=D0=B8=D1=82=D0=B8=D1=82=D1=8C =D0=B4=D0=BE=D1=81=D1=82=D1=83=D0=
+=BF =D0=BA =D0=B0=D0=BA=D0=BA=D0=B0=D1=83=D0=BD=D1=82=D1=83 =D0=B8 =D0=
+=BF=D0=BE=D0=B4=D0=BA=D0=BB=D1=8E=D1=87=D0=B8=D1=82=D0=B5 =D0=B4=D0=B2=
+=D1=83=D1=85=D1=84=D0=B0=D0=BA=D1=82=D0=BE=D1=80=D0=BD=D1=83=D1=8E=0A=09=09=
+=09=D0=B0=D1=83=D1=82=D0=B5=D0=BD=D1=82=D0=B8=D1=84=D0=B8=D0=BA=D0=B0=D1=
+=86=D0=B8=D1=8E.=0A=09=0A=0A=09=09=09=09=09=09=09=09=09=09=09              =
+   =0A=09              =0A              =0A            =0A          =0A    =
+      =0A            =0A            =0A          =0A        =0A=0A    =0A  =
+=0A=0A=09=09=0A=0A=0A=0A=0A=0A=0A  =0A    =0A=09=09=09=0A        =0A       =
+   =0A            =0A=09            =09            =09=D0=A1=D0=BF=D0=B0=
+=D1=81=D0=B8=D0=B1=D0=BE, =D1=87=D1=82=D0=BE =D0=B8=D1=81=D0=BF=D0=BE=D0=
+=BB=D1=8C=D0=B7=D1=83=D0=B5=D1=82=D0=B5 Tilda!=0A=09=09=09=09=09=D0=95=
+=D1=81=D0=BB=D0=B8 =D1=83 =D0=B2=D0=B0=D1=81 =D0=B5=D1=81=D1=82=D1=8C =
+=D0=B2=D0=BE=D0=BF=D1=80=D0=BE=D1=81=D1=8B, =D0=BF=D0=BE=D0=B6=D0=B0=D0=
+=BB=D1=83=D0=B9=D1=81=D1=82=D0=B0, =D0=BF=D0=BE=D1=81=D0=BC=D0=BE=D1=82=
+=D1=80=D0=B8=D1=82=D0=B5 =D0=BD=D0=B0=D1=88 =D0=A1=D0=BF=D1=80=D0=B0=D0=
+=B2=D0=BE=D1=87=D0=BD=D1=8B=D0=B9 =D1=86=D0=B5=D0=BD=D1=82=D1=80 =D0=B8=
+=D0=BB=D0=B8 =D0=BD=D0=B0=D0=BF=D0=B8=D1=88=D0=B8=D1=82=D0=B5 =D0=B2 =D1=
+=81=D0=BB=D1=83=D0=B6=D0=B1=D1=83 =D0=BF=D0=BE=D0=B4=D0=B4=D0=B5=D1=80=
+=D0=B6=D0=BA=D0=B8: team@tilda.by.=0A=09=09=09=09=09=0A=09=09=09=09=09=09=
+=09=09=09=09=D0=9F=D0=BE=D0=B4=D0=BF=D0=B8=D1=81=D1=8B=D0=B2=D0=B0=D0=B9=
+=D1=82=D0=B5=D1=81=D1=8C =D0=B2 Telegram, =D0=92=D0=BA=D0=BE=D0=BD=D1=82=
+=D0=B0=D0=BA=D1=82=D0=B5 =D0=B8=D0=BB=D0=B8 YouTube.=0A=09=09=09=09        =
+    =0A          =0A        =0A=0A    =0A  =0A=0A=09=09=0A=0A=0A=0A=0A=0A  =
+  =0A  =0A=0A=0A=0A=0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbs=
+p; &nbsp; &nbsp; &nbsp; =0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;=
+ &nbsp; &nbsp; &nbsp; &nbsp; =0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &=
+nbsp; &nbsp;=0A=0A=0A=0A
+--ad239c33c030244020986ae8f6a476bf334595d3
+Content-Transfer-Encoding: quoted-printable
+Content-type: text/html;charset=UTF-8
+
+    =0A<!DOCTYPE html>=0A<html>=0A<head>=0A=09<meta charset=3D"utf-8" />=0A=
+=09<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"=
+ />=0A=09<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-s=
+cale=3D1.0" />=0A=09<meta name=3D"format-detection" content=3D"telephone=3D=
+no" />=0A=09<link rel=3D"shortcut icon" href=3D"https://tilda.ws/img/tildaf=
+avicon.ico" />=09=09=09    =0A=09=0A=09<style type=3D"text/css">=0A=09a{=0A=
+=09=09color:#000000;=0A=09=09text-decoration: none;=0A=09}=0A=09@media only=
+ screen and (max-width: 480px) {=0A=09  .t-email-headline {=0A=09    font-s=
+ize: 16px !important;=0A=09    line-height: 1.35 !important;=0A=09  }=0A=09=
+  .t-email-title-lg {=0A=09    font-size: 21px !important;=0A=09  }=0A=09  =
+.t-email-descr-lg {=0A=09    font-size: 13px !important;=0A=09  }=0A=09  .t=
+-email-btn {=0A=09    font-size: 12px !important;=0A=09    padding: 12px 20=
+px !important;=0A=09  }=0A=09  .t-email-title {=0A=09    font-size: 16px !i=
+mportant;=0A=09  }=0A=09  .t-email-descr {=0A=09    font-size: 12px !import=
+ant;=0A=09  }=0A=09  .t-email-padding-mobile {=0A=09    padding-left: 15px =
+!important;=0A=09    padding-right: 15px !important;=0A=09  }=0A=09  .t-ema=
+il-padding-mobile-left {=0A=09    padding: 15px 6px 15px 15px !important;=
+=0A=09  }=0A=09  .t-email-padding-mobile-right {=0A=09    padding: 15px 15p=
+x 15px 6px !important;=0A=09  }=0A=09}=0A=09</style>=0A=09=09=0A</head>=0A=
+=0A<body cellpadding=3D"0" cellspacing=3D"0" style=3D"padding: 0; margin: 0=
+; border: 0; background-color: #efefef;">=0A=0A=0A<!--allrecords-->=0A<tabl=
+e id=3D"allrecords" cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%=
+; border-collapse:collapse; border-spacing:0; padding:0; margin:0; border:0=
+;">=0A  <tr>=0A    <td style=3D"background-color: #efefef; padding: 0 15px;=
+">=0A=0A=0A=0A=0A=0A=0A<!--record-->=0A<table style=3D"width:100%; border-c=
+ollapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding=3D"0" =
+cellspacing=3D"0">=0A  <tr>=0A    <td style=3D"padding-top:60px;padding-bot=
+tom:0px; ">=0A=09=09=09=0A        <table align=3D"center" valign=3D"top" bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%;" style=3D"max=
+-width: 600px; margin:0 auto; background-color: #ffffff;">=0A          <tr>=
+=0A            <td field=3D"descr" class=3D"t-email-descr-lg t-email-paddin=
+g-mobile" style=3D"max-width: 600px; padding: 10px 30px 0; text-align: left=
+; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; color: #000; f=
+ont-weight: normal; font-size: 15px; line-height: 1.4; border-bottom: none;=
+">=0A              <div>=0A=09              =0A=09=09=09=09=0A=09=09=09=09<=
+br>=0A=09=09=09=09<div style=3D"text-align:right;"><a href=3D"https://tilda=
+.link/r/eyJ1cmwiOiJodHRwczpcL1wvdGlsZGEuYnkiLCJlbWFpbGlkIjoiMTk4NzE3NTYiLCJ=
+saW5rbnVtYmVyIjowLCJjIjoiMDEyNSJ9"><img src=3D"https://tilda.ws/img/logo_ma=
+il_invoice.png" style=3D"border:0;"></a></div>=0A=09=09=09=09<br><br>=0A=09=
+=09=0A=09=09=09=09=09=09=09=09=0A=09=09=09=09    =0A=09<h3>=D0=92=D1=8B=
+=D0=BF=D0=BE=D0=BB=D0=BD=D0=B5=D0=BD =D0=B2=D1=85=D0=BE=D0=B4 =D0=B2 =D0=
+=B2=D0=B0=D1=88 =D0=B0=D0=BA=D0=BA=D0=B0=D1=83=D0=BD=D1=82 Tilda</h3>=0A=09=
+<p>=0A=09=09=D0=9F=D0=BE=D0=B6=D0=B0=D0=BB=D1=83=D0=B9=D1=81=D1=82=D0=B0, =
+=D0=BF=D1=80=D0=BE=D0=B2=D0=B5=D1=80=D1=8C=D1=82=D0=B5 =D0=B4=D0=B5=D1=
+=82=D0=B0=D0=BB=D0=B8:=0A=09</p>=0A=09<div style=3D"background-color: #efef=
+ef; border-radius: 15px;">=0A=09=09<div style=3D"padding: 10px; border-bott=
+om: #aaaaaa 1px solid;">=0A=09=09=09<table>=0A=09=09=09=09<tr>=0A=09=09=09=
+=09=09<td>=0A=09=09=09=09=09=09<img width=3D"30" style=3D"display: block; o=
+pacity: 1;"=0A=09=09=09=09=09=09=09 src=3D"https://static.tildacdn.com/tild=
+3565-3833-4366-b532-666462373061/user.png">=0A=09=09=09=09=09</td>=0A=09=09=
+=09=09=09<td style=3D"padding-left: 10px;">=0A=09=09=09=09=09=09<strong>=
+=D0=9B=D0=BE=D0=B3=D0=B8=D0=BD</strong><br>=0A=09=09=09=09=09=09<span style=
+=3D"color: #fa8669;">info@mooon.by</span></td>=0A=09=09=09=09</tr>=0A=09=09=
+=09</table>=0A=09=09</div>=0A=09=09<div style=3D"padding: 10px; border-bott=
+om: #aaaaaa 1px solid;">=0A=09=09=09<table>=0A=09=09=09=09<tr>=0A=09=09=09=
+=09=09<td>=0A=09=09=09=09=09=09<img width=3D"30" style=3D"display: block; o=
+pacity: 1;"=0A=09=09=09=09=09=09=09 src=3D"https://static.tildacdn.com/tild=
+3664-3731-4963-a435-643032303865/location.png">=0A=09=09=09=09=09</td>=0A=
+=09=09=09=09=09<td style=3D"padding-left: 10px;">=0A=09=09=09=09=09=09<stro=
+ng>IP =D0=B0=D0=B4=D1=80=D0=B5=D1=81 =D0=B8 =D0=BF=D1=80=D0=B8=D0=BC=D0=
+=B5=D1=80=D0=BD=D0=BE=D0=B5 =D0=BC=D0=B5=D1=81=D1=82=D0=BE=D0=BF=D0=BE=
+=D0=BB=D0=BE=D0=B6=D0=B5=D0=BD=D0=B8=D0=B5</strong><br>=0A=09=09=09=09=09=
+=09<span>37.17.31.210</span>=0A                        <br><span>Belarus, M=
+insk</span>=0A=09=09=09=09=09</td>=0A=09=09=09=09</tr>=0A=09=09=09</table>=
+=0A=09=09</div>=0A        =09=09=09<div style=3D"padding: 10px; border-bott=
+om: #aaaaaa 1px solid;">=0A=09=09=09=09<table>=0A=09=09=09=09=09<tr>=0A=09=
+=09=09=09=09=09<td>=0A=09=09=09=09=09=09=09<img width=3D"30" style=3D"displ=
+ay: block; opacity: 1;"=0A=09=09=09=09=09=09=09=09 src=3D"https://static.ti=
+ldacdn.com/tild6161-6237-4432-a338-666538353133/platform.png">=0A=09=09=09=
+=09=09=09</td>=0A=09=09=09=09=09=09<td style=3D"padding-left: 10px;">=0A=09=
+=09=09=09=09=09=09<strong>=D0=9F=D0=BB=D0=B0=D1=82=D1=84=D0=BE=D1=80=D0=
+=BC=D0=B0</strong><br>=0A                            <span>Windows 10</span=
+><br>                            <span>Chrome 148</span>=09=09=09=09=09=09<=
+/td>=0A=09=09=09=09=09</tr>=0A=09=09=09=09</table>=0A=09=09=09</div>=0A    =
+    =09=09<div style=3D"padding: 10px;">=0A=09=09=09<table>=0A=09=09=09=09<=
+tr>=0A=09=09=09=09=09<td>=0A=09=09=09=09=09=09<img width=3D"30" style=3D"di=
+splay: block; opacity: 1;"=0A=09=09=09=09=09=09=09 src=3D"https://static.ti=
+ldacdn.com/tild6633-3961-4336-b564-643863383630/time.png">=0A=09=09=09=09=
+=09</td>=0A=09=09=09=09=09<td style=3D"padding-left: 10px;">=0A=09=09=09=09=
+=09=09<strong>=D0=94=D0=B0=D1=82=D0=B0 =D0=B8 =D0=B2=D1=80=D0=B5=D0=BC=
+=D1=8F</strong><br>=0A=09=09=09=09=09=09<span>07.05.2026 17:13:18 GMT+3:00<=
+/span>=0A=09=09=09=09=09</td>=0A=09=09=09=09</tr>=0A=09=09=09</table>=0A=09=
+=09</div>=0A=09</div>=0A=09<p>=0A=09=09=D0=95=D1=81=D0=BB=D0=B8 =D1=8D=
+=D1=82=D0=BE =D0=B1=D1=8B=D0=BB=D0=B8 =D0=BD=D0=B5 =D0=B2=D1=8B, =D0=BF=
+=D0=BE=D0=B6=D0=B0=D0=BB=D1=83=D0=B9=D1=81=D1=82=D0=B0, <a href=3D"https://=
+tilda.by/identity/changepassword/" target=3D"_blank"=0A=09=09=09=09=09=09=
+=09=09=09=09=09style=3D"color:#fa8669; text-decoration:none;">=D1=81=D0=
+=BC=D0=B5=D0=BD=D0=B8=D1=82=D0=B5=0A=09=09=09=D0=BF=D0=B0=D1=80=D0=BE=D0=
+=BB=D1=8C</a> =D1=87=D1=82=D0=BE=D0=B1=D1=8B =D0=B7=D0=B0=D1=89=D0=B8=D1=
+=82=D0=B8=D1=82=D1=8C =D0=B4=D0=BE=D1=81=D1=82=D1=83=D0=BF =D0=BA =D0=B0=
+=D0=BA=D0=BA=D0=B0=D1=83=D0=BD=D1=82=D1=83 =D0=B8 =D0=BF=D0=BE=D0=B4=D0=
+=BA=D0=BB=D1=8E=D1=87=D0=B8=D1=82=D0=B5 <a href=3D"https://tilda.by/identit=
+y/2fa/"=0A=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09target=3D"_=
+blank"=0A=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09=09style=3D"col=
+or:#fa8669; text-decoration:none;">=D0=B4=D0=B2=D1=83=D1=85=D1=84=D0=B0=
+=D0=BA=D1=82=D0=BE=D1=80=D0=BD=D1=83=D1=8E=0A=09=09=09=D0=B0=D1=83=D1=82=
+=D0=B5=D0=BD=D1=82=D0=B8=D1=84=D0=B8=D0=BA=D0=B0=D1=86=D0=B8=D1=8E</a>.=0A=
+=09</p>=0A=0A=09=09=09=09=09=09=09=09=09=09=09                 =0A=09      =
+        =0A              </div>=0A            </td>=0A          </tr>=0A   =
+       <tr>=0A            <td style=3D"max-width: 600px; padding: 33px 0 0;=
+">=0A            </td>=0A          </tr>=0A        </table>=0A=0A    </td>=
+=0A  </tr>=0A</table>=0A<!--record-->=09=09=0A=0A=0A=0A=0A<!--record-->=0A<=
+table style=3D"width:100%; border-collapse:collapse; border-spacing:0; marg=
+in:0; border:0;" cellpadding=3D"0" cellspacing=3D"0">=0A  <tr>=0A    <td st=
+yle=3D"padding-top:40px;padding-bottom:60px; ">=0A=09=09=09=0A        <tabl=
+e align=3D"center" valign=3D"top" border=3D"0" cellpadding=3D"0" cellspacin=
+g=3D"0" style=3D"width: 100%; max-width: 600px; margin: 0 auto; padding: 0 =
+30px;">=0A          <tr>=0A            <td field=3D"text" style=3D"max-widt=
+h: 600px; text-align: left; font-family: Helvetica Neue, Helvetica, Arial, =
+sans-serif; font-size: 13px;color: #777;font-weight: normal;line-height: 18=
+px;">=0A=09            =09            =09=D0=A1=D0=BF=D0=B0=D1=81=D0=B8=
+=D0=B1=D0=BE, =D1=87=D1=82=D0=BE =D0=B8=D1=81=D0=BF=D0=BE=D0=BB=D1=8C=D0=
+=B7=D1=83=D0=B5=D1=82=D0=B5 <a href=3D"https://tilda.link/r/eyJ1cmwiOiJodHR=
+wczpcL1wvdGlsZGEuYnkiLCJlbWFpbGlkIjoiMTk4NzE3NTYiLCJsaW5rbnVtYmVyIjoxLCJjIj=
+oiMDEyNSJ9" target=3D"_blank" style=3D"color:#fa8669; text-decoration:none;=
+">Tilda</a>!=0A=09=09=09=09=09<br>=D0=95=D1=81=D0=BB=D0=B8 =D1=83 =D0=B2=
+=D0=B0=D1=81 =D0=B5=D1=81=D1=82=D1=8C =D0=B2=D0=BE=D0=BF=D1=80=D0=BE=D1=
+=81=D1=8B, =D0=BF=D0=BE=D0=B6=D0=B0=D0=BB=D1=83=D0=B9=D1=81=D1=82=D0=B0, =
+=D0=BF=D0=BE=D1=81=D0=BC=D0=BE=D1=82=D1=80=D0=B8=D1=82=D0=B5 =D0=BD=D0=
+=B0=D1=88 <a href=3D"https://tilda.link/r/eyJ1cmwiOiJodHRwczpcL1wvaGVscC1yd=
+S50aWxkYS5jYyIsImVtYWlsaWQiOiIxOTg3MTc1NiIsImxpbmtudW1iZXIiOjIsImMiOiJmZjU0=
+In0%3D" target=3D"_blank" style=3D"color:#fa8669; text-decoration:none;">=
+=D0=A1=D0=BF=D1=80=D0=B0=D0=B2=D0=BE=D1=87=D0=BD=D1=8B=D0=B9 =D1=86=D0=
+=B5=D0=BD=D1=82=D1=80</a> =D0=B8=D0=BB=D0=B8 =D0=BD=D0=B0=D0=BF=D0=B8=D1=
+=88=D0=B8=D1=82=D0=B5 =D0=B2 =D1=81=D0=BB=D1=83=D0=B6=D0=B1=D1=83 =D0=BF=
+=D0=BE=D0=B4=D0=B4=D0=B5=D1=80=D0=B6=D0=BA=D0=B8: <a href=3D"mailto:team@ti=
+lda.by" style=3D"color:#fa8669; text-decoration:none;">team@tilda.by</a>.=
+=0A=09=09=09=09=09<br>=0A=09=09=09=09=09=09=09=09=09=09<br>=D0=9F=D0=BE=
+=D0=B4=D0=BF=D0=B8=D1=81=D1=8B=D0=B2=D0=B0=D0=B9=D1=82=D0=B5=D1=81=D1=8C =
+=D0=B2 <a href=3D"https://tilda.link/r/eyJ1cmwiOiJodHRwczpcL1wvdGVsZWdyYW0u=
+bWVcL3RpbGRhbmV3cyIsImVtYWlsaWQiOiIxOTg3MTc1NiIsImxpbmtudW1iZXIiOjMsImMiOiI=
+zMWI4In0%3D" target=3D"_blank" style=3D"color:#fa8669; text-decoration:none=
+;">Telegram</a>, <a href=3D"https://tilda.link/r/eyJ1cmwiOiJodHRwczpcL1wvdm=
+suY29tXC90aWxkYXB1Ymxpc2hpbmciLCJlbWFpbGlkIjoiMTk4NzE3NTYiLCJsaW5rbnVtYmVyI=
+jo0LCJjIjoiNmE0MCJ9" target=3D"_blank" style=3D"color:#fa8669; text-decorat=
+ion:none;">=D0=92=D0=BA=D0=BE=D0=BD=D1=82=D0=B0=D0=BA=D1=82=D0=B5</a> =
+=D0=B8=D0=BB=D0=B8 <a href=3D"https://tilda.link/r/eyJ1cmwiOiJodHRwczpcL1wv=
+d3d3LnlvdXR1YmUuY29tXC90aWxkYXB1Ymxpc2hpbmciLCJlbWFpbGlkIjoiMTk4NzE3NTYiLCJ=
+saW5rbnVtYmVyIjo1LCJjIjoiYmZlYSJ9" target=3D"_blank" style=3D"color:#fa8669=
+; text-decoration:none;">YouTube</a>.=0A=09=09=09=09            </td>=0A   =
+       </tr>=0A        </table>=0A=0A    </td>=0A  </tr>=0A</table>=0A<!--r=
+ecord-->=09=09=0A=0A=0A=0A=0A=0A    </td>=0A  </tr>=0A</table>=0A<!--/allre=
+cords-->=0A=0A<div style=3D"display:none; white-space:nowrap; font:10px cou=
+rier; line-height:0;">=0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &=
+nbsp; &nbsp; &nbsp; &nbsp; =0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp; =0A&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp;=0A</div>=0A=0A<img src=3D"https://mx13.tildacdn.com//img/pi=
+xel/?i=3D19871756&c=3DICAg" alt=3D"" /></body>=0A</html>
+--ad239c33c030244020986ae8f6a476bf334595d3--

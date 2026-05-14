@@ -1,0 +1,45 @@
+{
+  "uid": "raw_email_26809",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T10:28:33.506455+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102832666460\\modules\\mail_import\\mock-flow-raw_email_26809-20260514T102833236212\\message_raw_email_26809.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102832666460\\modules\\mail_import\\mock-flow-raw_email_26809-20260514T102833236212\\message_raw_email_26809.md",
+  "case_id": "case-000002",
+  "thread_id": "thread-000002",
+  "telegram_message_id": 2,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|cb9f98fdcb1978c1",
+    "ma|needs_edit|cb9f98fdcb1978c1",
+    "ma|handoff|cb9f98fdcb1978c1",
+    "ma|ignore|cb9f98fdcb1978c1"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|cb9f98fdcb1978c1"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|cb9f98fdcb1978c1"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|cb9f98fdcb1978c1"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|cb9f98fdcb1978c1"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: raw_email_26809\nПолучено: 05.05.2026 21:08\nОт: olga_botvich@mail.ru\nТема письма: Подарочный сертификат\nСуть обращения: Гость спрашивает, можно ли вернуть деньги за подарочную карту mooon.\n\n<b>Кейс</b>\nCase ID: case-000002 · Thread ID: thread-000002\n\n<b>История переписки</b>\n- входящее · 2026-05-05 21:08 · Подарочный сертификат · Гость спрашивает, можно ли вернуть деньги за подарочную карту mooon.\n\n<b>Вложения</b>\nнет\n\n<b>Enrichment</b>\nБилет: не найден\n\n<b>Что понял ассистент</b>\nТип обращения: клиентский вопрос\nЧто хочет отправитель: Определить ответственного и обработать вручную.\nЧто предлагает система: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>Что предлагает система</b>\nРежим: уточнить данные\nПричина: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>База знаний</b>\n- Истёк срок действия подарочного сертификата / kb_giftcards_expired_no_service / балл 9.9\n- Деньги по подарочной карте или сертификату не возвращаются / kb_giftcards_no_cash_refund / балл 9.9\n- Если гость потерял билет и нет чека / kb_tickets_lost_without_receipt / балл 5.8\n\n<b>Что не хватает</b>\n- Номер заказа или билета, если он есть у гостя.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Определить ответственного и обработать вручную.), пожалуйста, уточните:\n- Номер заказа или билета, если он есть у гостя.\nПосле истечения срока действия подарочного сертификата воспользоваться им невозможно.\nПодарочная карта предназначена для оплаты услуг кинопространства.\nБез подтверждения оплаты мы можем не смочь идентифицировать покупку, но попробуем проверить по дополнительным данным.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102832666460"
+}

@@ -1,0 +1,45 @@
+{
+  "uid": "raw_email_26812",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T10:41:54.928177+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T104154177182\\message_raw_email_26812.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T104154177182\\message_raw_email_26812.md",
+  "case_id": "case-000005",
+  "thread_id": "thread-000005",
+  "telegram_message_id": 5,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|9c3af27f628c3637",
+    "ma|needs_edit|9c3af27f628c3637",
+    "ma|handoff|9c3af27f628c3637",
+    "ma|ignore|9c3af27f628c3637"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|9c3af27f628c3637"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|9c3af27f628c3637"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|9c3af27f628c3637"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|9c3af27f628c3637"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: raw_email_26812\nПолучено: 06.05.2026 08:17\nОт: olga.evs2010@gmail.com\nТема письма: Ошибка оплаты\nСуть обращения: Гость сообщает об ошибке оплаты при покупке билетов и приложил скриншот.\n\n<b>Кейс</b>\nCase ID: case-000005 · Thread ID: thread-000005\n\n<b>История переписки</b>\n- входящее · 2026-05-06 08:17 · Ошибка оплаты · Гость сообщает об ошибке оплаты при покупке билетов и приложил скриншот.\n\n<b>Вложения</b>\nФайлов: 1\n- image0.png · изображение PNG · скриншот ошибки оплаты / отклонённого платежа\n\n<b>Enrichment</b>\nПроверка билетов: временно недоступна — ticket_db unavailable: pymysql is not installed.\n\n<b>Что понял ассистент</b>\nТип обращения: клиентский вопрос\nЧто хочет отправитель: Получить помощь по билету или оплате.\nЧто предлагает система: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>Что предлагает система</b>\nРежим: уточнить данные\nПричина: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>База знаний</b>\n- Если не проходит оплата или невозможно купить билет / kb_payment_general_failed_payment / балл 11.9\n\n<b>Что не хватает</b>\n- Время попытки оплаты и последние 4 цифры карты/банк, если это потребуется для проверки.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Получить помощь по билету или оплате.), пожалуйста, уточните:\n- Время попытки оплаты и последние 4 цифры карты/банк, если это потребуется для проверки.\nПопробуйте, пожалуйста, повторить оплату в другом браузере или на другом устройстве. Если ошибка сохранится, пришлите скриншот.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822"
+}

@@ -1,0 +1,17 @@
+{
+  "uid": "callback_approve",
+  "case_id": "case-callback-approve",
+  "thread_id": "thread-callback-approve",
+  "action": "needs_edit",
+  "operator_comment": "",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "created_at": "20260514T125105434831",
+  "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\callback_fixtures\\message_callback_approve.md#modules.draft_builder",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\callback_fixtures\\message_callback_approve.md",
+  "callback_data": "ma|needs_edit|cc429fd324543ca4",
+  "mock_reply_refs": [],
+  "updated_card_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-callback-approve\\card_20260514T125105455933.json",
+  "real_email_sent": false,
+  "status": "waiting_operator_comment"
+}

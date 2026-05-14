@@ -5,7 +5,10 @@ from typing import Any
 from src.pipeline.draft_builder.module import DraftBuilderModule
 from src.pipeline.operator_flow import (
     action_status_notice,
+    build_action_suggestion_revision,
     find_dossier_from_card_index,
+    latest_action_suggestion,
+    latest_draft_text,
     load_dossier,
     parse_callback_data,
     persist_operator_card,
@@ -46,7 +49,7 @@ class OperatorActionsModule:
     def run(self, context: PipelineContext) -> ModuleResult:
         try:
             action = self._resolve_action()
-            if action not in {"approve", "needs_edit", "handoff", "ignore"}:
+            if action not in {"approve", "needs_edit", "handoff", "ignore", "action_request"}:
                 raise ValueError(f"Unsupported operator action: {action}")
 
             dossier_path = self._resolve_dossier_path(context)
@@ -65,6 +68,14 @@ class OperatorActionsModule:
                 ).run(context)
                 refs.extend(draft_result.artifact_refs)
                 payload = load_dossier(dossier_path)
+                if not latest_draft_text(payload):
+                    build_action_suggestion_revision(
+                        payload,
+                        dossier_path=str(dossier_path),
+                        operator_comment=self.operator_comment,
+                        revision_reason="operator_needs_edit",
+                    )
+                    save_dossier(dossier_path, payload)
 
             if action == "approve":
                 reply_result = ReplySenderModule(
@@ -74,11 +85,18 @@ class OperatorActionsModule:
                 ).run(context)
                 refs.extend(reply_result.artifact_refs)
                 action_payload["mock_reply_refs"] = list(reply_result.metrics.get("mock_reply_refs", []))
+            elif action == "action_request":
+                suggestion = latest_action_suggestion(payload)
+                action_payload["action"] = "action_requested"
+                action_payload["action_type"] = str(suggestion.get("action_type") or "mark_manual_processing")
+                action_payload["status"] = "stub_recorded"
+                action_payload["real_routing"] = False
+                action_payload["proposed_action_text"] = str(suggestion.get("action_text") or "")
 
             payload = load_dossier(dossier_path)
             card_text = render_operator_card(
                 payload,
-                status_notice=action_status_notice(action, mock_refs=action_payload.get("mock_reply_refs")),
+                status_notice=action_status_notice(action, mock_refs=action_payload.get("mock_reply_refs"), payload=payload),
                 action=action,
             )
             card_payload = persist_operator_card(

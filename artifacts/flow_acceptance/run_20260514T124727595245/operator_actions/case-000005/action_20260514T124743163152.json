@@ -1,0 +1,18 @@
+{
+  "uid": "raw_email_26819",
+  "case_id": "case-000005",
+  "thread_id": "thread-000005",
+  "action": "handoff",
+  "operator_comment": "",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "created_at": "20260514T124743163152",
+  "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124727595245\\modules\\mail_import\\mock-flow-raw_email_26819-20260514T124737237212\\message_raw_email_26819.md#modules.draft_builder",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124727595245\\modules\\mail_import\\mock-flow-raw_email_26819-20260514T124737237212\\message_raw_email_26819.md",
+  "callback_data": "ma|handoff|6b95e342de88db13",
+  "mock_reply_refs": [],
+  "updated_card_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124727595245\\telegram_operator_delivery\\case-000005\\card_20260514T124743165405.json",
+  "real_email_sent": false,
+  "status": "manual_processing_marked",
+  "real_routing": false
+}

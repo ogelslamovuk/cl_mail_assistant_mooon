@@ -1,0 +1,17 @@
+{
+  "uid": "raw_email_26818",
+  "case_id": "case-000004",
+  "thread_id": "thread-000004",
+  "action": "needs_edit",
+  "operator_comment": "",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "created_at": "20260514T114517877977",
+  "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114512098843\\modules\\mail_import\\mock-flow-raw_email_26818-20260514T114514374891\\message_raw_email_26818.md#modules.draft_builder",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114512098843\\modules\\mail_import\\mock-flow-raw_email_26818-20260514T114514374891\\message_raw_email_26818.md",
+  "callback_data": "ma|needs_edit|48dbb608fd5e841b",
+  "mock_reply_refs": [],
+  "updated_card_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114512098843\\telegram_operator_delivery\\case-000004\\card_20260514T114517882229.json",
+  "real_email_sent": false,
+  "status": "waiting_operator_comment"
+}

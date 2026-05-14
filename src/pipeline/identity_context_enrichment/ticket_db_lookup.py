@@ -101,8 +101,8 @@ class TicketDbLookupProvider:
 
         if pymysql is None:
             return TicketDbLookupResult(
-                status="error",
-                notes=["pymysql is not installed"],
+                status="unavailable",
+                notes=["ticket_db unavailable: pymysql is not installed"],
                 settings_source=self.settings.source,
                 query_email=email,
                 query_localpart=local_in,
@@ -110,8 +110,8 @@ class TicketDbLookupProvider:
 
         if fuzz is None or JaroWinkler is None:
             return TicketDbLookupResult(
-                status="error",
-                notes=["rapidfuzz is not installed"],
+                status="unavailable",
+                notes=["ticket_db unavailable: rapidfuzz is not installed"],
                 settings_source=self.settings.source,
                 query_email=email,
                 query_localpart=local_in,

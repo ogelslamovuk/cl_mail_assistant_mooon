@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import zipfile
 from dataclasses import dataclass
 from email import message_from_binary_file, policy
 from pathlib import Path
 from typing import Any
+from xml.etree import ElementTree
 
 from src.shared.common.message_dossier import load_message_record, resolve_dossier_path, write_message_dossier
 from src.shared.contracts.module_contract import ModuleResult
@@ -52,6 +54,8 @@ ALLOWED_METHODS = {
     "rtf_text",
     "rtf_raw_decoded",
     "rtf_unavailable",
+    "docx_text",
+    "docx_text_error",
     "saved_only",
     "unsupported_type",
 }
@@ -194,6 +198,8 @@ class AttachmentExtractionModule:
             text, method = self._ocr_image(saved_path)
         elif content_type == "application/pdf":
             text, method = self._extract_pdf(saved_path)
+        elif self._is_docx_document_like(saved_path=saved_path, content_type=content_type):
+            text, method = self._extract_docx(saved_path)
         elif self._is_rtf_document_like(saved_path=saved_path, content_type=content_type):
             text, method = self._extract_rtf(saved_path)
         elif content_type.startswith("image/"):
@@ -322,6 +328,48 @@ class AttachmentExtractionModule:
             if self._normalize_text(candidate):
                 return candidate, "rtf_raw_decoded"
         return "", "rtf_unavailable"
+
+    def _extract_docx(self, file_path: Path) -> tuple[str, str]:
+        try:
+            with zipfile.ZipFile(file_path) as archive:
+                parts = [
+                    "word/document.xml",
+                    *sorted(name for name in archive.namelist() if name.startswith("word/header") and name.endswith(".xml")),
+                    *sorted(name for name in archive.namelist() if name.startswith("word/footer") and name.endswith(".xml")),
+                ]
+                chunks: list[str] = []
+                seen: set[str] = set()
+                for part_name in parts:
+                    if part_name in seen or part_name not in archive.namelist():
+                        continue
+                    seen.add(part_name)
+                    xml_payload = archive.read(part_name)
+                    root = ElementTree.fromstring(xml_payload)
+                    paragraph_texts: list[str] = []
+                    current: list[str] = []
+                    for element in root.iter():
+                        tag = element.tag.rsplit("}", 1)[-1]
+                        if tag == "t" and element.text:
+                            current.append(element.text)
+                        elif tag in {"tab", "br"}:
+                            current.append(" ")
+                        elif tag == "p":
+                            paragraph = "".join(current).strip()
+                            if paragraph:
+                                paragraph_texts.append(paragraph)
+                            current = []
+                    tail = "".join(current).strip()
+                    if tail:
+                        paragraph_texts.append(tail)
+                    chunks.extend(paragraph_texts)
+            return "\n".join(chunks), "docx_text"
+        except Exception:
+            return "", "docx_text_error"
+
+    @staticmethod
+    def _is_docx_document_like(saved_path: Path, content_type: str) -> bool:
+        suffix = saved_path.suffix.lower()
+        return suffix == ".docx" or "wordprocessingml.document" in content_type
 
     @staticmethod
     def _is_rtf_document_like(saved_path: Path, content_type: str) -> bool:

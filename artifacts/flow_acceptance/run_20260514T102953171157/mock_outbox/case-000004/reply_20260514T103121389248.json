@@ -1,0 +1,29 @@
+{
+  "status": "approved_mock_not_sent",
+  "to": "olga.evs2010@gmail.com",
+  "subject": "Re: Ошибка оплаты",
+  "uid": "raw_email_26812",
+  "case_id": "case-000004",
+  "thread_id": "thread-000004",
+  "operator_action": {
+    "uid": "raw_email_26812",
+    "case_id": "case-000004",
+    "thread_id": "thread-000004",
+    "action": "approve",
+    "operator_comment": "",
+    "operator_telegram_id": "42",
+    "operator_username": "tester",
+    "created_at": "20260514T103121385677",
+    "draft_ref": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T102954506635\\message_raw_email_26812.md#modules.draft_builder",
+    "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T102954506635\\message_raw_email_26812.md",
+    "callback_data": "ma|approve|3371aac8e4bf03d2",
+    "mock_reply_refs": [],
+    "updated_card_ref": "",
+    "real_email_sent": false
+  },
+  "final_draft_text": "Здравствуйте.\nЧтобы корректно обработать обращение (Получить помощь по билету или оплате.), пожалуйста, уточните:\n- Время попытки оплаты и последние 4 цифры карты/банк, если это потребуется для проверки.\nПопробуйте, пожалуйста, повторить оплату в другом браузере или на другом устройстве. Если ошибка сохранится, пришлите скриншот.\nПосле этого мы сможем продолжить проверку.\nДополнительно: ?????? ?????? ? ?? ????? ????????, ?? ??? ????????.\nС уважением, команда mooon.",
+  "draft_revision": 2,
+  "timestamp": "20260514T103121389248",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26812-20260514T102954506635\\message_raw_email_26812.md",
+  "real_email_sent": false
+}

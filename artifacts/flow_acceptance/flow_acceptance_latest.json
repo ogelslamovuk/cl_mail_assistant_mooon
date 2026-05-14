@@ -1,0 +1,283 @@
+{
+  "status": "ok",
+  "created_at": "20260514T125059481993",
+  "rows": [
+    {
+      "uid": "26815",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26815.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26815-20260514T125059524413\\message_raw_email_26815.md",
+      "classification": "candidate_or_portfolio",
+      "operator_summary": "Никита Маскевич предлагает помощь с видеомонтажом, соцсетями и роликами, приложил ссылку на портфолио.",
+      "enrichment_status": "skipped",
+      "knowledge_status": "skipped",
+      "draft_status": "skipped",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000001\\card_20260514T125059903908.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать",
+        "⚡ Выполнить действие"
+      ],
+      "attachments_present": false,
+      "expected_result": [
+        "candidate_or_portfolio"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    },
+    {
+      "uid": "26816",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26816.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26816-20260514T125100051973\\message_raw_email_26816.md",
+      "classification": "newsletter_or_promo",
+      "operator_summary": "Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.",
+      "enrichment_status": "skipped",
+      "knowledge_status": "skipped",
+      "draft_status": "skipped",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000002\\card_20260514T125100503126.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать"
+      ],
+      "attachments_present": false,
+      "expected_result": [
+        "newsletter_or_promo"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    },
+    {
+      "uid": "26817",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26817.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26817-20260514T125100603136\\message_raw_email_26817.md",
+      "classification": "gratitude_or_case_closed",
+      "operator_summary": "Вопрос с пригласительным решён, отправитель благодарит за реакцию.",
+      "enrichment_status": "skipped",
+      "knowledge_status": "skipped",
+      "draft_status": "skipped",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000003\\card_20260514T125101050624.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать"
+      ],
+      "attachments_present": false,
+      "expected_result": [
+        "gratitude_or_case_closed"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    },
+    {
+      "uid": "26818",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26818.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26818-20260514T125101252696\\message_raw_email_26818.md",
+      "classification": "business_proposal",
+      "operator_summary": "Александра предлагает снять короткометражный фильм в локации mooon и обсудить аренду или упоминание в титрах.",
+      "enrichment_status": "skipped",
+      "knowledge_status": "skipped",
+      "draft_status": "skipped",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000004\\card_20260514T125101818042.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать",
+        "⚡ Выполнить действие"
+      ],
+      "attachments_present": false,
+      "expected_result": [
+        "business_proposal"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    },
+    {
+      "uid": "26819",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26819.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26819-20260514T125102397799\\message_raw_email_26819.md",
+      "classification": "training_invitation",
+      "operator_summary": "Университет НАН Беларуси приглашает на курс по архивному делу; во вложениях информационное письмо и регистрационная форма.",
+      "enrichment_status": "skipped",
+      "knowledge_status": "skipped",
+      "draft_status": "skipped",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000005\\card_20260514T125103606571.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать",
+        "⚡ Выполнить действие"
+      ],
+      "attachments_present": true,
+      "expected_result": [
+        "training_invitation"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    },
+    {
+      "uid": "26820",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26820.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26820-20260514T125103687848\\message_raw_email_26820.md",
+      "classification": "candidate_or_portfolio",
+      "operator_summary": "Мария, студентка маркетинга БГУ, просит пройти двухнедельную бесплатную аналитическую практику.",
+      "enrichment_status": "skipped",
+      "knowledge_status": "skipped",
+      "draft_status": "skipped",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000006\\card_20260514T125104090258.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать",
+        "⚡ Выполнить действие"
+      ],
+      "attachments_present": false,
+      "expected_result": [
+        "candidate_or_portfolio"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    },
+    {
+      "uid": "26823",
+      "source_status": "found",
+      "source_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\fixtures\\mock_mailbox\\processed\\raw_email_26823.eml",
+      "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\modules\\mail_import\\mock-flow-raw_email_26823-20260514T125104242200\\message_raw_email_26823.md",
+      "classification": "customer_support",
+      "operator_summary": "Гость спрашивает, как вернуть деньги за билет.",
+      "enrichment_status": "found_strict",
+      "knowledge_status": "found",
+      "draft_status": "ok",
+      "telegram_card_artifact": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T125059481993\\telegram_operator_delivery\\case-000007\\card_20260514T125105151251.json",
+      "operator_buttons_present": [
+        "✅ Утвердить",
+        "✏️ На доработку (LLM)",
+        "👤 Оператору",
+        "🚫 Игнорировать"
+      ],
+      "attachments_present": true,
+      "expected_result": [
+        "customer_support"
+      ],
+      "passed": true,
+      "notes": [
+        "ok"
+      ]
+    }
+  ],
+  "fake_telegram_callbacks": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "revision_waiting_state",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "revision_artifact_created",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "draft_revision_created",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "revision_card_sent",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "revision_comment_in_card",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "revision_card_edited",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "approve_uses_latest_revision",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "ignore_callback",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "handoff_callback",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "action_callback_artifact",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "action_callback_human_text",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "action_revision_created",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "action_revision_card_sent",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "action_revision_comment_in_card",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "action_uses_latest_revision",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "attachment_caption_uid",
+        "passed": true,
+        "note": "ok"
+      },
+      {
+        "name": "attachment_caption_human",
+        "passed": true,
+        "note": "ok"
+      }
+    ],
+    "operations_count": 29
+  }
+}

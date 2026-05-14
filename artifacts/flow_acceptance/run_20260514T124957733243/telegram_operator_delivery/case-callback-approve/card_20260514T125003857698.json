@@ -1,0 +1,90 @@
+{
+  "uid": "callback_approve",
+  "status": "waiting_operator_comment",
+  "error": "",
+  "created_at": "2026-05-14T12:50:03.857589+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124957733243\\callback_fixtures\\message_callback_approve.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124957733243\\callback_fixtures\\message_callback_approve.md",
+  "case_id": "case-callback-approve",
+  "thread_id": "thread-callback-approve",
+  "telegram_message_id": 8,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "telegram_bot_api",
+  "telegram_operations": [
+    {
+      "operation": "editMessageText",
+      "ok": true,
+      "chat_id": "mock-operator-chat",
+      "message_id": 8,
+      "text": "<b>📩 Новое письмо</b>\n\n✏️ Статус: ожидается комментарий для доработки LLM\nНапиши следующим сообщением, что нужно исправить в карточке/черновике.\n\n<b>Письмо</b>\nUID: callback_approve\nПолучено: 13.05.2026 10:00\nОт: guest@example.test\nТема письма: Не пришёл билет\nСуть обращения: Гость оплатил билет, но не получил письмо.\n\n<b>Кейс</b>\nCase ID: case-callback-approve · Thread ID: thread-callback-approve\n\n<b>История переписки</b>\nотсутствует\n\n<b>Вложения</b>\nнет\n\n<b>Проверка билетов / Enrichment</b>\nБилет: не найден\n\n<b>Что понял ассистент</b>\nТип обращения: Не пришёл электронный билет\nЧто хочет отправитель: Получить билет или инструкцию по восстановлению.\nСледующий шаг: отправить гостю запрос недостающих данных.\n\n<b>Что предлагает система</b>\nЧто сделать: отправить гостю запрос недостающих данных.\nПочему: Не хватает номера заказа или контактных данных для проверки.\n\n<b>База знаний</b>\n- Адрес отправителя электронных билетов\n\n<b>Что не хватает</b>\n- Номер заказа или email/телефон, указанный при покупке.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Получить билет или инструкцию по восстановлению.), пожалуйста, уточните:\n- Номер заказа или email/телефон, указанный при покупке.\nПисьмо с билетами отправляется с адреса ticket@silverscreen.by.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.\n\n<b>Последнее действие</b>\nна доработку",
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "Обработано",
+              "callback_data": "ma|noop|done"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "operation": "editMessageReplyMarkup",
+      "ok": true,
+      "chat_id": "mock-operator-chat",
+      "message_id": 8,
+      "reply_markup": {
+        "inline_keyboard": []
+      }
+    },
+    {
+      "operation": "answerCallbackQuery",
+      "ok": true,
+      "callback_query_id": "cb_draft_needs_edit",
+      "text": "Напиши комментарий ответом на сообщение бота."
+    },
+    {
+      "operation": "sendMessage",
+      "ok": true,
+      "chat_id": "mock-operator-chat",
+      "message_id": 9001,
+      "text": "✏️ <b>На доработку LLM</b>\nОтветь на это сообщение обычным текстом: что нужно исправить в карточке, черновике или предлагаемом действии.",
+      "reply_markup": {
+        "force_reply": true,
+        "selective": true
+      },
+      "reply_to_message_id": 8
+    }
+  ],
+  "callback_data": [
+    "ma|approve|cc429fd324543ca4",
+    "ma|needs_edit|cc429fd324543ca4",
+    "ma|handoff|cc429fd324543ca4",
+    "ma|ignore|cc429fd324543ca4"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|cc429fd324543ca4"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|cc429fd324543ca4"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|cc429fd324543ca4"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|cc429fd324543ca4"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n✏️ Статус: ожидается комментарий для доработки LLM\nНапиши следующим сообщением, что нужно исправить в карточке/черновике.\n\n<b>Письмо</b>\nUID: callback_approve\nПолучено: 13.05.2026 10:00\nОт: guest@example.test\nТема письма: Не пришёл билет\nСуть обращения: Гость оплатил билет, но не получил письмо.\n\n<b>Кейс</b>\nCase ID: case-callback-approve · Thread ID: thread-callback-approve\n\n<b>История переписки</b>\nотсутствует\n\n<b>Вложения</b>\nнет\n\n<b>Проверка билетов / Enrichment</b>\nБилет: не найден\n\n<b>Что понял ассистент</b>\nТип обращения: Не пришёл электронный билет\nЧто хочет отправитель: Получить билет или инструкцию по восстановлению.\nСледующий шаг: отправить гостю запрос недостающих данных.\n\n<b>Что предлагает система</b>\nЧто сделать: отправить гостю запрос недостающих данных.\nПочему: Не хватает номера заказа или контактных данных для проверки.\n\n<b>База знаний</b>\n- Адрес отправителя электронных билетов\n\n<b>Что не хватает</b>\n- Номер заказа или email/телефон, указанный при покупке.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Получить билет или инструкцию по восстановлению.), пожалуйста, уточните:\n- Номер заказа или email/телефон, указанный при покупке.\nПисьмо с билетами отправляется с адреса ticket@silverscreen.by.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.\n\n<b>Последнее действие</b>\nна доработку",
+  "action": "needs_edit",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T124957733243"
+}

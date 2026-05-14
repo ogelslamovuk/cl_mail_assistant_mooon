@@ -1,0 +1,15 @@
+{
+  "uid": "raw_email_26818",
+  "case_id": "case-000004",
+  "thread_id": "thread-000004",
+  "latest_revision": 0,
+  "operator_comment": "Уточни, что это съёмка фильма, а не вопрос расписания.",
+  "operator_telegram_id": "101",
+  "operator_username": "demo_operator",
+  "source_callback_data": "ma|needs_edit|48dbb608fd5e841b",
+  "source_chat_id": "mock-operator-chat",
+  "source_message_id": 4,
+  "created_at": "20260514T114517959039",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114512098843\\modules\\mail_import\\mock-flow-raw_email_26818-20260514T114514374891\\message_raw_email_26818.md",
+  "status": "created"
+}

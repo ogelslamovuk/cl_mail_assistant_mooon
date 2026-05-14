@@ -1,0 +1,45 @@
+{
+  "uid": "raw_email_26808",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T10:29:53.738637+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26808-20260514T102953209533\\message_raw_email_26808.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157\\modules\\mail_import\\mock-flow-raw_email_26808-20260514T102953209533\\message_raw_email_26808.md",
+  "case_id": "case-000001",
+  "thread_id": "thread-000001",
+  "telegram_message_id": 1,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|37e47ae54884585c",
+    "ma|needs_edit|37e47ae54884585c",
+    "ma|handoff|37e47ae54884585c",
+    "ma|ignore|37e47ae54884585c"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|37e47ae54884585c"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|37e47ae54884585c"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|37e47ae54884585c"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|37e47ae54884585c"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: raw_email_26808\nПолучено: 05.05.2026 20:40\nОт: kk@cinemalab.io\nТема письма: Как вернуть билет деньги за билет\nСуть обращения: Гость спрашивает, как вернуть деньги за билет; указана почта katerinka166@gmail.com.\n\n<b>Кейс</b>\nCase ID: case-000001 · Thread ID: thread-000001\n\n<b>История переписки</b>\n- входящее · 2026-05-05 20:39 · Как вернуть билет деньги за билет · Гость спрашивает, как вернуть деньги за билет; указана почта katerinka166@gmail.com.\n\n<b>Вложения</b>\nнет\n\n<b>Enrichment</b>\nБилет: не найден\n\n<b>Что понял ассистент</b>\nТип обращения: клиентский вопрос\nЧто хочет отправитель: Получить помощь по билету или оплате.\nЧто предлагает система: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>Что предлагает система</b>\nРежим: уточнить данные\nПричина: Письмо связано с билетом/оплатой, но подтвержденный заказ не найден в enrichment.\n\n<b>База знаний</b>\n- Возврат билетов зависит от канала покупки / kb_refunds_by_purchase_channel / балл 7.0\n- Если гостю не пришёл электронный билет / kb_tickets_not_received_recovery / балл 7.0\n- Если гость потерял билет и нет чека / kb_tickets_lost_without_receipt / балл 5.8\n\n<b>Что не хватает</b>\n- Номер заказа или билета, если он есть у гостя.\n\n<b>Риски</b>\nнет\n\n<b>Черновик v1</b>\nЗдравствуйте.\nЧтобы корректно обработать обращение (Получить помощь по билету или оплате.), пожалуйста, уточните:\n- Номер заказа или билета, если он есть у гостя.\nПорядок возврата зависит от того, где был приобретён билет: в кассе, на mooon.by или через go2.by.\nПроверьте папки «Спам» и «Рассылки». Если письма нет, билет можно скачать по ссылке https://mooon.by/ticket/download.\nБез подтверждения оплаты мы можем не смочь идентифицировать покупку, но попробуем проверить по дополнительным данным.\nПосле этого мы сможем продолжить проверку.\nС уважением, команда mooon.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T102953171157"
+}

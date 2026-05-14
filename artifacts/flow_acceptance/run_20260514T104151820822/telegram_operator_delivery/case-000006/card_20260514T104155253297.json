@@ -1,0 +1,51 @@
+{
+  "uid": "raw_email_26813",
+  "status": "mock_sent",
+  "error": "",
+  "created_at": "2026-05-14T10:41:55.253182+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822\\modules\\mail_import\\mock-flow-raw_email_26813-20260514T104155012517\\message_raw_email_26813.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822\\modules\\mail_import\\mock-flow-raw_email_26813-20260514T104155012517\\message_raw_email_26813.md",
+  "case_id": "case-000006",
+  "thread_id": "thread-000006",
+  "telegram_message_id": 6,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "artifact_only",
+  "telegram_operations": [],
+  "callback_data": [
+    "ma|approve|e0f281eba609741e",
+    "ma|needs_edit|e0f281eba609741e",
+    "ma|handoff|e0f281eba609741e",
+    "ma|ignore|e0f281eba609741e",
+    "ma|action_request|e0f281eba609741e"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|e0f281eba609741e"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|e0f281eba609741e"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|e0f281eba609741e"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|e0f281eba609741e"
+    },
+    {
+      "action": "action_request",
+      "label": "⚡ Выполнить действие",
+      "callback_data": "ma|action_request|e0f281eba609741e"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n<b>Письмо</b>\nUID: raw_email_26813\nПолучено: 06.05.2026 10:01\nОт: support@belassist.by\nТема письма: Плановые работы - ОАО \"Банковский процессинговый центр\" 07.05.2026\nСуть обращения: BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратком перерыве платежей.\n\n<b>Кейс</b>\nCase ID: case-000006 · Thread ID: thread-000006\n\n<b>История переписки</b>\n- входящее · 2026-05-06 07:01 · Плановые работы - ОАО \"Банковский процесс… · BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратко…\n\n<b>Вложения</b>\nнет\n\n<b>Enrichment</b>\nПроверка билетов: не запускалась — письмо не похоже на клиентский билетный вопрос.\n\n<b>Что понял ассистент</b>\nТип обращения: служебное уведомление, требуется действие\nЧто хочет отправитель: Зафиксировать служебное уведомление и уведомить ответственных stub-действием.\nЧто предлагает система: BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратком перерыве платежей.\n\n<b>Что предлагает система</b>\nРежим: передать оператору\nПричина: BELASSIST сообщает о плановых работах Банковского процессингового центра и возможном кратком перерыве платежей.\n\n<b>Предлагаемое действие</b>\nПереслать уведомление в ответственный чат по платёжным алертам.\nТип действия: forward_to_chat_stub\n\n<b>База знаний</b>\nне применялась — письмо не является клиентским обращением по билетам.\n\n<b>Что не хватает</b>\nнет\n\n<b>Риски</b>\n- Реальная маршрутизация пока не подключена; доступно только stub-действие.\n\n<b>Черновик</b>\nЧерновик не создавался: это служебное уведомление, нужен только внутренний action.",
+  "action": "",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T104151820822"
+}

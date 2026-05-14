@@ -1,0 +1,78 @@
+{
+  "uid": "raw_email_26816",
+  "status": "action_ignore",
+  "error": "",
+  "created_at": "2026-05-14T11:40:35.400751+00:00",
+  "dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\modules\\mail_import\\mock-flow-raw_email_26816-20260514T114029624438\\message_raw_email_26816.md",
+  "source_dossier_path": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932\\modules\\mail_import\\mock-flow-raw_email_26816-20260514T114029624438\\message_raw_email_26816.md",
+  "case_id": "case-000002",
+  "thread_id": "thread-000002",
+  "telegram_message_id": 2,
+  "telegram_chat_id": "mock-operator-chat",
+  "telegram_delivery_mode": "telegram_bot_api",
+  "telegram_operations": [
+    {
+      "operation": "editMessageText",
+      "ok": true,
+      "chat_id": "mock-operator-chat",
+      "message_id": 2,
+      "text": "<b>📩 Новое письмо</b>\n\n🚫 Ответ не требуется: кейс закрыт как рекламная рассылка.\n\n<b>Письмо</b>\nUID: raw_email_26816\nПолучено: 06.05.2026 11:01\nОт: hello@uniquex.com\nТема письма: Unique X and AUWE Sign Agreement for Movie Transit Deployment\r\n in Brazil\nСуть обращения: Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>Кейс</b>\nCase ID: case-000002 · Thread ID: thread-000002\n\n<b>История переписки</b>\n- входящее · 2026-05-06 08:01 · Unique X and AUWE Sign Agreement for Movi… · Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>Вложения</b>\nнет\n\n<b>Проверка билетов / Enrichment</b>\nПроверка билетов: не запускалась — письмо не похоже на клиентский билетный вопрос.\n\n<b>Что понял ассистент</b>\nТип обращения: рекламная рассылка\nЧто хочет отправитель: Ответ клиенту не требуется; письмо можно игнорировать.\nСледующий шаг: Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>Предлагаемое решение</b>\nРежим: не отвечать\nПричина: Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>База знаний</b>\nне применялась — письмо не требует клиентской базы знаний по билетам.\n\n<b>Что не хватает</b>\nнет\n\n<b>Риски</b>\nнет\n\n<b>Черновик</b>\nЧерновик не создавался: ответ клиенту не требуется.\n\n<b>Последнее действие</b>\nответ не требуется, кейс закрыт",
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "Обработано",
+              "callback_data": "ma|noop|done"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "operation": "editMessageReplyMarkup",
+      "ok": true,
+      "chat_id": "mock-operator-chat",
+      "message_id": 2,
+      "reply_markup": {
+        "inline_keyboard": []
+      }
+    },
+    {
+      "operation": "answerCallbackQuery",
+      "ok": true,
+      "callback_query_id": "cb_ignore",
+      "text": "Кейс помечен как не требующий ответа."
+    }
+  ],
+  "callback_data": [
+    "ma|approve|dbd91d27909e0ae0",
+    "ma|needs_edit|dbd91d27909e0ae0",
+    "ma|handoff|dbd91d27909e0ae0",
+    "ma|ignore|dbd91d27909e0ae0"
+  ],
+  "keyboard": [
+    {
+      "action": "approve",
+      "label": "✅ Утвердить",
+      "callback_data": "ma|approve|dbd91d27909e0ae0"
+    },
+    {
+      "action": "needs_edit",
+      "label": "✏️ На доработку (LLM)",
+      "callback_data": "ma|needs_edit|dbd91d27909e0ae0"
+    },
+    {
+      "action": "handoff",
+      "label": "👤 Оператору",
+      "callback_data": "ma|handoff|dbd91d27909e0ae0"
+    },
+    {
+      "action": "ignore",
+      "label": "🚫 Игнорировать",
+      "callback_data": "ma|ignore|dbd91d27909e0ae0"
+    }
+  ],
+  "card_text": "<b>📩 Новое письмо</b>\n\n🚫 Ответ не требуется: кейс закрыт как рекламная рассылка.\n\n<b>Письмо</b>\nUID: raw_email_26816\nПолучено: 06.05.2026 11:01\nОт: hello@uniquex.com\nТема письма: Unique X and AUWE Sign Agreement for Movie Transit Deployment\r\n in Brazil\nСуть обращения: Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>Кейс</b>\nCase ID: case-000002 · Thread ID: thread-000002\n\n<b>История переписки</b>\n- входящее · 2026-05-06 08:01 · Unique X and AUWE Sign Agreement for Movi… · Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>Вложения</b>\nнет\n\n<b>Проверка билетов / Enrichment</b>\nПроверка билетов: не запускалась — письмо не похоже на клиентский билетный вопрос.\n\n<b>Что понял ассистент</b>\nТип обращения: рекламная рассылка\nЧто хочет отправитель: Ответ клиенту не требуется; письмо можно игнорировать.\nСледующий шаг: Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>Предлагаемое решение</b>\nРежим: не отвечать\nПричина: Unique X прислали рекламную рассылку о партнёрстве с AUWE в Бразилии.\n\n<b>База знаний</b>\nне применялась — письмо не требует клиентской базы знаний по билетам.\n\n<b>Что не хватает</b>\nнет\n\n<b>Риски</b>\nнет\n\n<b>Черновик</b>\nЧерновик не создавался: ответ клиенту не требуется.\n\n<b>Последнее действие</b>\nответ не требуется, кейс закрыт",
+  "action": "ignore",
+  "artifacts_dir": "D:\\JetBrains\\cl_mail_assistant_mooon\\artifacts\\flow_acceptance\\run_20260514T114029107932"
+}

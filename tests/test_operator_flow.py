@@ -7,6 +7,7 @@ from pathlib import Path
 
 from src.pipeline.draft_builder.module import DraftBuilderModule
 from src.pipeline.operator_actions.module import OperatorActionsModule
+from src.pipeline.operator_bot import OperatorBotHandler
 from src.pipeline.telegram_operator_delivery.module import TelegramOperatorDeliveryModule
 from src.runners.run_mock_mailbox_flow import discover_eml_files, ensure_mock_mailbox_dirs
 from src.shared.common.message_dossier import load_message_record, write_message_dossier
@@ -32,11 +33,50 @@ class OperatorFlowTest(unittest.TestCase):
             card = self._read_json(Path(card_result.metrics["card_artifact_path"]))
             text = card["card_text"]
             self.assertIn("<b>📩 Новое письмо</b>", text)
-            self.assertLess(text.index("<b>Enrichment</b>"), text.index("<b>Понимание</b>"))
-            self.assertIn("Билет: не найден · кандидатов: 2", text)
+            self.assertLess(text.index("<b>Проверка билетов</b>"), text.index("<b>Что понял ассистент</b>"))
+            self.assertIn("Билет: не найден", text)
             self.assertIn("<b>История переписки</b>", text)
             self.assertIn("входящее", text)
             self.assertIn("✏️ На доработку (LLM)", json.dumps(card["keyboard"], ensure_ascii=False))
+
+
+    def test_revision_callback_does_not_send_force_reply_and_updates_card(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            dossier_path = self._write_dossier(Path(tmp) / "message_demo.md")
+            artifacts_dir = str(Path(tmp) / "artifacts")
+            DraftBuilderModule(dossier_path=str(dossier_path)).run(PipelineContext(run_id="test-draft"))
+
+            card_result = TelegramOperatorDeliveryModule(
+                dossier_path=str(dossier_path),
+                artifacts_dir=artifacts_dir,
+                delivery_mode="artifact",
+            ).run(PipelineContext(run_id="test-card"))
+            self.assertEqual(card_result.status, "ok")
+            card = self._read_json(Path(card_result.metrics["card_artifact_path"]))
+            callback_data = next(item["callback_data"] for item in card["keyboard"] if item["action"] == "needs_edit")
+
+            client = _FakeTelegramClient()
+            handler = OperatorBotHandler(artifacts_dir=artifacts_dir, client=client)
+            callback_result = handler.handle_callback(
+                callback_data=callback_data,
+                chat_id=100,
+                message_id=int(card["telegram_message_id"]),
+                callback_query_id="callback-1",
+            )
+            self.assertEqual(callback_result["status"], "ok")
+            self.assertNotIn("sendMessage", [op["operation"] for op in client.operations])
+
+            comment_result = handler.handle_operator_message(
+                chat_id=100,
+                text="Добавь конкретную инструкцию по возврату.",
+                message_id=555,
+                reply_to_message_id=int(card["telegram_message_id"]),
+            )
+            self.assertEqual(comment_result["status"], "ok")
+            updated_card = self._read_json(Path(comment_result["card_artifact_path"]))
+            self.assertIn("<b>Комментарий оператора</b>", updated_card["card_text"])
+            self.assertIn("Добавь конкретную инструкцию по возврату.", updated_card["card_text"])
+            self.assertIn("<b>Черновик v2</b>", updated_card["card_text"])
 
     def test_mock_mailbox_dirs_and_empty_discovery(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -44,9 +84,11 @@ class OperatorFlowTest(unittest.TestCase):
             inbox = root / "inbox"
             processed = root / "processed"
             failed = root / "failed"
-            ensure_mock_mailbox_dirs(inbox_dir=inbox, processed_dir=processed, failed_dir=failed)
+            processing = root / "processing"
+            ensure_mock_mailbox_dirs(inbox_dir=inbox, processing_dir=processing, processed_dir=processed, failed_dir=failed)
 
             self.assertTrue(inbox.exists())
+            self.assertTrue(processing.exists())
             self.assertTrue(processed.exists())
             self.assertTrue(failed.exists())
             self.assertEqual(discover_eml_files(inbox), [])
@@ -117,8 +159,8 @@ class OperatorFlowTest(unittest.TestCase):
             DraftBuilderModule(dossier_path=str(dossier_path)).run(PipelineContext(run_id="test-draft"))
 
             for action, expected in [
-                ("handoff", "👤 Статус: передано оператору"),
-                ("ignore", "🚫 Статус: игнорируется"),
+                ("handoff", "Кейс помечен для ручной обработки"),
+                ("ignore", "Ответ не требуется"),
             ]:
                 result = OperatorActionsModule(
                     dossier_path=str(dossier_path),
@@ -128,7 +170,7 @@ class OperatorFlowTest(unittest.TestCase):
                 self.assertEqual(result.status, "ok")
                 card = self._read_json(Path(result.metrics["updated_card_ref"]))
                 self.assertIn(expected, card["card_text"])
-                self.assertIn("Реальный email не отправлен", card["card_text"])
+                self.assertNotIn("передано оператору", card["card_text"])
 
     def _write_dossier(self, path: Path) -> Path:
         payload = {
@@ -225,6 +267,38 @@ class OperatorFlowTest(unittest.TestCase):
     def _read_json(path: Path) -> dict:
         return json.loads(path.read_text(encoding="utf-8"))
 
+
+
+class _FakeTelegramClient:
+    def __init__(self) -> None:
+        self.operations: list[dict] = []
+        self._message_id = 900
+
+    def edit_message_text(self, **kwargs) -> dict:
+        result = {"operation": "editMessageText", "ok": True, "message_id": kwargs.get("message_id")}
+        self.operations.append(result)
+        return result
+
+    def edit_message_reply_markup(self, **kwargs) -> dict:
+        result = {"operation": "editMessageReplyMarkup", "ok": True, "message_id": kwargs.get("message_id")}
+        self.operations.append(result)
+        return result
+
+    def send_message(self, **kwargs) -> dict:
+        self._message_id += 1
+        result = {"operation": "sendMessage", "ok": True, "message_id": self._message_id, "chat_id": kwargs.get("chat_id")}
+        self.operations.append(result)
+        return result
+
+    def answer_callback_query(self, **kwargs) -> dict:
+        result = {"operation": "answerCallbackQuery", "ok": True}
+        self.operations.append(result)
+        return result
+
+    def delete_message(self, **kwargs) -> dict:
+        result = {"operation": "deleteMessage", "ok": True, "message_id": kwargs.get("message_id")}
+        self.operations.append(result)
+        return result
 
 if __name__ == "__main__":
     unittest.main()
