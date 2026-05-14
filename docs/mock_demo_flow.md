@@ -2,6 +2,39 @@
 
 This demo flow is safe for customer email: Telegram cards are sent through the real Telegram Bot API when credentials are configured, while customer email is never sent.
 
+## Main Demo Scenario
+
+1. Put one or more raw `.eml` files into:
+
+```powershell
+fixtures/mock_mailbox/inbox/
+```
+
+2. Run the single demo runner:
+
+```powershell
+python -m src.runners.run_mock_mailbox_flow
+```
+
+3. Receive a real Telegram operator card.
+4. Press an operator action in Telegram.
+5. Inspect artifacts:
+
+- `artifacts/operator_actions/`
+- `artifacts/revision_requests/`
+- `artifacts/mock_outbox/`
+- `artifacts/modules/mail_import/`
+
+The runner processes every `.eml` in `fixtures/mock_mailbox/inbox/`, moves successful files to `fixtures/mock_mailbox/processed/`, moves failed files to `fixtures/mock_mailbox/failed/`, and writes a readable error artifact under `artifacts/mock_mailbox_errors/`.
+
+If the inbox is empty, it prints exactly:
+
+```text
+[mock_flow] no .eml files found in fixtures/mock_mailbox/inbox
+```
+
+The runner does not create synthetic mail by itself.
+
 ## Scope
 
 - Telegram operator card title is `📩 Новое письмо`.
@@ -14,31 +47,47 @@ This demo flow is safe for customer email: Telegram cards are sent through the r
 - `approve` writes `artifacts/mock_outbox/<case_id>/reply_*.md` and `reply_*.json` from the latest draft revision.
 - `real_email_sent` remains `false`.
 
-## Runners
+## Pipeline
 
-Build the first draft:
+`python -m src.runners.run_mock_mailbox_flow` executes:
 
-```powershell
-python -m src.runners.run_draft_builder --dossier-path artifacts/modules/mail_import/fixture-1_approve/message_1_approve.md
-```
+- `MailImportModule`
+- `AttachmentExtractionModule`
+- `IdentityContextEnrichmentModule`
+- `CaseThreadBindingModule`
+- `LlmUnderstandingModule`
+- `KnowledgeRetrievalModule`
+- `DecisionLayerModule`
+- `DraftBuilderModule`
+- `TelegramOperatorDeliveryModule`
 
-Create the operator card through the real Bot API:
-
-```powershell
-python -m src.runners.run_telegram_operator_delivery --delivery-mode real --dossier-path artifacts/modules/mail_import/fixture-1_approve/message_1_approve.md
-```
-
-Run the production bot handler for callbacks and operator comments:
+After cards are sent, it starts the same production Telegram callback/message handling path used by:
 
 ```powershell
 python -m src.runners.run_operator_bot
 ```
 
-Approve the latest revision into mock outbox:
+Polling duration is read from:
+
+```yaml
+mock_flow:
+  telegram_poll_seconds: 300
+```
+
+The CLI override is:
 
 ```powershell
-python -m src.runners.run_operator_actions --dossier-path artifacts/modules/mail_import/fixture-1_approve/message_1_approve.md --action approve
+python -m src.runners.run_mock_mailbox_flow --poll-seconds 60
 ```
+
+## Advanced/debug runners
+
+- `python -m src.runners.run_draft_builder --dossier-path <dossier-path>`
+- `python -m src.runners.run_telegram_operator_delivery --delivery-mode real --dossier-path <dossier-path>`
+- `python -m src.runners.run_operator_bot`
+- `python -m src.runners.run_operator_actions --dossier-path <dossier-path> --action approve`
+
+These are for debugging existing dossiers. They are not the primary demo path.
 
 ## Artifacts
 
@@ -47,9 +96,11 @@ python -m src.runners.run_operator_actions --dossier-path artifacts/modules/mail
 - Revision requests: `artifacts/revision_requests/<case_id>/revision_request_*.json`
 - Mock outbox: `artifacts/mock_outbox/<case_id>/reply_*.md` and `reply_*.json`
 - Card index and mock Telegram offsets: `artifacts/state/operator_cards_index.json`, `artifacts/state/operator_bot_state.json`
+- Mail import dossiers: `artifacts/modules/mail_import/<run_id>/message_*.md`
+- Mock inbox errors: `artifacts/mock_mailbox_errors/*.json`
 
 ## Current Limitations
 
 - Telegram delivery depends on Telegram Bot API availability and configured bot/chat credentials.
-- Draft revision is deterministic and local; no external LLM call is required for tests.
+- Draft revision is deterministic and local; the revision path does not send real customer email.
 - Real email sending is intentionally not implemented in this flow.

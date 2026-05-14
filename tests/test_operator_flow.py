@@ -8,6 +8,7 @@ from pathlib import Path
 from src.pipeline.draft_builder.module import DraftBuilderModule
 from src.pipeline.operator_actions.module import OperatorActionsModule
 from src.pipeline.telegram_operator_delivery.module import TelegramOperatorDeliveryModule
+from src.runners.run_mock_mailbox_flow import discover_eml_files, ensure_mock_mailbox_dirs
 from src.shared.common.message_dossier import load_message_record, write_message_dossier
 from src.shared.models.pipeline_context import PipelineContext
 
@@ -24,6 +25,7 @@ class OperatorFlowTest(unittest.TestCase):
             card_result = TelegramOperatorDeliveryModule(
                 dossier_path=str(dossier_path),
                 artifacts_dir=artifacts_dir,
+                delivery_mode="artifact",
             ).run(PipelineContext(run_id="test-card"))
             self.assertEqual(card_result.status, "ok")
 
@@ -35,6 +37,19 @@ class OperatorFlowTest(unittest.TestCase):
             self.assertIn("<b>История переписки</b>", text)
             self.assertIn("входящее", text)
             self.assertIn("✏️ На доработку (LLM)", json.dumps(card["keyboard"], ensure_ascii=False))
+
+    def test_mock_mailbox_dirs_and_empty_discovery(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "mock_mailbox"
+            inbox = root / "inbox"
+            processed = root / "processed"
+            failed = root / "failed"
+            ensure_mock_mailbox_dirs(inbox_dir=inbox, processed_dir=processed, failed_dir=failed)
+
+            self.assertTrue(inbox.exists())
+            self.assertTrue(processed.exists())
+            self.assertTrue(failed.exists())
+            self.assertEqual(discover_eml_files(inbox), [])
 
     def test_needs_edit_creates_revision_and_new_russian_card(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

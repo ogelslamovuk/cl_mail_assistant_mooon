@@ -16,3 +16,6 @@ mail_import:
 
   # Fixture mode settings
   fixture_path: fixtures/emails/sample_email_01.eml
+
+mock_flow:
+  telegram_poll_seconds: 300
